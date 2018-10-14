@@ -1,0 +1,85 @@
+$S: 480px;
+$M: 768px;
+$L: 992px;
+$XL: 1400px;
+
+@mixin wider-than($canvas) {
+  @if $canvas == mobile {
+    @media only screen and (min-width: $S) {
+      @content;
+    }
+  } @else if $canvas == tablet {
+    @media only screen and (min-width: $M) {
+      @content;
+    }
+  } @else if $canvas == laptop {
+    @media only screen and (min-width: $L) {
+      @content;
+    }
+  } @else if $canvas == monitor {
+    @media only screen and (min-width: $XL) {
+      @content;
+    }
+  } @else {
+    @media only screen and (min-width: $canvas) {
+      @content;
+    }
+  }
+}
+
+@mixin not-wider-than($canvas) {
+  @if $canvas == mobile {
+    @media only screen and (max-width: $S + 1) {
+      @content;
+    }
+  } @else if $canvas == tablet {
+    @media only screen and (max-width: $M + 1) {
+      @content;
+    }
+  } @else if $canvas == laptop {
+    @media only screen and (max-width: $L + 1) {
+      @content;
+    }
+  } @else if $canvas == monitor {
+    @media only screen and (max-width: $XL + 1) {
+      @content;
+    }
+  } @else {
+    @media only screen and (max-width: $canvas) {
+      @content;
+    }
+  }
+}
+
+@mixin gradient($dark, $light) {
+  background: $dark;
+  background: -moz-linear-gradient(top, $dark 0%, $light 100%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, $dark), color-stop(100%, $light));
+  background: -webkit-linear-gradient(top, $dark 0%, $light 100%);
+  background: -o-linear-gradient(top, $dark 0%, $light 100%);
+  background: -ms-linear-gradient(top, $dark 0%, $light 100%);
+  background: linear-gradient(to bottom, $dark 0%, $light 100%);
+}
+
+@mixin halign {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@mixin valign {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+@mixin hvalign {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: 0;
+  margin-bottom: 0;
+}
