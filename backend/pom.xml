@@ -61,6 +61,8 @@
         <version.graphql-spring>4.2.0</version.graphql-spring>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <version.jackson>2.8.9</version.jackson>
+        <version.spring-cloud-starter-netflix-hystrix>2.0.1.RELEASE</version.spring-cloud-starter-netflix-hystrix>
+
     </properties>
 
     <dependencies>
@@ -116,6 +118,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+            <version>${version.spring-cloud-starter-netflix-hystrix}</version>
         </dependency>
 
         <dependency>
