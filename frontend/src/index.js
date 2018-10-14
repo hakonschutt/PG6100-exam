@@ -2,12 +2,13 @@ import 'assets/sass/main.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Root from 'components/global/Root';
-import App from 'components/global/App';
+
+import Root from './global/Root';
+import Routes from './global/Routes';
 
 ReactDOM.render(
   <Root>
-    <App />
+    <Routes />
   </Root>
   , document.getElementById('root')
 );
