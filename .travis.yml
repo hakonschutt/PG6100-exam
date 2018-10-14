@@ -1,0 +1,9 @@
+sudo: required
+services:
+  - docker
+env:
+  - NODE_ENV=ci
+before_install:
+  - docker build -t pg6100/react-test -f ./frontend/Dockerfile.dev ./frontend
+script:
+  - docker run pg6100/react-test npm test -- --coverage
