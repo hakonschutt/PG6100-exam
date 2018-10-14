@@ -1,0 +1,104 @@
+/********************GLOBAL********************/
+
+* {
+  box-sizing: border-box;
+
+  &:after,
+  &:before {
+    box-sizing: border-box;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+main {
+  position: relative;
+  z-index: 20;
+  display: block;
+  min-height: 100%;
+  padding: 0 1rem;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+.wrap,
+.contain,
+.constrain {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  word-wrap: break-word;
+}
+
+.wrap {
+  max-width: 1024px;
+}
+
+.content-wrap {
+  max-width: 1024px;
+}
+
+.contain {
+  max-width: 700px;
+}
+
+.constrain {
+  max-width: 450px;
+}
+
+.hpad {
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  @include wider-than(tablet) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.left {
+  text-align: left;
+}
+
+.center {
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+}
+
+.aligncenter {
+  margin: 1rem auto;
+  clear: both;
+}
+
+.halign {
+  @include halign;
+}
+
+.valign {
+  @include valign;
+}
+
+.hvalign {
+  @include hvalign;
+}
+
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}

@@ -3,14 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.bhj</groupId>
+    <groupId>org.bjh</groupId>
     <artifactId>exam</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <modules>
-        <module>template</module>
-    </modules>
     <packaging>pom</packaging>
-
 
     <name>exam</name>
     <description>PG6100 - Exam Project</description>
@@ -21,6 +17,37 @@
         <version>2.0.5.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
+
+    <developers>
+        <developer>
+            <id>hakonschutt</id>
+            <name>Håkon Schutt</name>
+            <email>hakon@schutt.no</email>
+            <url>github.com/hakonschutt</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>kleppa</id>
+            <name>Jarand Waage Kleppa</name>
+            <email>jarandwaagekleppa@gmail.com</email>
+            <url>github.com/kleppa</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>bjornosal</id>
+            <name>Bjørn Olav Salvesen</name>
+            <email>bjorn.olav.salvesen@gmail.com</email>
+            <url>github.com/bjornosal</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -127,7 +154,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
+                <version>${version.springcloud}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -326,34 +353,4 @@
 
         </pluginManagement>
     </build>
-
-    <developers>
-        <developer>
-            <id>hakonschutt</id>
-            <name>Håkon Schutt</name>
-            <email>hakon@schutt.no</email>
-            <url>github.com/hakonschutt</url>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>kleppa</id>
-            <name>Jarand Waage Kleppa</name>
-            <email>jarandwaagekleppa@gmail.com</email>
-            <url>github.com/kleppa</url>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>bjornosal</id>
-            <name>Bjørn Olav Salvesen</name>
-            <email>bjorn.olav.salvesen@gmail.com</email>
-            <url>github.com/bjornosal</url>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
-    </developers>
 </project>
