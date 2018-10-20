@@ -1,4 +1,4 @@
-# Setup
+# Microservices
 
 Considerations:
 - Consider having a database microservices??
@@ -6,11 +6,13 @@ Considerations:
 ## Microservices
 
 - [User Details](#user-details)
-- Authentication
-- Venues
-- Movies
-- Events
-- Booking
+- [Authentication](#authentication)
+- [Venues](#venues)
+- [Movies](#movies)
+- [Events](#events)
+- [Booking](#booking)
+- [Chat](#chat)
+- [Logger/Stalker](#loggerstalker---nth)
 
 
 
@@ -179,13 +181,13 @@ Keeps information about a movie, where it is being played, at what time, and in 
 Potential use-case for GraphQL API.
 
 #### Entity
-Id (Big int)
-Date (Date)
-Time (Time?)
-MovieId (Big int)
-VenueId (Big int)
-RoomId (Big int)
-Seats (Int[][])
+- Id (Big int)
+- Date (Date)
+- Time (Time?)
+- MovieId (Big int)
+- VenueId (Big int)
+- RoomId (Big int)
+- Seats (Int[][])
 
 ```java
 @Entity
@@ -198,7 +200,7 @@ class EventEntity(
       var movieId: Long,
       var venueId: Long,
       var roomId: Long,
-      var seats: Set<Set<Int>>? = null
+      var seats: Integer[][]? = null
 ){}
 ```
 
