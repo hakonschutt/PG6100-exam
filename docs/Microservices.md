@@ -1,6 +1,6 @@
-# Setup 
+# Setup
 
-Considerations: 
+Considerations:
 - Consider having a database microservices??
 
 ## Microservices
@@ -14,24 +14,35 @@ Considerations:
 
 
 
-### User Details 
-Should be a container for user information such as their booking history, current tickets, email. 
-Should email be used as the identifier? 
+### User Details
+Should be a container for user information such as their booking history, current tickets, email.
+Should email be used as the identifier?
 
-ID ... SECURITY? 
+ID ... SECURITY?
 
 
 #### Entity
-- Email
-- Valid tickets
-  - Pagination?
-- Favorites
-  - Pagination
-- History
-  - Pagination
+```java
+@Entity
+@Table(name="USERS")
+class UserEntity(
+      @get:Id @get:GeneratedValue
+      var id: Long? = null,
+
+      @get:NotBlank
+      var name: String?,
+
+      @get:ElementCollection
+      @get:NotNull
+      var purchaseHistory: Set<Booking>? = setOf(),
+
+      @get:ElementCollection
+      @get:NotNull
+      var favorites: Set<Movies>? = setOf(),
+)```
 
 #### Endpoints
-*Should the collections have their own endpoints?* 
+*Should the collections have their own endpoints?*
 
 - [ ] **GET**: /users
 - [ ] **GET**: /users/{id}
@@ -46,6 +57,13 @@ ID ... SECURITY?
 Authentication of the user.
 
 #### Entity
+- Email
+- Valid tickets
+  - Pagination?
+- Favorites
+  - Pagination
+- History
+  - Pagination
 
 #### Endpoints
 - [ ] Endpoint 1
@@ -60,7 +78,7 @@ Informasjon om kinosalene.
 ID
 Geolocation
 Adress
-Events? 
+Events?
 
 #### Entity #2 - Rooms
 Id
@@ -95,7 +113,7 @@ Events
 - [ ] **DELETE**: /movies/{id}/
 
 ### Events
-A collection microservice. 
+A collection microservice.
 Keeps information about a movie, where it is being played, at what time, and in which room in the venue.
 Potential use-case for GraphQL API.
 
