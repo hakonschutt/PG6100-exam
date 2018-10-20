@@ -22,10 +22,17 @@ ID ... SECURITY?
 
 
 #### Entity
+- Id
+- Name
+- PurchaseHistory
+  - Pagination?
+- Favorites
+  - Pagination
+
 ```java
 @Entity
-@Table(name="USERS")
 class UserEntity(
+
       @get:Id @get:GeneratedValue
       var id: Long? = null,
 
@@ -33,13 +40,12 @@ class UserEntity(
       var name: String?,
 
       @get:ElementCollection
-      @get:NotNull
       var purchaseHistory: Set<Booking>? = setOf(),
 
       @get:ElementCollection
-      @get:NotNull
-      var favorites: Set<Movies>? = setOf(),
-)```
+      var favorites: Set<Movies>? = setOf()
+){}
+```
 
 #### Endpoints
 *Should the collections have their own endpoints?*
@@ -58,12 +64,21 @@ Authentication of the user.
 
 #### Entity
 - Email
-- Valid tickets
-  - Pagination?
-- Favorites
-  - Pagination
-- History
-  - Pagination
+- Password
+- UserId
+
+```java
+@Entity
+class AuthEntity(
+      @get:Id
+      var email: String?,
+
+      @get:NotBlank
+      var password: String?,
+
+      var userId: Long? = null
+){}
+```
 
 #### Endpoints
 - [ ] Endpoint 1
@@ -75,10 +90,28 @@ Informasjon om kinosalene.
 
 
 #### Entity #1 - Venues
-ID
-Geolocation
-Adress
-Events?
+- ID
+- Name
+- Geolocation
+- Adress
+- Rooms
+
+```java
+@Entity
+class VenueEntity(
+      @get:Id @get:GeneratedValue
+      var id: Long? = null,
+
+      @get:NotBlank
+      var geolocation: String?,
+
+      @get:NotBlank
+      var address: String?,
+
+      @get:NotBlank
+      var rooms: Set<Rooms>? = null,
+){}
+```
 
 #### Entity #2 - Rooms
 Id
