@@ -7,7 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>exam</name>
+    <name>backend</name>
     <description>PG6100 - Backend</description>
 
     <parent>
@@ -15,5 +15,10 @@
         <artifactId>exam</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+
+    <modules>
+        <module>template</module>
+        <module>movies</module>
+    </modules>
 <!--TODO: Implement missing dependencies here-->
 </project>
