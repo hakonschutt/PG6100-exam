@@ -25,6 +25,7 @@ class JsonManipulator (){
                 .map { (it as JsonObject).get(property)}
                 .map { genreList -> (genreList as JsonArray)
                         .map{singleVal -> values[singleVal.toString().toInt()] } }
+
         jsonArr.forEachIndexed{index,ele -> (ele as JsonObject).add(property,Gson().toJsonTree(propertyValues[index]) )}
 
 
