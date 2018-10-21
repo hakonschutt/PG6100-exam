@@ -11,7 +11,7 @@ open class WrappedResponse<T>(
         var code: Int? = null,
 
         @ApiModelProperty("The wrapped payload")
-        var data: T? = null,
+        var data: List<T>? = null,
 
         @ApiModelProperty("Error message in case where was an error")
         var message: String? = null,
