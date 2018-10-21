@@ -10,7 +10,12 @@ class VenuesService {
     private lateinit var venuesRepository:VenuesRepository
     fun findAll():List<VenuesDto> {
         val listOfVenueEnities = venuesRepository.findAll()
+
         return  VenueConverter.transform(listOfVenueEnities)
 
+    }
+    fun findById(id:Long): VenuesDto {
+
+        return VenueConverter.transform(venuesRepository.findById(id).get())
     }
 }
