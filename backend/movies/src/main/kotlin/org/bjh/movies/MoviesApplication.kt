@@ -3,6 +3,12 @@ package org.bjh.movies
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import springfox.documentation.builders.ApiInfoBuilder
+import springfox.documentation.builders.PathSelectors
+import springfox.documentation.service.ApiInfo
+import springfox.documentation.spi.DocumentationType
+import springfox.documentation.spring.web.plugins.Docket
+import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
 @EnableSwagger2
@@ -19,13 +25,13 @@ class MoviesApplication {
 
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
-                .title("API for REST Pokemon")
-                .description("This is a REST API containing all Pokémon from Gen 1")
+                .title("API for Movies")
+                .description("REST API containing all movies for the Cinema")
                 .version("1.0")
                 .build()
     }
+}
 
-    fun main(args: Array<String>) {
-        runApplication<MoviesApplication>(*args)
-    }
+fun main(args: Array<String>) {
+    runApplication<MoviesApplication>(*args)
 }
