@@ -13,8 +13,6 @@ fun main(args: Array<String>) {
 
     val json = JsonParser().parse(inputStream.bufferedReader().use { it.readText() })
 
-    println(json)
-
     val test =jsTesting.addPropertyWithValuesToListOfJson(json,"results","price", "200")
     jsTesting.changePropertyOnJsonObject(test[0] as JsonObject,"date","xx")
 }
