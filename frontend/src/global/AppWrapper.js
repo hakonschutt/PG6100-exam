@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Header from '../components/layouts/Header';
+import Footer from '../components/layouts/Footer';
+
 const AppWrapper = ({ children }) => {
 	// ADD GLOBALE COMPONENTS
 
@@ -8,8 +11,9 @@ const AppWrapper = ({ children }) => {
 
 	return (
 		<div>
-			<h1>Dette er e</h1>
+			<Header />
 			<main>{children}</main>
+			<Footer />
 		</div>
 	);
 };

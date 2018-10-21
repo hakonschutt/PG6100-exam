@@ -4,7 +4,6 @@
 @import 'global/global';
 
 // COMPONENTS
-// @import "components/header";
-
-// PAGES
-// @import "pages/page-loader";
+@import 'components/header';
+@import 'components/footer';
+@import 'components/statement-image';

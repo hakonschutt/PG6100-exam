@@ -15,6 +15,7 @@ body {
 	padding: 0;
 	height: 100%;
 	font-family: $default-font;
+	background-color: map-get($base-colors, black);
 }
 
 main {
@@ -22,7 +23,6 @@ main {
 	z-index: 20;
 	display: block;
 	min-height: 100%;
-	padding: 0 1rem;
 }
 
 h1,
