@@ -19,6 +19,7 @@
     <modules>
         <module>template</module>
         <module>movies</module>
+        <module>utils</module>
     </modules>
 <!--TODO: Implement missing dependencies here-->
 </project>
