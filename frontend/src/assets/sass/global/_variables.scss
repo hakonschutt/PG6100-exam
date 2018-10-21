@@ -23,3 +23,9 @@ $shades-of-grey: (
 	light-grey: #b8c1cb,
 	snow: #dde2e8,
 );
+
+@import url('https://fonts.googleapis.com/css?family=Chakra+Petch:600|Roboto');
+
+$default-font: sans-serif;
+$header-font: 'Chakra Petch', sans-serif;
+$text-font: 'Roboto', sans-serif;
