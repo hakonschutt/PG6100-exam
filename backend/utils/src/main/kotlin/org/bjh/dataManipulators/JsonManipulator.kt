@@ -17,7 +17,7 @@ class JsonManipulator (){
         return jsonArr
     }
 
-    fun arrayModification(jsonToManipulate: JsonElement,arrayName: String,property: String,values:HashMap<Int,String>){
+    fun arrayModification(jsonToManipulate: JsonElement,arrayName: String,property: String,values:HashMap<Int,String>): JsonArray {
 
         val jsonArr:JsonArray  =  ((jsonToManipulate as JsonObject).get(arrayName) )as JsonArray
 
@@ -27,7 +27,7 @@ class JsonManipulator (){
                         .map{singleVal -> values[singleVal.toString().toInt()] } }
 
         jsonArr.forEachIndexed{index,ele -> (ele as JsonObject).add(property,Gson().toJsonTree(propertyValues[index]) )}
-
+        return jsonArr
 
     }
 
