@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 @Entity(name = "venues")
-class VenuesEntity(
+class VenueEntity(
     @get:Id
     @GeneratedValue
     val id: Long? = null,
@@ -24,6 +24,6 @@ class VenuesEntity(
     var address:String? = null,
 
     @get:ElementCollection
-    var rooms:Set<RoomsEntity> = setOf()
+    var rooms:Set<RoomEntity> = setOf()
 )
 
