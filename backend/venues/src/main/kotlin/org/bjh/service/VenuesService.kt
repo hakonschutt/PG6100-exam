@@ -1,30 +1,26 @@
-package main.kotlin.org.bjh.service
+package org.bjh.service
 
-import main.kotlin.org.bjh.converter.VenueConverter
-import main.kotlin.org.bjh.dto.VenueDto
-import main.kotlin.org.bjh.entity.VenueEntity
+import org.bjh.converter.VenueConverter
+import org.bjh.dto.VenueDto
+import org.bjh.entity.VenueEntity
 
-import main.kotlin.org.bjh.repository.VenuesRepository
+import org.bjh.repository.VenuesRepository
 import org.springframework.stereotype.Service
 
 @Service
 class VenuesService {
-    private lateinit var venuesRepository:VenuesRepository
+    private lateinit var venuesRepository: VenuesRepository
     fun createVenue(dto: VenueDto):Long{
 
         val venueEntity =venuesRepository.save(VenueEntity(id=null,name=dto.name,geoLocation = dto.geoLocation,address = dto.address))
 
-        return if(venueEntity.id != null){
-            venueEntity.id
-        }else{
-            -1
-        }
+        return venueEntity.id ?: -1
     }
     fun findAll():List<VenueDto> {
 
-        val listOfVenueEnities = venuesRepository.findAll()
+        val listOfVenueEntities = venuesRepository.findAll()
 
-        return  VenueConverter.transform(listOfVenueEnities)
+        return  VenueConverter.transform(listOfVenueEntities)
 
     }
     fun findById(id:Long): VenueDto {

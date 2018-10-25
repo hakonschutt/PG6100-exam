@@ -14,6 +14,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
 @EnableSwagger2
+@ComponentScan(basePackages = ["org.bjh", "org.bjh.api"])
+
 class VenuesApplicationRunner {
 
     @Bean

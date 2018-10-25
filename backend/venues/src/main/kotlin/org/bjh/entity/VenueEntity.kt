@@ -1,19 +1,14 @@
-package main.kotlin.org.bjh.entity
+package org.bjh.entity
 
-import javax.persistence.ElementCollection
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import org.bjh.entity.RoomEntity
+import javax.persistence.*
 import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
 
 @Entity(name = "venues")
 class VenueEntity(
     @get:Id
     @GeneratedValue
     val id: Long? = null,
-
-
     @get:NotBlank
     var name:String? = null,
 
@@ -23,7 +18,8 @@ class VenueEntity(
     @get:NotBlank
     var address:String? = null,
 
-    @get:ElementCollection
+    @get:ElementCollection(fetch = FetchType.EAGER)
+    @get:ManyToOne
     var rooms:Set<RoomEntity> = setOf()
 )
 

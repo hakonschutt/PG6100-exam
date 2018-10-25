@@ -1,12 +1,12 @@
-package main.kotlin.org.bjh.dto
+package org.bjh.dto
 
-import main.kotlin.org.bjh.entity.RoomEntity
+import org.bjh.entity.RoomEntity
 
 class VenueDto(
         var id: String?,
         val geoLocation: String?,
         val address: String?,
-        val rooms: Set<RoomEntity>,
+        val rooms: Set<RoomDto>,
         var name: String?
         )
 

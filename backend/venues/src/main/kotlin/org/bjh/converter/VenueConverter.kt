@@ -1,7 +1,7 @@
-package main.kotlin.org.bjh.converter
+package org.bjh.converter
 
-import main.kotlin.org.bjh.dto.VenueDto
-import main.kotlin.org.bjh.entity.VenueEntity
+import org.bjh.dto.VenueDto
+import org.bjh.entity.VenueEntity
 
 class VenueConverter {
     companion object {
@@ -12,7 +12,7 @@ class VenueConverter {
                     name = entity.name,
                     geoLocation = entity.geoLocation,
                     address = entity.address,
-                    rooms = entity.rooms
+                    rooms = entity.rooms.asSequence().map { roomEntity ->  RoomConverter.transform(roomEntity) }.toSet()
             ).apply {
                 id = entity.id?.toString()
             }
