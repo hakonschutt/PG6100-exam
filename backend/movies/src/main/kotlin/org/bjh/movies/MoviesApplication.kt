@@ -28,7 +28,7 @@ class MoviesApplication {
 
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
-                .title("API for MoviesRepositoryCustom")
+                .title("API for Movies")
                 .description("REST API containing all movies for the Cinema")
                 .version("1.0")
                 .build()

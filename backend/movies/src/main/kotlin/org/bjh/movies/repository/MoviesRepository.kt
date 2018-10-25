@@ -9,7 +9,7 @@ import javax.persistence.EntityManager
 
 @Repository
 interface MoviesRepository : CrudRepository<MovieEntity, Long>, MoviesRepositoryCustom {
-    fun findByTitle(title: String): Iterable<MovieEntity>
+    fun findAllByTitle(title: String): Iterable<MovieEntity>
 }
 
 
@@ -23,7 +23,7 @@ interface MoviesRepositoryCustom {
 @Transactional
 class MoviesRepositoryImpl : MoviesRepositoryCustom{
 
-    //TODO: Consider the use of this
+    //TODO: Check up on this.
     @Autowired
     private lateinit var em: EntityManager
 }
