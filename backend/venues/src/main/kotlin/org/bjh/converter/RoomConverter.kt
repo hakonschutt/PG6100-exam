@@ -20,4 +20,5 @@ class RoomConverter {
         fun transform(entities: Iterable<RoomEntity>): List<RoomDto> {
             return entities.map { transform(it) }
         }
+    }
 }

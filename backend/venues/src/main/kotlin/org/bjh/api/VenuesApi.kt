@@ -26,6 +26,7 @@ class VenuesApi {
     private lateinit var roomService: RoomService
 
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    @ApiResponse(code = 200, message = "Returns a list of venues")
     fun getAllVenues(): ResponseEntity<WrappedResponse<List<VenueDto>>> {
 
         val resultList = venuesService.findAll()
@@ -57,7 +58,6 @@ class VenuesApi {
 
     }
 
-
     @PostMapping(consumes = [V2_VENUES_JSON, BASE_JSON])
     @ApiResponse(code = 201, message = "The id of newly created venue")
     fun createVenue(
@@ -71,12 +71,12 @@ class VenuesApi {
             //There should atleast be one room, an address, no id, and a geolocation to make it possible to create a venue
             return ResponseEntity.status(400).build()
         }
-        val checkIfRoomHasValidFields: (RoomDto) -> Boolean = {
-            (!it.id.isNullOrBlank()) && it.name != null && (it.columns != null && it.columns > 0) && (it.rows != null && it.rows > 0)
+        val checkIfRoomHasValidFieldValues: (RoomDto) -> Boolean = {
+            (!it.id.isNullOrBlank()) && !it.name.isNullOrBlank() && (it.columns != null && it.columns > 0) && (it.rows != null && it.rows > 0)
         }
-
+        // should this return 400 if one or more of multiple rooms has errors?
         val rooms = dto.rooms
-                .filter(checkIfRoomHasValidFields).toSet()
+                .filter(checkIfRoomHasValidFieldValues).toSet()
 
         if (rooms.isEmpty()) return ResponseEntity.status(400).build()
 
@@ -85,6 +85,15 @@ class VenuesApi {
         val venueId = venuesService.createVenue(dto)
 
         return ResponseEntity.status(201).body(venueId)
+    }
+
+    @DeleteMapping(path = ["/{id}"])
+    @ApiResponse(code = 200, message = "Deletes the venue with corresponding Id")
+    fun deleteVenue(@ApiParam("The unique id of the venue to delete")
+                    @PathVariable("id") idFromPath: String): ResponseStatus {
+        return venuesService.delete(idFromPath!!.toLong())
+
+
     }
 
 

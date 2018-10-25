@@ -29,7 +29,14 @@ class VenuesService {
         return if (dto.isPresent) {
             VenueConverter.transform(dto.get())
         }else{
-            VenueDto(id=null,geoLocation = null,address = null,rooms = setOf(),name = null)
+            VenueDto(id = null,geoLocation = null,address = null,rooms = setOf(),name = null)
         }
+    }
+
+    fun delete(id: Long): Long {
+        //todo handle bad input
+        val deleted:Long = (venuesRepository.findById(id).get()).id!!
+        return deleted
+
     }
 }
