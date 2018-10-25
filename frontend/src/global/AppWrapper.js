@@ -5,10 +5,6 @@ import Header from '../components/layouts/Header';
 import Footer from '../components/layouts/Footer';
 
 const AppWrapper = ({ children }) => {
-	// ADD GLOBALE COMPONENTS
-
-	console.log('CHILDREN', children);
-
 	return (
 		<div>
 			<Header />
