@@ -1,5 +1,8 @@
 package org.bjh.movies.api
 
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.google.gson.JsonSyntaxException
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
@@ -9,6 +12,8 @@ import org.bjh.wrappers.WrappedResponse
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.reflect
 
 
 /**
@@ -21,8 +26,14 @@ import org.springframework.web.bind.annotation.*
 )
 @RestController
 class MoviesApi {
+
     private lateinit var movieService: MovieService
 
+    private val JSON_PRIMITIVE_TYPE_NUMBER = "number"
+    private val JSON_PRIMITIVE_TYPE_STRING = "string"
+    private val JSON_PRIMITIVE_TYPE_BOOLEAN = "boolean"
+
+    //TODO: Add ReponseDto to responses?
 
     @ApiOperation("Get a specific movie by id")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
@@ -42,16 +53,19 @@ class MoviesApi {
                             .validated())
         }
 
-        //TODO: Add ReponseDto
+        val movieDto = movieService.getById(id)
+        if (movieDto.id == null)
+            return ResponseEntity.status(404).body(WrappedResponse<MovieDto>(code = 404).validated())
+
         return ResponseEntity.ok(
                 WrappedResponse(
                         code = 200,
-                        data = movieService.getById(id))
+                        data = movieDto)
                         .validated())
 
     }
 
-
+    //TODO: Pagination with infinity-scroll. How to?
     @ApiOperation("Get all the movies")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
             path = ["/"])
@@ -59,7 +73,6 @@ class MoviesApi {
 
         val list = movieService.getAll()
 
-        //TODO: Add ReponseDto
         return ResponseEntity.ok(
                 WrappedResponse(
                         code = 200,
@@ -74,6 +87,11 @@ class MoviesApi {
             path = ["/{title}"])
     fun getMovieByTitle(@ApiParam("Title of a movie")
                         @PathVariable("title") title: String): ResponseEntity<WrappedResponse<List<MovieDto>>> {
+
+        return ResponseEntity.status(400).body(
+                WrappedResponse<List<MovieDto>>(code = 400, message = "Can't get movie by title.")
+                        .validated())
+
         return ResponseEntity.ok(
                 WrappedResponse(
                         code = 200,
@@ -91,12 +109,12 @@ class MoviesApi {
 
         if (!created)
             return ResponseEntity.status(400).body(
-                    WrappedResponse<Unit>(code = 404, message = "Unable to create movie.")
+                    WrappedResponse<Unit>(code = 400, message = "Unable to create movie.")
                             .validated())
 
         return ResponseEntity.status(204).body(
                 WrappedResponse<Unit>(code = 204, message = "Movie was created.")
-                .validated())
+                        .validated())
     }
 
     //TODO: Check codes being sent here.
@@ -108,8 +126,7 @@ class MoviesApi {
             movieId: String
     ): ResponseEntity<WrappedResponse<Unit>> {
 
-        //TODO: Needs an implementation of rules of when to delete, and not delete.
-        val id : Long
+        val id: Long
 
         try {
             id = movieId.toLong()
@@ -122,7 +139,7 @@ class MoviesApi {
         }
         val deleted = movieService.deleteMovieById(id)
 
-        if(!deleted)
+        if (!deleted)
             return ResponseEntity.status(400).body(
                     WrappedResponse<Unit>(
                             code = 400,
@@ -141,12 +158,80 @@ class MoviesApi {
     fun updateMovie(
             @ApiParam("The id the of the movie")
             @PathVariable("id")
-            id: String,
+            movieId: String,
             @ApiParam("Fields that will be updated/added")
             @RequestBody
-            jsonPatch: String): ResponseEntity<WrappedResponse<Unit>> {
-        //TODO: Needs an implementation of rules of when to update, and not update.
+            fieldsToPatch: String): ResponseEntity<WrappedResponse<Unit>> {
+        val id: Long
+
+        try {
+            id = movieId.toLong()
+        } catch (ne: NumberFormatException) {
+            return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(
+                            code = 400,
+                            message = "'$movieId' is not a valid movie id.")
+                            .validated())
+        }
+
+        val movieDto = movieService.getById(id)
+
+        if (movieDto.id == null)
+            return ResponseEntity.status(404).body(
+                    WrappedResponse<Unit>(
+                            code = 404,
+                            message = "There was no movie with id $id")
+                            .validated())
+
+        val parser = JsonParser()
+        val movieObject : JsonObject
+        try {
+            movieObject  = parser.parse(fieldsToPatch).asJsonObject
+        } catch (jse: JsonSyntaxException) {
+            return ResponseEntity.status(400).build()
+        }
+
+        if (movieObject.has("id")) {
+            return ResponseEntity.status(409).build()
+        }
+
+        val tempDto = movieDto.copy()
+
+        if(movieObject.has("title")) {
+            val title = movieObject.get("title")
+            if(title.isJsonNull)
+                tempDto.title = null
+            else if (title.isJsonPrimitive && title.asJsonPrimitive.isString)
+                tempDto.title = title.asString
+            else
+                return ResponseEntity.status(400).build()
+        }
+
+        //TODO: try to implement delegate properties
 
         return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404).validated())
     }
+
+
+    //TODO: Implement a generic setter for the values
+  /*  fun setPrimitiveValueFromJson(tempDto: MovieDto, movieObject: JsonObject, field: String, type: String): {
+        if(movieObject.has(field)) {
+            val title = movieObject.get(field)
+
+
+            if(title.isJsonNull)
+                tempDto::class.memberProperties
+                        .filter { it.toString() == field }
+                        .first()
+            else if (title.isJsonPrimitive)
+                if(type == JSON_PRIMITIVE_TYPE_STRING)
+                    tempDto. = title.asString
+
+                else
+                return ResponseEntity.status(400).build()
+        }
+    }*/
+
+
+
 }

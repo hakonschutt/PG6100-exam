@@ -8,13 +8,13 @@ import java.util.*
  * @author bjornosal
  */
 @ApiModel(description = "Information about a movie")
-class MovieDto(
+data class MovieDto(
 
         @ApiModelProperty("The id of the movie")
         var id: String? = null,
 
         @ApiModelProperty("The title of the movie")
-        var title: String,
+        var title: String? = null,
 
         @ApiModelProperty("Link to the poster for the movie")
         var poster: String? = null,
