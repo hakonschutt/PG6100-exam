@@ -1,0 +1,23 @@
+.movie-view {
+	display: block;
+	margin-top: 2rem;
+
+	&-inner {
+		width: 100%;
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			flex-flow: space-around;
+
+			li {
+				display: inline-block;
+				width: 20%;
+			}
+		}
+	}
+}

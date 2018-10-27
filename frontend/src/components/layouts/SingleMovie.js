@@ -1,8 +1,8 @@
 import React from 'react';
 
-const SingleMovie = ({ poster, title, itemSize }) => {
+const SingleMovie = ({ poster, title, itemSize = 200 }) => {
 	return (
-		<li className="single-movie" style={{ width: `200px` }}>
+		<li className="single-movie">
 			<a onClick={console.log} href="#0">
 				<img
 					src={`https://image.tmdb.org/t/p/w200${poster}`}

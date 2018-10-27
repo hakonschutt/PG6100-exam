@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 
 import SingleMovie from './SingleMovie';
 
-const MovieList = ({ itemSize, movies }) => {
-	console.log(movies);
+const MovieList = ({ itemSize, movies: { list } }) => {
+	console.log(list);
 	return (
 		<ul className="movies-list">
-			{movies.map(movie => {
+			{list.map(movie => {
 				console.log(movie);
 
 				return <SingleMovie key={movie.id} itemSize={itemSize} {...movie} />;
