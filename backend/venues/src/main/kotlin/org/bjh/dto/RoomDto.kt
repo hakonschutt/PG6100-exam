@@ -1,6 +1,6 @@
 package org.bjh.dto
 
-class RoomDto(
+data class RoomDto(
         var id: String? = null,
         var name: String?,
         var rows: Int?,

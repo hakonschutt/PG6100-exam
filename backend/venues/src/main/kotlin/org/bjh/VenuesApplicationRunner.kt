@@ -1,6 +1,5 @@
-package org.bjh.movies
+package org.bjh
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
@@ -14,7 +13,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
 @EnableSwagger2
-@ComponentScan(basePackages = ["org.bjh", "org.bjh.api"])
+@ComponentScan
 
 class VenuesApplicationRunner {
 

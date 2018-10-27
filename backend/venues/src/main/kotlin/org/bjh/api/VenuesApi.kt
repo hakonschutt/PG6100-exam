@@ -13,6 +13,7 @@ import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueResponseDto
 import org.bjh.service.RoomService
 import org.bjh.wrappers.WrappedResponse
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -21,10 +22,12 @@ const val BASE_JSON = "application/json;charset=UTF-8"
 const val V2_VENUES_JSON = "application/org.bjh.dto.VenueResponseDto;charset=UTF-8;version=2"
 
 @RestController
-@RequestMapping("/venues")
+@RequestMapping("/api/venues")
 @Api("Api for venues")
 class VenuesApi {
+    @Autowired
     private lateinit var venuesService: VenuesService
+    @Autowired
     private lateinit var roomService: RoomService
 
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])

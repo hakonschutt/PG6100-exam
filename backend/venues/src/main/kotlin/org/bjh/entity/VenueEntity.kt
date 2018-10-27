@@ -10,7 +10,7 @@ import kotlin.math.min
 class VenueEntity(
     @get:Id
     @GeneratedValue
-    val id: Long? = null,
+    var id: Long? = null,
     @get:NotBlank
     @get:Size(min=1,max=160)
     var name:String? = null,
@@ -24,7 +24,7 @@ class VenueEntity(
     var address:String? = null,
 
     @get:ElementCollection(fetch = FetchType.EAGER)
-    @get:ManyToOne(cascade = [CascadeType.ALL])
+    @get:ManyToOne(cascade = [CascadeType.ALL],targetEntity = RoomEntity::class)
     var rooms:Set<RoomEntity> = setOf()
 )
 

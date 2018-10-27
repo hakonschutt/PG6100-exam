@@ -4,11 +4,13 @@ import org.bjh.converter.RoomConverter
 import org.bjh.dto.RoomDto
 import org.bjh.entity.RoomEntity
 import org.bjh.repository.RoomRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 //ha-ha RoomService, please bring me food.
 class RoomService {
+    @Autowired
     private lateinit var roomRepository: RoomRepository
     fun save(roomDto: RoomDto): RoomEntity {
         if (!(roomDto.name == null || roomDto.rows == null || roomDto.columns == null)) {

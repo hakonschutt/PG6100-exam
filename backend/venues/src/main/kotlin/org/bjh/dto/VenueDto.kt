@@ -1,6 +1,6 @@
 package org.bjh.dto
-class VenueDto(
-        val id: String?,
+data class VenueDto(
+        var id: String?,
         var geoLocation: String?,
         var address: String?,
         var rooms: Set<RoomDto>,

@@ -5,11 +5,14 @@ import org.bjh.dto.VenueDto
 import org.bjh.entity.VenueEntity
 
 import org.bjh.repository.VenuesRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class VenuesService {
+    @Autowired
     private lateinit var venuesRepository: VenuesRepository
+
     fun createVenue(dto: VenueDto): Long {
 
         val venueEntity = venuesRepository.save(VenueEntity(id = null, name = dto.name, geoLocation = dto.geoLocation, address = dto.address))
@@ -24,7 +27,7 @@ class VenuesService {
         } catch (e: Exception) {
             return -1
         }
-        val venueEntity = venuesRepository.save(VenueEntity(id = 1, name = dto.name, geoLocation = dto.geoLocation, address = dto.address))
+        val venueEntity = venuesRepository.save(VenueEntity(id = id, name = dto.name, geoLocation = dto.geoLocation, address = dto.address))
         return venueEntity.id ?: -1
     }
 
