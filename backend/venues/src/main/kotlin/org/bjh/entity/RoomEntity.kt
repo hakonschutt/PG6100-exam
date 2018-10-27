@@ -10,12 +10,12 @@ import javax.validation.constraints.Size
 class RoomEntity(
         @get:Id
         @get:GeneratedValue
-        var id: Long? = null,
+        val id: Long? = null,
         @get:Size(min=1,max=180)
-        val name: String,
+        var name: String?,
         @get:Range(min=1,max=20)
-        val rows: Int,
+        var rows: Int?,
         @get:Range(min=1,max=20)
-        val columns: Int) {
+        var columns: Int?) {
 
 }

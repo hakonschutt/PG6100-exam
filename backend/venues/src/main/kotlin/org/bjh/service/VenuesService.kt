@@ -10,33 +10,46 @@ import org.springframework.stereotype.Service
 @Service
 class VenuesService {
     private lateinit var venuesRepository: VenuesRepository
-    fun createVenue(dto: VenueDto):Long{
+    fun createVenue(dto: VenueDto): Long {
 
-        val venueEntity =venuesRepository.save(VenueEntity(id=null,name=dto.name,geoLocation = dto.geoLocation,address = dto.address))
+        val venueEntity = venuesRepository.save(VenueEntity(id = null, name = dto.name, geoLocation = dto.geoLocation, address = dto.address))
 
         return venueEntity.id ?: -1
     }
-    fun findAll():List<VenueDto> {
+
+    fun updateVenue(dto: VenueDto): Long {
+        val id: Long
+        try {
+            id = dto.id!!.toLong()
+        } catch (e: Exception) {
+            return -1
+        }
+        val venueEntity = venuesRepository.save(VenueEntity(id = 1, name = dto.name, geoLocation = dto.geoLocation, address = dto.address))
+        return venueEntity.id ?: -1
+    }
+
+    fun findAll(): List<VenueDto> {
 
         val listOfVenueEntities = venuesRepository.findAll()
-
-        return  VenueConverter.transform(listOfVenueEntities)
+        return VenueConverter.transform(listOfVenueEntities)
 
     }
-    fun findById(id:Long): VenueDto {
+
+    fun findById(id: Long): VenueDto {
         val dto = venuesRepository.findById(id)
 
         return if (dto.isPresent) {
             VenueConverter.transform(dto.get())
-        }else{
-            VenueDto(id = null,geoLocation = null,address = null,rooms = setOf(),name = null)
+        } else {
+            VenueDto(id = null, geoLocation = null, address = null, rooms = setOf(), name = null)
         }
     }
 
     fun delete(id: Long): Long {
-        //todo handle bad input
-        val deleted:Long = (venuesRepository.findById(id).get()).id!!
-        return deleted
+
+        val deleted: Long? = (venuesRepository.findById(id).get()).id
+        return deleted ?: -1L
 
     }
+
 }
