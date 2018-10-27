@@ -14,7 +14,7 @@ class MovieDto(
         var id: String? = null,
 
         @ApiModelProperty("The title of the movie")
-        var title: String? = null,
+        var title: String,
 
         @ApiModelProperty("Link to the poster for the movie")
         var poster: String? = null,
@@ -35,10 +35,10 @@ class MovieDto(
         var genres: Set<String>? = null,
 
         @ApiModelProperty("Vote count for the movie")
-        var vote_count: Int? = null,
+        var voteCount: Int? = null,
 
         @ApiModelProperty("Average vote score for the movie")
-        var vote_average: Double? = null,
+        var voteAverage: Double? = null,
 
         @ApiModelProperty("Popularity of the movie")
         var popularity: Double? = null,

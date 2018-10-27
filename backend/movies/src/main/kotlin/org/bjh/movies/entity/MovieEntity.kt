@@ -13,13 +13,8 @@ import javax.validation.constraints.NotBlank
 @Entity
 class MovieEntity(
 
-        @get:Id
-        @get:GeneratedValue
-        var id: Long? = null,
-
         @get:NotBlank
         var title: String,
-
         var poster: String? = null,
         var coverArt: String? = null,
         var trailer: String? = null,
@@ -29,5 +24,9 @@ class MovieEntity(
         var vote_count: Int?,
         var vote_average: Double? = null,
         var popularity: Double? = null,
-        var price: Double? = null
+        var price: Double? = null,
+
+        @get:Id
+        @get:GeneratedValue
+        var id: Long? = null
 )

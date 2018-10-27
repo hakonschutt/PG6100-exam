@@ -22,8 +22,8 @@ class MoviesConverter {
                     overview = entity.overview,
                     releaseDate = entity.releaseDate,
                     genres = entity.genres,
-                    vote_count = entity.vote_count,
-                    vote_average = entity.vote_average,
+                    voteCount = entity.vote_count,
+                    voteAverage = entity.vote_average,
                     popularity = entity.popularity,
                     price = entity.price
             ).apply {

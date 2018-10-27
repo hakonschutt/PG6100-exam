@@ -23,6 +23,37 @@ import org.springframework.web.bind.annotation.*
 class MoviesApi {
     private lateinit var movieService: MovieService
 
+
+    @ApiOperation("Get a specific movie by id")
+    @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
+            path = ["/{id}"])
+    fun getMovieById(@ApiParam("Unique ID of a movie")
+                     @PathVariable("id")
+                     movieId: String): ResponseEntity<WrappedResponse<MovieDto>> {
+
+        val id: Long
+        try {
+            id = movieId.toLong()
+        } catch (ne: NumberFormatException) {
+            return ResponseEntity.status(400).body(
+                    WrappedResponse<MovieDto>(
+                            code = 400,
+                            message = "'$movieId' is not a valid movie id.")
+                            .validated())
+        }
+
+
+
+        //TODO: Add ReponseDto
+        return ResponseEntity.ok(
+                WrappedResponse(
+                        code = 200,
+                        data = movieService.getById(id))
+                        .validated())
+
+    }
+
+
     @ApiOperation("Get all the movies")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
             path = ["/"])
@@ -37,21 +68,6 @@ class MoviesApi {
                         data = list)
                         .validated()
         )
-    }
-
-    @ApiOperation("Get a specific movie by id")
-    @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
-            path = ["/{id}"])
-    fun getMovieById(@ApiParam("Unique ID of a movie")
-                     @PathVariable("id") id: Long): ResponseEntity<WrappedResponse<MovieDto>> {
-
-        //TODO: Add ReponseDto
-        return ResponseEntity.ok(
-                WrappedResponse(
-                        code = 200,
-                        data = movieService.getById(id))
-                        .validated())
-
     }
 
     //TODO: Figure out if I can run /{title} just as with id.
@@ -77,7 +93,6 @@ class MoviesApi {
         return ResponseEntity.ok(1L)
     }
 
-
     @ApiOperation("Delete a movie by id")
     @DeleteMapping(path = ["/{id}"])
     fun deleteById(
@@ -87,7 +102,9 @@ class MoviesApi {
     ): ResponseEntity<WrappedResponse<Unit>> {
 
         //TODO: Needs an implementation of rules of when to delete, and not delete.
-        return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404).validated())
+        return ResponseEntity.status(404)
+                .body(WrappedResponse<Unit>(code = 404)
+                        .validated())
 
         /*return ResponseEntity.status(204).body(
                 WrappedResponse<Unit>(code = 204).validated())*/
@@ -98,14 +115,12 @@ class MoviesApi {
     fun updateMovie(
             @ApiParam("The id the of the movie")
             @PathVariable("id")
-            id: String?,
+            id: String,
             @ApiParam("Fields that will be updated/added")
             @RequestBody
-            jsonPatch: String): ResponseEntity<WrappedResponse<Unit>>{
+            jsonPatch: String): ResponseEntity<WrappedResponse<Unit>> {
         //TODO: Needs an implementation of rules of when to update, and not update.
 
         return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404).validated())
     }
-
-
 }

@@ -2,6 +2,7 @@ package org.bjh.movies.service
 
 import org.bjh.movies.MoviesConverter
 import org.bjh.movies.dto.MovieDto
+import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -14,18 +15,38 @@ class MovieService {
     @Autowired
     private lateinit var moviesRepository: MoviesRepository
 
+    fun getById(id: Long): MovieDto {
+        val movie = moviesRepository.findById(id).orElse(null)
+
+        return MoviesConverter.transform(movie)
+    }
+
     fun getAll(): List<MovieDto> {
         val list = moviesRepository.findAll()
         return MoviesConverter.transform(list)
     }
 
-    fun getById(id: Long): MovieDto {
-        val movie = moviesRepository.findById(id).get()
-        return MoviesConverter.transform(movie)
-    }
-
     fun getAllByTitle(title: String): List<MovieDto> {
         val list = moviesRepository.findAllByTitle(title)
         return MoviesConverter.transform(list)
+    }
+
+    fun createMovie(movieDto: MovieDto): Long {
+        val movieEntity = MovieEntity(
+                movieDto.title,
+                movieDto.poster!!,
+                movieDto.coverArt!!,
+                movieDto.trailer!!,
+                movieDto.overview!!,
+                movieDto.releaseDate!!,
+                movieDto.genres!!,
+                movieDto.voteCount!!,
+                movieDto.voteAverage!!,
+                movieDto.popularity!!,
+                movieDto.price!!
+                )
+        moviesRepository.save(movieEntity)
+
+        return movieEntity.id ?: -1
     }
 }
