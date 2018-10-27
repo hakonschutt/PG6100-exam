@@ -8,10 +8,7 @@ import org.bjh.movies.service.MovieService
 import org.bjh.wrappers.WrappedResponse
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 /**
@@ -42,6 +39,7 @@ class MoviesApi {
         )
     }
 
+    @ApiOperation("Get a specific movie by id")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
             path = ["/{id}"])
     fun getMovieById(@ApiParam("Unique ID of a movie")
@@ -57,6 +55,7 @@ class MoviesApi {
     }
 
     //TODO: Figure out if I can run /{title} just as with id.
+    @ApiOperation("Get a movie by title")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
             path = ["/{title}"])
     fun getMovieByTitle(@ApiParam("Title of a movie")
@@ -66,6 +65,46 @@ class MoviesApi {
                         code = 200,
                         data = movieService.getAllByTitle(title))
                         .validated())
+    }
+
+    @ApiOperation("Create a movie")
+    @PostMapping(consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)],
+            path = ["/"])
+    fun createMovie(@ApiParam("Information for new movie")
+                    @RequestBody dto: MovieDto): ResponseEntity<Long> {
+
+        //TODO: Needs an implementation of rules of when to create, and not.
+        return ResponseEntity.ok(1L)
+    }
+
+
+    @ApiOperation("Delete a movie by id")
+    @DeleteMapping(path = ["/{id}"])
+    fun deleteById(
+            @ApiParam("The id of the movie")
+            @PathVariable("id")
+            movieId: String
+    ): ResponseEntity<WrappedResponse<Unit>> {
+
+        //TODO: Needs an implementation of rules of when to delete, and not delete.
+        return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404).validated())
+
+        /*return ResponseEntity.status(204).body(
+                WrappedResponse<Unit>(code = 204).validated())*/
+    }
+
+    @ApiOperation("Update a specific movie")
+    @PatchMapping(path = ["/{id}"])
+    fun updateMovie(
+            @ApiParam("The id the of the movie")
+            @PathVariable("id")
+            id: String?,
+            @ApiParam("Fields that will be updated/added")
+            @RequestBody
+            jsonPatch: String): ResponseEntity<WrappedResponse<Unit>>{
+        //TODO: Needs an implementation of rules of when to update, and not update.
+
+        return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404).validated())
     }
 
 
