@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import StatementImage from '../components/layouts/StatementImage';
 import Deadpool from '../assets/imgs/deadpool.jpg';
 import MoviesView from '../components/layouts/MoviesView';
+import MoviesFilter from '../components/layouts/MoviesFilter';
 
 class HomePage extends Component {
 	render() {
@@ -22,6 +23,7 @@ class HomePage extends Component {
 						</div>
 					</div>
 				</StatementImage>
+				<MoviesFilter />
 				<MoviesView />
 			</div>
 		);
