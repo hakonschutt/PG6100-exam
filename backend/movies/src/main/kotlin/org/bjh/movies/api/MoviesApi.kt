@@ -42,8 +42,6 @@ class MoviesApi {
                             .validated())
         }
 
-
-
         //TODO: Add ReponseDto
         return ResponseEntity.ok(
                 WrappedResponse(
@@ -87,12 +85,21 @@ class MoviesApi {
     @PostMapping(consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)],
             path = ["/"])
     fun createMovie(@ApiParam("Information for new movie")
-                    @RequestBody dto: MovieDto): ResponseEntity<Long> {
+                    @RequestBody movieDto: MovieDto): ResponseEntity<WrappedResponse<Unit>> {
 
-        //TODO: Needs an implementation of rules of when to create, and not.
-        return ResponseEntity.ok(1L)
+        val created = movieService.createMovie(movieDto)
+
+        if (!created)
+            return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(code = 404, message = "Unable to create movie.")
+                            .validated())
+
+        return ResponseEntity.status(204).body(
+                WrappedResponse<Unit>(code = 204, message = "Movie was created.")
+                .validated())
     }
 
+    //TODO: Check codes being sent here.
     @ApiOperation("Delete a movie by id")
     @DeleteMapping(path = ["/{id}"])
     fun deleteById(
@@ -102,12 +109,31 @@ class MoviesApi {
     ): ResponseEntity<WrappedResponse<Unit>> {
 
         //TODO: Needs an implementation of rules of when to delete, and not delete.
-        return ResponseEntity.status(404)
-                .body(WrappedResponse<Unit>(code = 404)
-                        .validated())
+        val id : Long
 
-        /*return ResponseEntity.status(204).body(
-                WrappedResponse<Unit>(code = 204).validated())*/
+        try {
+            id = movieId.toLong()
+        } catch (ne: NumberFormatException) {
+            return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(
+                            code = 400,
+                            message = "'$movieId' is not a valid movie id.")
+                            .validated())
+        }
+        val deleted = movieService.deleteMovieById(id)
+
+        if(!deleted)
+            return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(
+                            code = 400,
+                            message = "'$movieId' is not an existing movie id.")
+                            .validated())
+
+        return ResponseEntity.status(204).body(
+                WrappedResponse<Unit>(
+                        code = 204,
+                        message = "Deleted movie with id: $movieId")
+                        .validated())
     }
 
     @ApiOperation("Update a specific movie")
