@@ -14,16 +14,16 @@ export default function(ComposedComponent) {
 		componentDidMount() {
 			if (!this.props.isEnabled) {
 				this.props.history.push('/404');
-			} else if (this.props.userType === 'user') {
-				this.props.history.push('/404');
+			} else if (this.props.userType !== 'admin') {
+				this.props.history.push('/profile');
 			}
 		}
 
 		componentWillUpdate(nextProps) {
 			if (!nextProps.isEnabled) {
 				this.props.history.push('/404');
-			} else if (nextProps.userType === 'user') {
-				this.props.history.push('/404');
+			} else if (nextProps.userType !== 'admin') {
+				this.props.history.push('/profile');
 			}
 		}
 

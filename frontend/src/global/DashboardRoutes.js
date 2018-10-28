@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import authRoutesJson from './authRoutesJson';
+import authRoutes from './authRoutes';
 
 const DashboardRoutes = ({ match }) => {
-	return authRoutesJson.map(route => (
+	return authRoutes.map(route => (
 		<Route
 			key={route.key}
 			exact={route.exact}
