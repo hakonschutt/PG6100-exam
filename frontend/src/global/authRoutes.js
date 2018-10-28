@@ -13,4 +13,15 @@ export default [
 			},
 		}),
 	},
+	{
+		key: 'dashboard/movies',
+		path: '/movies',
+		exact: true,
+		component: Loadable({
+			loader: () => import('../pages/dashboard/DashboardMoviesPage'),
+			loading: () => {
+				return <div>Loading...</div>;
+			},
+		}),
+	},
 ];
