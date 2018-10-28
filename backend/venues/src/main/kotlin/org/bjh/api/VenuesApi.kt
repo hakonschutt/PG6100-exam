@@ -63,7 +63,7 @@ class VenuesApi {
 
     }
 
-    @PostMapping( consumes = [V2_VENUES_JSON, BASE_JSON])
+    @PostMapping(consumes = [V2_VENUES_JSON, BASE_JSON])
     @ApiResponse(code = 201, message = "The id of newly created venue")
     fun createVenue(
             @ApiParam("Text of address, geoloacation, List of room ids. Should not specify id")
@@ -90,7 +90,7 @@ class VenuesApi {
             return ResponseEntity.status(400).build()
         }
 
-       // val roomsSaved = roomService.saveAll(rooms)
+        // val roomsSaved = roomService.saveAll(rooms)
 
         val venueId = venuesService.createVenue(dto)
 
@@ -150,6 +150,7 @@ class VenuesApi {
 
         val jsonNode: JsonNode
         try {
+            println("JsonPatch content $jsonPatch")
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
         } catch (e: Exception) {
             return ResponseEntity.status(400).build()
@@ -238,13 +239,16 @@ class VenuesApi {
         if ((venueDto.id.isNullOrBlank() || roomDto.id.isNullOrBlank())) return ResponseEntity.status(404).build()
 
         val jackson = ObjectMapper()
-
+        println("JsonPatch content : $jsonPatch")
         val jsonNode: JsonNode
         try {
+
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
         } catch (e: Exception) {
             return ResponseEntity.status(400).build()
         }
+
+        println("JsonNode : $jsonNode")
         if (jsonNode.has("id")) return ResponseEntity.status(409).build()
 
         var name = roomDto.name
@@ -279,13 +283,15 @@ class VenuesApi {
         roomDto.columns = cols
         roomDto.rows = rows
 
-        roomService.save(roomDto)
-
-        return if (roomService.save(roomDto).id != null) {
-            ResponseEntity.status(204).build()
-        } else {
-            ResponseEntity.status(500).build()
+       val room = roomService.save(roomDto)
+        println(room.id)
+//               when {
+//           .id != null -> ResponseEntity.status(204)
+//           else -> ResponseEntity.status(500)
+//       }
+        return when{
+            room.id == null -> ResponseEntity.status(500).build()
+            else -> ResponseEntity.status(204).build()
         }
     }
-
 }

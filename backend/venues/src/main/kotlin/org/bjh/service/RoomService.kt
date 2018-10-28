@@ -13,7 +13,7 @@ class RoomService {
     @Autowired
     private lateinit var roomRepository: RoomRepository
     fun save(roomDto: RoomDto): RoomEntity {
-        if (!(roomDto.name == null || roomDto.rows == null || roomDto.columns == null)) {
+        if ((roomDto.name == null || roomDto.rows == null || roomDto.columns == null)) {
             return RoomEntity(id = null, name = null, rows = null, columns = null)
         }
         return roomRepository.save(RoomEntity(id = null, name = roomDto.name!!, rows = roomDto.rows!!, columns = roomDto.columns!!))

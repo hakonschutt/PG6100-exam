@@ -71,7 +71,7 @@ class VenuesApiTest : LocalApplicationRunner() {
                         .then()
                         .statusCode(200)
                         .extract().path<String>("data[0].name")
-        val newName ="NEW_NAME"
+        val newName = "NEW_NAME"
         val jsonBody = "{\"name\":\"$newName\"}"
 
 
@@ -82,7 +82,7 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(204)
 
-        println("RESPONSE: " +given().get("/$venueDtoId")
+        println("RESPONSE: " + given().get("/$venueDtoId")
                 .then()
                 .statusCode(200)
                 .extract().response().asString())
@@ -175,19 +175,16 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(201)
                 .extract().asString()
 
-       val data = RestAssured
+        val data = RestAssured
                 .given()
                 .get().then()
                 .statusCode(200)
-               .extract().body().jsonPath().getList("data", VenueDto::class.java)
-        println("BEFORE PRINTING DATA")
-        println(data[data.size-1])
-
-        val desiredVenue = data[data.size-1]
+                .extract().body().jsonPath().getList("data", VenueDto::class.java)
+        val desiredVenue = data[data.size - 1]
 
         Assert.assertThat(desiredVenue.id, equalTo(id))
 //
-        val roomsNamesExsist = desiredVenue.rooms.stream().allMatch{
+        val roomsNamesExsist = desiredVenue.rooms.stream().allMatch {
             it.name == roomName || it.name == roomName2
         }
         Assert.assertThat((roomsNamesExsist), equalTo(true))
@@ -211,6 +208,35 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(201)
                 .extract().asString()
+
+    }
+
+    @Test
+    fun testPatchRoomInVenue() {
+        val venueId = createVenue()
+
+        val data = given()
+                .get("/$venueId").then()
+                .statusCode(200)
+                .extract().body()
+                .jsonPath()
+                .getObject("data", VenueDto::class.java)
+
+        val roomToEdit = data.rooms.map { it }[0]
+        val roomId = roomToEdit.id
+        val oldRoomCol = roomToEdit.columns
+        val newRoomCol = if (oldRoomCol == null) {
+            0
+        } else {
+            20
+        }
+
+        given().contentType("application/merge-patch+json")
+                .body("{\"columns\":$newRoomCol}")
+                .patch("/$venueId/rooms/$roomId")
+                .then()
+                .statusCode(204)
+
 
     }
 }
