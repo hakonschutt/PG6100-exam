@@ -10,9 +10,6 @@ import java.util.*
 @ApiModel(description = "Information about a movie")
 data class MovieDto(
 
-        @ApiModelProperty("The id of the movie")
-        var id: String? = null,
-
         @ApiModelProperty("The title of the movie")
         var title: String? = null,
 
@@ -44,5 +41,8 @@ data class MovieDto(
         var popularity: Double? = null,
 
         @ApiModelProperty("Price of the movie")
-        var price: Double? = null
+        var price: Double? = null,
+
+        @ApiModelProperty("The id of the movie")
+        var id: String? = null
 )

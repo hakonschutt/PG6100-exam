@@ -1,10 +1,13 @@
 package org.bjh.movies
 
+import com.google.gson.JsonObject
 import io.restassured.RestAssured
+import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import org.bjh.movies.dto.MovieDto
 import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
-import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -12,7 +15,6 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import java.util.*
 
@@ -37,6 +39,7 @@ class MoviesApplicationTests {
         RestAssured.basePath = "/api/movies"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
+        //TODO: Replace with H2 database
         repository.run {
             deleteAll()
             save(MovieEntity("The Hitchhiker's Guide to the Galaxy", "Link to poster", "123", "123", "123", Date(), setOf("123"), 1, 5.0, 3.4, 120.0))
@@ -50,13 +53,59 @@ class MoviesApplicationTests {
 
     @Test
     fun testGetAll() {
-
-        RestAssured.given()
+        given()
                 .accept(ContentType.JSON)
                 .get()
                 .then()
                 .statusCode(200)
-                .body("data.size()", CoreMatchers.equalTo(5))
+                .body("data.size()", equalTo(5))
+    }
+
+    @Test
+    fun testNonExistingMovie() {
+        given()
+                .accept(ContentType.JSON)
+                .get("/-1")
+                .then()
+                .statusCode(404)
+                .body("code", equalTo(404))
+                .body("message", not(equalTo(null)))
+    }
+
+    @Test
+    fun testCreateMovie() {
+        val response = given()
+                .accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .response()
+
+        val testTitle = "TestMovie"
+        val allMovies = response.jsonPath()
+                .getList("data", MovieDto::class.java)
+
+        val location = given().contentType(ContentType.JSON)
+                .body(MovieDto(testTitle, "posterURL", "coverArtUrl", "trailerURL", "Test Overview", Date(), setOf("Drama"), 1, 5.0, 200.0, 120.0))
+                .post()
+                .then()
+                .statusCode(201)
+                .extract().header("location")
+
+        given().accept(ContentType.JSON)
+                .basePath("")
+                .get(location)
+                .then()
+                .statusCode(200)
+                .body("data.title", equalTo(testTitle))
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(allMovies.size + 1))
+
     }
 
 

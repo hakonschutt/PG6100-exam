@@ -16,7 +16,7 @@ class MovieService {
     private lateinit var moviesRepository: MoviesRepository
 
     fun getById(id: Long): MovieDto {
-        val movie = moviesRepository.findById(id).orElse(null)
+        val movie = moviesRepository.findById(id).orElse(null) ?: return MovieDto(null)
         //TODO: Does this work if null?
         return MoviesConverter.transform(movie)
     }
@@ -31,7 +31,7 @@ class MovieService {
         return MoviesConverter.transform(list)
     }
 
-    fun createMovie(movieDto: MovieDto): Boolean {
+    fun createMovie(movieDto: MovieDto): Long {
         val movieEntity = MovieEntity(
                 movieDto.title,
                 movieDto.poster!!,
@@ -47,7 +47,7 @@ class MovieService {
                 )
         moviesRepository.save(movieEntity)
 
-        return movieEntity.id != null
+        return movieEntity.id ?: -1L
     }
 
     //TODO: What is the best way to handle non-existing id?

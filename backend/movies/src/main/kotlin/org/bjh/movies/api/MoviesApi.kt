@@ -13,12 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 
 
 /**
  * @author bjornosal
  */
-@Api(value = "/movies", description = "Retrieves movies.")
+@Api(value = "/api/movies", description = "Retrieves movies.")
 @RequestMapping(
         path = ["/api/movies"],
         produces = [(MediaType.APPLICATION_JSON_VALUE)]
@@ -26,12 +27,15 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class MoviesApi {
 
+
+
     @Autowired
     private lateinit var movieService: MovieService
 
     private val JSON_PRIMITIVE_TYPE_NUMBER = "number"
     private val JSON_PRIMITIVE_TYPE_STRING = "string"
     private val JSON_PRIMITIVE_TYPE_BOOLEAN = "boolean"
+    private val BASE_PATH = "/api/movies"
 
     //TODO: Add ReponseDto to responses?
 
@@ -70,7 +74,11 @@ class MoviesApi {
 
         val movieDto = movieService.getById(id)
         if (movieDto.id == null)
-            return ResponseEntity.status(404).body(WrappedResponse<MovieDto>(code = 404).validated())
+            return ResponseEntity.status(404)
+                    .body(WrappedResponse<MovieDto>(
+                            code = 404,
+                            message = "Movie cannot be null")
+                            .validated())
 
         return ResponseEntity.ok(
                 WrappedResponse(
@@ -80,40 +88,39 @@ class MoviesApi {
 
     }
 
-    //TODO: Figure out if I can run /{title} just as with id.
-    @ApiOperation("Get a movie by title")
-    @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
-            path = ["/{title}"])
-    fun getMovieByTitle(@ApiParam("Title of a movie")
-                        @PathVariable("title") title: String): ResponseEntity<WrappedResponse<List<MovieDto>>> {
+    /* //TODO: Figure out if I can run /{title} just as with id.
+     @ApiOperation("Get a movie by title")
+     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
+             path = ["/{title}"])
+     fun getMovieByTitle(@ApiParam("Title of a movie")
+                         @PathVariable("title") title: String): ResponseEntity<WrappedResponse<List<MovieDto>>> {
 
-        return ResponseEntity.status(400).body(
-                WrappedResponse<List<MovieDto>>(code = 400, message = "Can't get movie by title.")
-                        .validated())
+         return ResponseEntity.status(400).body(
+                 WrappedResponse<List<MovieDto>>(code = 400, message = "Can't get movie by title.")
+                         .validated())
 
-        return ResponseEntity.ok(
-                WrappedResponse(
-                        code = 200,
-                        data = movieService.getAllByTitle(title))
-                        .validated())
-    }
+         return ResponseEntity.ok(
+                 WrappedResponse(
+                         code = 200,
+                         data = movieService.getAllByTitle(title))
+                         .validated())
+     }*/
 
     @ApiOperation("Create a movie")
-    @PostMapping(consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)],
-            path = ["/"])
+    @PostMapping(consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
     fun createMovie(@ApiParam("Information for new movie")
                     @RequestBody movieDto: MovieDto): ResponseEntity<WrappedResponse<Unit>> {
 
-        val created = movieService.createMovie(movieDto)
+        val createdId = movieService.createMovie(movieDto)
 
-        if (!created)
+        if (createdId == -1L)
             return ResponseEntity.status(400).body(
                     WrappedResponse<Unit>(code = 400, message = "Unable to create movie.")
                             .validated())
 
-        return ResponseEntity.status(204).body(
-                WrappedResponse<Unit>(code = 204, message = "Movie was created.")
-                        .validated())
+
+        return ResponseEntity.created(URI.create(BASE_PATH + "/" + createdId)).body(
+                WrappedResponse<Unit>(code = 201, message = "Movie was created").validated())
     }
 
     //TODO: Check codes being sent here.
@@ -183,9 +190,9 @@ class MoviesApi {
                             .validated())
 
         val parser = JsonParser()
-        val movieObject : JsonObject
+        val movieObject: JsonObject
         try {
-            movieObject  = parser.parse(fieldsToPatch).asJsonObject
+            movieObject = parser.parse(fieldsToPatch).asJsonObject
         } catch (jse: JsonSyntaxException) {
             return ResponseEntity.status(400).build()
         }
@@ -196,9 +203,9 @@ class MoviesApi {
 
         val tempDto = movieDto.copy()
 
-        if(movieObject.has("title")) {
+        if (movieObject.has("title")) {
             val title = movieObject.get("title")
-            if(title.isJsonNull)
+            if (title.isJsonNull)
                 tempDto.title = null
             else if (title.isJsonPrimitive && title.asJsonPrimitive.isString)
                 tempDto.title = title.asString
@@ -213,24 +220,21 @@ class MoviesApi {
 
 
     //TODO: Implement a generic setter for the values
-  /*  fun setPrimitiveValueFromJson(tempDto: MovieDto, movieObject: JsonObject, field: String, type: String): {
-        if(movieObject.has(field)) {
-            val title = movieObject.get(field)
+    /*  fun setPrimitiveValueFromJson(tempDto: MovieDto, movieObject: JsonObject, field: String, type: String): {
+          if(movieObject.has(field)) {
+              val title = movieObject.get(field)
 
 
-            if(title.isJsonNull)
-                tempDto::class.memberProperties
-                        .filter { it.toString() == field }
-                        .first()
-            else if (title.isJsonPrimitive)
-                if(type == JSON_PRIMITIVE_TYPE_STRING)
-                    tempDto. = title.asString
+              if(title.isJsonNull)
+                  tempDto::class.memberProperties
+                          .filter { it.toString() == field }
+                          .first()
+              else if (title.isJsonPrimitive)
+                  if(type == JSON_PRIMITIVE_TYPE_STRING)
+                      tempDto. = title.asString
 
-                else
-                return ResponseEntity.status(400).build()
-        }
-    }*/
-
-
-
+                  else
+                  return ResponseEntity.status(400).build()
+          }
+      }*/
 }
