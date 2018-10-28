@@ -236,7 +236,5 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .patch("/$venueId/rooms/$roomId")
                 .then()
                 .statusCode(204)
-
-
     }
 }
