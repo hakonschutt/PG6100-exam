@@ -5,16 +5,14 @@ import org.bjh.LocalApplicationRunner
 import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueDto
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Assert
 import org.junit.Test
-
-import org.junit.runner.RunWith
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringRunner
 
 
 class VenuesApiTest : LocalApplicationRunner() {
 
-//    @Test
+    //    @Test
 //    fun getAllVenues() {
 //    }
 //
@@ -26,9 +24,41 @@ class VenuesApiTest : LocalApplicationRunner() {
 //    fun createVenue() {
 //    }
 //
-//    @Test
-//    fun deleteVenue() {
-//    }
+    @Test
+    fun deleteVenue() {
+        val sizeBefore = RestAssured.given()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract().path<Int>("data.size()")
+        val createdVenueId = createVenue()
+        val sizeAfterAddition =
+                RestAssured.given()
+                        .get()
+                        .then()
+                        .statusCode(200)
+                        .extract().path<Int>("data.size()")
+
+        assert(sizeBefore < sizeAfterAddition)
+
+
+        RestAssured.given()
+                .delete("/${createdVenueId}")
+                .then()
+                .statusCode(200)
+
+
+        val sizeAfterDeletion = RestAssured.given()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract().path<Int>("data.size()")
+
+
+        Assert.assertThat(sizeAfterDeletion,equalTo(sizeBefore))
+
+
+    }
 //
 //    @Test
 //    fun mergePatch() {
@@ -52,28 +82,6 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(200)
                 //here we expect 4 since we are getting a wrapped object back
                 .body("size()", CoreMatchers.equalTo(4))
-
-//        //create a news
-
-//        //should be 1 news now
-//        RestAssured.given().accept(V2_NEWS_JSON)
-//                .get()
-//                .then()
-//                .statusCode(200)
-//                .body("size()", CoreMatchers.equalTo(1))
-//
-//        //1 news with same data as the POST
-//        RestAssured.given().accept(V2_NEWS_JSON)
-//                .pathParam("id", id)
-//                .get("/{id}")
-//                .then()
-//                .statusCode(200)
-//                .body("newsId", CoreMatchers.equalTo(id))
-//                .body("authorId", CoreMatchers.equalTo(author))
-//                .body("text", CoreMatchers.equalTo(text))
-//                .body("country", CoreMatchers.equalTo(country))
-//    }
-
     }
 
     @Test
@@ -109,8 +117,9 @@ class VenuesApiTest : LocalApplicationRunner() {
 
 
     }
+
     @Test
-    fun testCreateVenueWithMultipleRooms(){
+    fun testCreateVenueWithMultipleRooms() {
         val roomName = "sal-1"
         val rows = 2
         val cols = 2
@@ -125,7 +134,7 @@ class VenuesApiTest : LocalApplicationRunner() {
         val geo = "home"
         val address = "127.0.0.1"
 
-        val venueDto = VenueDto(id = null, geoLocation = geo, name = name, rooms = setOf(roomDto2,roomDto), address = address)
+        val venueDto = VenueDto(id = null, geoLocation = geo, name = name, rooms = setOf(roomDto2, roomDto), address = address)
 
         val id = RestAssured.given().contentType(BASE_JSON)
                 .body(venueDto)
@@ -140,6 +149,27 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(200)
                 .body("data[0].id", CoreMatchers.equalTo(id))
                 .body("data[0].rooms[0].name", CoreMatchers.equalTo(roomName2))
-                .body("data[0].rooms[1].name",CoreMatchers.equalTo(roomName))
+                .body("data[0].rooms[1].name", CoreMatchers.equalTo(roomName))
+    }
+
+    private fun createVenue(): String? {
+        val roomName2 = "sal-1"
+        val rows2 = 1
+        val cols2 = 1
+        val roomDto2 = RoomDto(id = null, name = roomName2, rows = rows2, columns = cols2)
+
+        val name = "root"
+        val geo = "home"
+        val address = "127.0.0.1"
+
+        val venueDto = VenueDto(id = null, geoLocation = geo, name = name, rooms = setOf(roomDto2), address = address)
+
+        return RestAssured.given().contentType(BASE_JSON)
+                .body(venueDto)
+                .post()
+                .then()
+                .statusCode(201)
+                .extract().asString()
+
     }
 }

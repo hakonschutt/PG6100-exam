@@ -114,7 +114,7 @@ class VenuesApi {
         val deletedVenueId = venuesService.delete(id)
 
         //todo figure out if this id should be in a wrapped response
-
+        println("Before return in delete , ID : $deletedVenueId")
         return if (deletedVenueId > -1) {
             ResponseEntity.status(200).build()
         } else {
