@@ -24,4 +24,15 @@ export default [
 			},
 		}),
 	},
+	{
+		key: 'profile',
+		path: '/profile',
+		exact: true,
+		component: Loadable({
+			loader: () => import('../pages/ProfilePage'),
+			loading: () => {
+				return <div>Loading...</div>;
+			},
+		}),
+	},
 ];
