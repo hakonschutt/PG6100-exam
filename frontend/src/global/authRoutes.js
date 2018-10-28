@@ -35,4 +35,15 @@ export default [
 			},
 		}),
 	},
+	{
+		key: 'dashboard/settings',
+		path: '/settings',
+		exact: true,
+		component: Loadable({
+			loader: () => import('../pages/dashboard/DashboardSettingsPage'),
+			loading: () => {
+				return <div>Loading...</div>;
+			},
+		}),
+	},
 ];
