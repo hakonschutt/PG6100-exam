@@ -1,13 +1,33 @@
 .movies-filter {
 	display: block;
+	padding: 1rem 0;
 
 	form {
+		display: flex;
+		justify-content: space-between;
+		height: 80px;
+
+		& > div {
+			width: 26%;
+
+			label {
+				display: block;
+			}
+
+			& > div {
+				display: block;
+				height: 50px;
+			}
+		}
+
+		button {
+			width: 14%;
+		}
 	}
 }
 
 .movie-view {
 	display: block;
-	margin-top: 2rem;
 
 	&-inner {
 		width: 100%;

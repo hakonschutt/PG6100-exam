@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm, Field } from 'redux-form';
+
+import SingleDayField from '../forms/SingleDayField';
 import SelectField from '../forms/SelectField';
 import { formatMovieListToOptions } from '../../utils';
 
@@ -13,24 +15,35 @@ class MoviesFilter extends Component {
 
 		return (
 			<div className="movies-filter">
-				<form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
-					<Field
-						label="Select movie"
-						component={SelectField}
-						type="text"
-						name="movie"
-						placeholder="Movie"
-						options={movieOption || []}
-					/>
-					<Field
-						label="Select a venue"
-						component={SelectField}
-						type="text"
-						name="venue"
-						placeholder="Venue"
-						options={venueOption || []}
-					/>
-				</form>
+				<div className="wrap">
+					<form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
+						<Field
+							label="Select movie"
+							component={SelectField}
+							type="text"
+							name="movie"
+							placeholder="Movie"
+							options={movieOption || []}
+						/>
+						<Field
+							label="Select a day"
+							component={SingleDayField}
+							type="text"
+							name="day"
+						/>
+						<Field
+							label="Select a venue"
+							component={SelectField}
+							type="text"
+							name="venue"
+							placeholder="Venue"
+							options={venueOption || []}
+						/>
+						<button className="form-button" type="submit">
+							Filter
+						</button>
+					</form>
+				</div>
 			</div>
 		);
 	}
