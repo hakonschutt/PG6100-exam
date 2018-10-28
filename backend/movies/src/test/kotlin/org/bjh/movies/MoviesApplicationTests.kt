@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import io.restassured.response.Response
 import org.bjh.movies.dto.MovieDto
 import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
@@ -50,11 +51,21 @@ class MoviesApplicationTests {
         }
     }
 
+    fun getAllMovies(): MutableList<MovieDto>? {
+        return given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .response()
+                .jsonPath()
+                .getList("data", MovieDto::class.java)
+    }
+
 
     @Test
     fun testGetAll() {
-        given()
-                .accept(ContentType.JSON)
+        given().accept(ContentType.JSON)
                 .get()
                 .then()
                 .statusCode(200)
@@ -63,8 +74,7 @@ class MoviesApplicationTests {
 
     @Test
     fun testNonExistingMovie() {
-        given()
-                .accept(ContentType.JSON)
+        given().accept(ContentType.JSON)
                 .get("/-1")
                 .then()
                 .statusCode(404)
@@ -74,17 +84,8 @@ class MoviesApplicationTests {
 
     @Test
     fun testCreateMovie() {
-        val response = given()
-                .accept(ContentType.JSON)
-                .get()
-                .then()
-                .statusCode(200)
-                .extract()
-                .response()
-
         val testTitle = "TestMovie"
-        val allMovies = response.jsonPath()
-                .getList("data", MovieDto::class.java)
+        val allMovies = getAllMovies()
 
         val location = given().contentType(ContentType.JSON)
                 .body(MovieDto(testTitle, "posterURL", "coverArtUrl", "trailerURL", "Test Overview", Date(), setOf("Drama"), 1, 5.0, 200.0, 120.0))
@@ -104,9 +105,22 @@ class MoviesApplicationTests {
                 .get()
                 .then()
                 .statusCode(200)
-                .body("data.size()", equalTo(allMovies.size + 1))
-
+                .body("data.size()", equalTo(allMovies!!.size + 1))
     }
 
+    @Test
+    fun testDeleteOneMovie() {
+        val allMovies = getAllMovies()
 
+        given().accept(ContentType.JSON)
+                .delete("/${allMovies!![0].id}")
+                .then()
+                .statusCode(204)
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(allMovies.size - 1))
+    }
 }
