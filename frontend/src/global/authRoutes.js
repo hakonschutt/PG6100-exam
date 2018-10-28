@@ -24,4 +24,15 @@ export default [
 			},
 		}),
 	},
+	{
+		key: 'dashboard/events',
+		path: '/events',
+		exact: true,
+		component: Loadable({
+			loader: () => import('../pages/dashboard/DashboardEventsPage'),
+			loading: () => {
+				return <div>Loading...</div>;
+			},
+		}),
+	},
 ];
