@@ -9,11 +9,10 @@ import io.swagger.annotations.ApiParam
 import org.bjh.movies.dto.MovieDto
 import org.bjh.movies.service.MovieService
 import org.bjh.wrappers.WrappedResponse
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.reflect
 
 
 /**
@@ -21,12 +20,13 @@ import kotlin.reflect.jvm.reflect
  */
 @Api(value = "/movies", description = "Retrieves movies.")
 @RequestMapping(
-        path = ["/movies"],
+        path = ["/api/movies"],
         produces = [(MediaType.APPLICATION_JSON_VALUE)]
 )
 @RestController
 class MoviesApi {
 
+    @Autowired
     private lateinit var movieService: MovieService
 
     private val JSON_PRIMITIVE_TYPE_NUMBER = "number"
@@ -34,6 +34,21 @@ class MoviesApi {
     private val JSON_PRIMITIVE_TYPE_BOOLEAN = "boolean"
 
     //TODO: Add ReponseDto to responses?
+
+    //TODO: Pagination with infinity-scroll. How to?
+    @ApiOperation("Get all the movies")
+    @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun getAllMovies(): ResponseEntity<WrappedResponse<List<MovieDto>>> {
+
+        val list = movieService.getAll()
+
+        return ResponseEntity.ok(
+                WrappedResponse(
+                        code = 200,
+                        data = list)
+                        .validated()
+        )
+    }
 
     @ApiOperation("Get a specific movie by id")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
@@ -63,22 +78,6 @@ class MoviesApi {
                         data = movieDto)
                         .validated())
 
-    }
-
-    //TODO: Pagination with infinity-scroll. How to?
-    @ApiOperation("Get all the movies")
-    @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
-            path = ["/"])
-    fun getAllMovies(): ResponseEntity<WrappedResponse<List<MovieDto>>> {
-
-        val list = movieService.getAll()
-
-        return ResponseEntity.ok(
-                WrappedResponse(
-                        code = 200,
-                        data = list)
-                        .validated()
-        )
     }
 
     //TODO: Figure out if I can run /{title} just as with id.
