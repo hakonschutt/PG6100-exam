@@ -25,6 +25,17 @@ export default [
 		}),
 	},
 	{
+		key: 'login',
+		path: '/login',
+		exact: true,
+		component: Loadable({
+			loader: () => import('../pages/LoginPage'),
+			loading: () => {
+				return <div>Loading...</div>;
+			},
+		}),
+	},
+	{
 		key: 'profile',
 		path: '/profile',
 		exact: true,

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import requireUnauth from '../hocs/requireUnauth';
+
 class LoginPage extends Component {
 	render() {
 		return (
@@ -10,4 +12,4 @@ class LoginPage extends Component {
 	}
 }
 
-export default LoginPage;
+export default requireUnauth(LoginPage);

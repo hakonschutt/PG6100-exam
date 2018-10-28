@@ -15,7 +15,7 @@ export default function(ComposedComponent) {
 			if (this.props.isEnabled) {
 				if (this.props.userType === 'admin') {
 					this.props.history.push('/dashboard');
-				} else {
+				} else if (this.props.userType === 'user') {
 					this.props.history.push('/profile');
 				}
 			}
@@ -25,7 +25,7 @@ export default function(ComposedComponent) {
 			if (nextProps.isEnabled) {
 				if (nextProps.userType === 'admin') {
 					this.props.history.push('/dashboard');
-				} else {
+				} else if (nextProps.userType === 'user') {
 					this.props.history.push('/profile');
 				}
 			}
@@ -37,8 +37,8 @@ export default function(ComposedComponent) {
 	}
 
 	function mapStateToProps({ auth }) {
-		const isEnabled = auth && 'isEnabled' in auth && auth.isEnabled;
-		const userType = auth && 'role' in auth && auth.role ? auth.role : null;
+		const isEnabled = auth.isEnabled;
+		const userType = auth.role;
 
 		return { isEnabled, userType };
 	}
