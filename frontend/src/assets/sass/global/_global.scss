@@ -47,6 +47,10 @@ img {
 	max-width: 100%;
 }
 
+main {
+	min-height: calc(100vh - 280px);
+}
+
 .wrap,
 .contain,
 .constrain {
