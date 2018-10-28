@@ -7,18 +7,27 @@ export default function(ComposedComponent) {
 	class RequireAuth extends Component {
 		static propTypes = {
 			isEnabled: PropTypes.bool.isRequired,
+			userType: PropTypes.string.isRequired,
 			history: PropTypes.object.isRequired,
 		};
 
 		componentDidMount() {
-			if (!this.props.isEnabled) {
-				this.props.history.push('/login');
+			if (this.props.isEnabled) {
+				if (this.props.userType === 'admin') {
+					this.props.history.push('/dashboard');
+				} else {
+					this.props.history.push('/profile');
+				}
 			}
 		}
 
 		componentWillUpdate(nextProps) {
-			if (!nextProps.isEnabled) {
-				this.props.history.push('/login');
+			if (nextProps.isEnabled) {
+				if (nextProps.userType === 'admin') {
+					this.props.history.push('/dashboard');
+				} else {
+					this.props.history.push('/profile');
+				}
 			}
 		}
 
@@ -29,8 +38,9 @@ export default function(ComposedComponent) {
 
 	function mapStateToProps({ auth }) {
 		const isEnabled = auth && 'isEnabled' in auth && auth.isEnabled;
+		const userType = auth && 'role' in auth && auth.role ? auth.role : null;
 
-		return { isEnabled };
+		return { isEnabled, userType };
 	}
 
 	return withRouter(connect(mapStateToProps)(RequireAuth));
