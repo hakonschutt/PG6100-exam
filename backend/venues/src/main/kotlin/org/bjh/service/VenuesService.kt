@@ -68,5 +68,4 @@ class VenuesService {
         return deleted.id ?: -1L
 
     }
-
 }
