@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 export default function(ComposedComponent) {
-	class RequireUnauth extends Component {
+	class RequireAdmin extends Component {
 		static propTypes = {
 			isEnabled: PropTypes.bool.isRequired,
 			userType: PropTypes.string.isRequired,
@@ -12,22 +12,18 @@ export default function(ComposedComponent) {
 		};
 
 		componentDidMount() {
-			if (this.props.isEnabled) {
-				if (this.props.userType === 'admin') {
-					this.props.history.push('/dashboard');
-				} else if (this.props.userType === 'user') {
-					this.props.history.push('/profile');
-				}
+			if (!this.props.isEnabled) {
+				this.props.history.push('/404');
+			} else if (this.props.userType === 'user') {
+				this.props.history.push('/404');
 			}
 		}
 
 		componentWillUpdate(nextProps) {
-			if (nextProps.isEnabled) {
-				if (nextProps.userType === 'admin') {
-					this.props.history.push('/dashboard');
-				} else if (nextProps.userType === 'user') {
-					this.props.history.push('/profile');
-				}
+			if (!nextProps.isEnabled) {
+				this.props.history.push('/404');
+			} else if (nextProps.userType === 'user') {
+				this.props.history.push('/404');
 			}
 		}
 
@@ -43,5 +39,5 @@ export default function(ComposedComponent) {
 		return { isEnabled, userType };
 	}
 
-	return withRouter(connect(mapStateToProps)(RequireUnauth));
+	return withRouter(connect(mapStateToProps)(RequireAdmin));
 }
