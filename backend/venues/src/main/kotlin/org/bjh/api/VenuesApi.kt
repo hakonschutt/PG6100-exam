@@ -36,7 +36,7 @@ class VenuesApi {
 
         val resultList = venuesService.findAll()
         //todo add pagination
-        val wrappedResponse = MultipleVenuesResponseDto(code = 200, data = resultList).validated()
+        val wrappedResponse = MultipleVenuesResponseDto(code = 200, data = resultList, message = "list of venues").validated()
 
         return ResponseEntity.status(200).body(wrappedResponse)
     }
@@ -55,7 +55,7 @@ class VenuesApi {
 
         val venue = venuesService.findById(id)
         result = if (venue.id != null) {
-            ResponseEntity.status(200).body(VenueResponseDto(code = 200, data = venue).validated())
+            ResponseEntity.status(200).body(VenueResponseDto(code = 200, data = venue, message = "The single venue that was requested").validated())
         } else {
             ResponseEntity.status(404).build()
         }

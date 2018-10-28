@@ -77,7 +77,7 @@ class VenuesApiTest : LocalApplicationRunner() {
     }
 
     @Test
-    fun createVenue() {
+    fun testCreateVenue() {
         val roomName = "sal-2"
         val rows = 1
         val cols = 1
@@ -95,16 +95,51 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(201)
                 .extract().asString()
 
-          RestAssured
-                  .given()
-                  .get().then()
-                  .statusCode(200)
-                  .body("data[0].id", CoreMatchers.equalTo(id))
+        RestAssured
+                .given()
+                .get().then()
+                .statusCode(200)
+                .body("data[0].id", CoreMatchers.equalTo(id))
+
         RestAssured
                 .given()
                 .get().then()
                 .statusCode(200)
                 .body("data[0].rooms[0].name", CoreMatchers.equalTo(roomName))
 
+
+    }
+    @Test
+    fun testCreateVenueWithMultipleRooms(){
+        val roomName = "sal-1"
+        val rows = 2
+        val cols = 2
+        val roomDto = RoomDto(id = null, name = roomName, rows = rows, columns = cols)
+
+        val roomName2 = "sal-2"
+        val rows2 = 1
+        val cols2 = 1
+        val roomDto2 = RoomDto(id = null, name = roomName2, rows = rows2, columns = cols2)
+
+        val name = "root"
+        val geo = "home"
+        val address = "127.0.0.1"
+
+        val venueDto = VenueDto(id = null, geoLocation = geo, name = name, rooms = setOf(roomDto2,roomDto), address = address)
+
+        val id = RestAssured.given().contentType(BASE_JSON)
+                .body(venueDto)
+                .post()
+                .then()
+                .statusCode(201)
+                .extract().asString()
+
+        RestAssured
+                .given()
+                .get().then()
+                .statusCode(200)
+                .body("data[0].id", CoreMatchers.equalTo(id))
+                .body("data[0].rooms[0].name", CoreMatchers.equalTo(roomName2))
+                .body("data[0].rooms[1].name",CoreMatchers.equalTo(roomName))
     }
 }
