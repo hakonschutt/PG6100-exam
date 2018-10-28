@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 const val BASE_JSON = "application/json;charset=UTF-8"
-const val V2_VENUES_JSON = "application/org.bjh.dto.VenueResponseDto;charset=UTF-8;version=2"
+const val V2_VENUES_JSON = "application/org.bjh.dto.VenueDto;charset=UTF-8"
 
 @RestController
 @RequestMapping("/api/venues")
@@ -63,7 +63,7 @@ class VenuesApi {
 
     }
 
-    @PostMapping(consumes = [V2_VENUES_JSON, BASE_JSON])
+    @PostMapping( consumes = [V2_VENUES_JSON, BASE_JSON])
     @ApiResponse(code = 201, message = "The id of newly created venue")
     fun createVenue(
             @ApiParam("Text of address, geoloacation, List of room ids. Should not specify id")
@@ -71,22 +71,26 @@ class VenuesApi {
             dto: VenueDto)
             : ResponseEntity<Long> {
         //todo change this response
-
-        if (!(dto.id.isNullOrEmpty() && !dto.rooms.isEmpty()) || (dto.address == null || dto.geoLocation == null)) {
+        println("CREATING A ")
+        if (!dto.id.isNullOrEmpty() && dto.rooms.isEmpty() && !(dto.address == null || dto.geoLocation == null)) {
             //There should atleast be one room, an address, no id, and a geolocation to make it possible to create a venue
+            println("Returning 400")
             return ResponseEntity.status(400).build()
         }
         val checkIfRoomHasValidFieldValues: (RoomDto) -> Boolean = {
-            (!it.id.isNullOrBlank()) && !it.name.isNullOrBlank()
-                    && (it.columns != null) && (it.rows != null )
+            (!it.id.isNullOrBlank()) || !it.name.isNullOrBlank()
+                    || (it.columns != null) || (it.rows != null)
         }
         // should this return 400 if one or more of multiple rooms has errors?
         val rooms = dto.rooms
                 .filter(checkIfRoomHasValidFieldValues).toSet()
 
-        if (rooms.isEmpty()) return ResponseEntity.status(400).build()
+        if (rooms.isEmpty()) {
+            println("******* ROOMS ARE EMPTY OR SOMETHING *********")
+            return ResponseEntity.status(400).build()
+        }
 
-        val roomsSaved = roomService.saveAll(rooms)
+       // val roomsSaved = roomService.saveAll(rooms)
 
         val venueId = venuesService.createVenue(dto)
 
@@ -276,9 +280,9 @@ class VenuesApi {
 
         roomService.save(roomDto)
 
-        return if(roomService.save(roomDto).id != null ){
+        return if (roomService.save(roomDto).id != null) {
             ResponseEntity.status(204).build()
-        }else{
+        } else {
             ResponseEntity.status(500).build()
         }
     }

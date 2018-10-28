@@ -1,5 +1,6 @@
 package org.bjh.service
 
+import org.bjh.converter.RoomConverter
 import org.bjh.converter.VenueConverter
 import org.bjh.dto.VenueDto
 import org.bjh.entity.VenueEntity
@@ -15,7 +16,16 @@ class VenuesService {
 
     fun createVenue(dto: VenueDto): Long {
 
-        val venueEntity = venuesRepository.save(VenueEntity(id = null, name = dto.name, geoLocation = dto.geoLocation, address = dto.address))
+    val rooms = RoomConverter.transformDtoToEntity(dto.rooms)
+
+    val entity = VenueEntity(
+            id=null,
+            name = dto.name,
+            geoLocation = dto.geoLocation,
+            address = dto.address,
+            rooms = rooms)
+
+        val venueEntity = venuesRepository.save(entity)
 
         return venueEntity.id ?: -1
     }
@@ -27,7 +37,8 @@ class VenuesService {
         } catch (e: Exception) {
             return -1
         }
-        val venueEntity = venuesRepository.save(VenueEntity(id = id, name = dto.name, geoLocation = dto.geoLocation, address = dto.address))
+        val venue = venuesRepository.findById(id)
+        val venueEntity = venuesRepository.save(VenueEntity(id = id, name = dto.name, geoLocation = dto.geoLocation, address = dto.address,rooms=venue.get().rooms))
         return venueEntity.id ?: -1
     }
 

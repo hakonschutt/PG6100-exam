@@ -17,8 +17,19 @@ class RoomConverter {
             }
         }
 
-        fun transform(entities: Iterable<RoomEntity>): List<RoomDto> {
-            return entities.map { transform(it) }
+        fun transform(entities: Set<RoomEntity>): Set<RoomDto> {
+            return entities.asSequence().map { transform(it) }.toSet()
+        }
+        fun transformDtoToEntity(entities: Set<RoomDto>): Set<RoomEntity> {
+            return entities.asSequence().map { transform(it) }.toSet()
+        }
+
+        private fun transform(roomDto: RoomDto): RoomEntity {
+            return RoomEntity(
+                    name = roomDto.name,
+                    rows = roomDto.rows,
+                    columns = roomDto.columns
+            )
         }
     }
 }
