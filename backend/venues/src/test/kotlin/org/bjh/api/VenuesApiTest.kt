@@ -1,6 +1,8 @@
 package org.bjh.api
 
+import com.google.gson.JsonObject
 import io.restassured.RestAssured
+import io.restassured.RestAssured.given
 import org.bjh.LocalApplicationRunner
 import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueDto
@@ -55,14 +57,44 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .extract().path<Int>("data.size()")
 
 
-        Assert.assertThat(sizeAfterDeletion,equalTo(sizeBefore))
+        Assert.assertThat(sizeAfterDeletion, equalTo(sizeBefore))
 
 
     }
-//
-//    @Test
-//    fun mergePatch() {
-//    }
+
+    @Test
+    fun mergePatchVenue() {
+        val venueDtoId = createVenue()
+        val oldName =
+                RestAssured.given()
+                        .get("/$venueDtoId")
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data[0].name")
+        val newName ="NEW_NAME"
+        val jsonBody = "{\"name\":\"$newName\"}"
+
+
+
+        given().contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch("/$venueDtoId")
+                .then()
+                .statusCode(204)
+
+        println("RESPONSE: " +given().get("/$venueDtoId")
+                .then()
+                .statusCode(200)
+                .extract().response().asString())
+
+        val updatedName = given().get("/$venueDtoId")
+                .then()
+                .statusCode(200)
+                .extract().path<String>("data.name")
+
+        Assert.assertThat(updatedName, equalTo(newName))
+
+    }
 
     @Test
     fun testCreateAndGetWithNewFormat() {
@@ -143,13 +175,22 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(201)
                 .extract().asString()
 
-        RestAssured
+       val data = RestAssured
                 .given()
                 .get().then()
                 .statusCode(200)
-                .body("data[0].id", CoreMatchers.equalTo(id))
-                .body("data[0].rooms[0].name", CoreMatchers.equalTo(roomName2))
-                .body("data[0].rooms[1].name", CoreMatchers.equalTo(roomName))
+               .extract().body().jsonPath().getList("data", VenueDto::class.java)
+        println("BEFORE PRINTING DATA")
+        println(data[data.size-1])
+
+        val desiredVenue = data[data.size-1]
+
+        Assert.assertThat(desiredVenue.id, equalTo(id))
+//
+        val roomsNamesExsist = desiredVenue.rooms.stream().allMatch{
+            it.name == roomName || it.name == roomName2
+        }
+        Assert.assertThat((roomsNamesExsist), equalTo(true))
     }
 
     private fun createVenue(): String? {

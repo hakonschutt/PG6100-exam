@@ -137,6 +137,7 @@ class VenuesApi {
                         jsonPatch: String)
             : ResponseEntity<Unit> {
         val id: Long
+        println("**********PATCHING *********")
         try {
             id = idFromPath.toLong()
         } catch (e: Exception) {
