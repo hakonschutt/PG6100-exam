@@ -25,7 +25,7 @@ class Chat extends Component {
 
 		return [
 			<ChatView key="view" isOpen={isOpen} />,
-			<ChatBubble key="bubble" isOpen={isOpen} onClick={this.toggleOpen} />,
+			<ChatBubble key="bubble" onClick={this.toggleOpen} />,
 		];
 	}
 }

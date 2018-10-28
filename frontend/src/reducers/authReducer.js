@@ -1,8 +1,8 @@
 import { FETCH_USER } from '../actions/types';
 
 const defaultState = {
-	isEnabled: true,
-	role: 'admin',
+	isEnabled: false,
+	role: 'unauth',
 };
 
 export default function(state = defaultState, action) {
