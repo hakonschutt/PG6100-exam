@@ -55,7 +55,12 @@ class VenuesApi {
 
         val venue = venuesService.findById(id)
         result = if (venue.id != null) {
-            ResponseEntity.status(200).body(VenueResponseDto(code = 200, data = venue, message = "The single venue that was requested").validated())
+            ResponseEntity.status(200)
+                    .body(VenueResponseDto(
+                            code = 200,
+                            data = venue,
+                            message = "The single venue that was requested")
+                            .validated())
         } else {
             ResponseEntity.status(404).build()
         }
@@ -71,26 +76,28 @@ class VenuesApi {
             dto: VenueDto)
             : ResponseEntity<Long> {
         //todo change this response
-        println("CREATING A ")
-        if (!dto.id.isNullOrEmpty() && dto.rooms.isEmpty() && !(dto.address == null || dto.geoLocation == null)) {
+
+        if (!dto.id.isNullOrEmpty() && dto.rooms.isEmpty() &&
+                !(dto.address == null || dto.geoLocation == null)) {
             //There should atleast be one room, an address, no id, and a geolocation to make it possible to create a venue
-            println("Returning 400")
+
             return ResponseEntity.status(400).build()
         }
         val checkIfRoomHasValidFieldValues: (RoomDto) -> Boolean = {
-            (!it.id.isNullOrBlank()) || !it.name.isNullOrBlank()
-                    || (it.columns != null) || (it.rows != null)
+            (!it.id.isNullOrBlank()) ||
+                    !it.name.isNullOrBlank() ||
+                    (it.columns != null) ||
+                    (it.rows != null)
         }
         // should this return 400 if one or more of multiple rooms has errors?
         val rooms = dto.rooms
                 .filter(checkIfRoomHasValidFieldValues).toSet()
 
         if (rooms.isEmpty()) {
-            println("******* ROOMS ARE EMPTY OR SOMETHING *********")
             return ResponseEntity.status(400).build()
         }
 
-        // val roomsSaved = roomService.saveAll(rooms)
+
 
         val venueId = venuesService.createVenue(dto)
 
@@ -113,8 +120,6 @@ class VenuesApi {
         }
         val deletedVenueId = venuesService.delete(id)
 
-        //todo figure out if this id should be in a wrapped response
-        println("Before return in delete , ID : $deletedVenueId")
         return if (deletedVenueId > -1) {
             ResponseEntity.status(200).build()
         } else {
@@ -137,7 +142,7 @@ class VenuesApi {
                         jsonPatch: String)
             : ResponseEntity<Unit> {
         val id: Long
-        println("**********PATCHING *********")
+
         try {
             id = idFromPath.toLong()
         } catch (e: Exception) {
@@ -150,7 +155,7 @@ class VenuesApi {
 
         val jsonNode: JsonNode
         try {
-            println("JsonPatch content $jsonPatch")
+
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
         } catch (e: Exception) {
             return ResponseEntity.status(400).build()
@@ -284,11 +289,8 @@ class VenuesApi {
         roomDto.rows = rows
 
        val room = roomService.save(roomDto)
-        println(room.id)
-//               when {
-//           .id != null -> ResponseEntity.status(204)
-//           else -> ResponseEntity.status(500)
-//       }
+
+
         return when{
             room.id == null -> ResponseEntity.status(500).build()
             else -> ResponseEntity.status(204).build()
