@@ -2,7 +2,6 @@ package org.bjh.movies.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import java.util.*
 
 /**
  * @author bjornosal
@@ -25,8 +24,8 @@ data class MovieDto(
         @ApiModelProperty("The overview of the movie")
         var overview: String? = null,
 
-        @ApiModelProperty("The releasedate of the movie")
-        var releaseDate: Date? = null,
+        @ApiModelProperty("The release date of the movie")
+        var releaseDate: String? = null,
 
         @ApiModelProperty("The genres of the movie")
         var genres: Set<String>? = null,
@@ -35,13 +34,13 @@ data class MovieDto(
         var voteCount: Int? = null,
 
         @ApiModelProperty("Average vote score for the movie")
-        var voteAverage: Double? = null,
+        var voteAverage: String? = null,
 
         @ApiModelProperty("Popularity of the movie")
-        var popularity: Double? = null,
+        var popularity: String? = null,
 
         @ApiModelProperty("Price of the movie")
-        var price: Double? = null,
+        var price: String? = null,
 
         @ApiModelProperty("The id of the movie")
         var id: String? = null

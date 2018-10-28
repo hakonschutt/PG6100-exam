@@ -28,7 +28,6 @@ import java.net.URI
 class MoviesApi {
 
 
-
     @Autowired
     private lateinit var movieService: MovieService
 
@@ -160,7 +159,8 @@ class MoviesApi {
     }
 
     @ApiOperation("Update a specific movie")
-    @PatchMapping(path = ["/{id}"])
+    @PatchMapping(path = ["/{id}"],
+            consumes = ["application/merge-patch+json"])
     fun updateMovie(
             @ApiParam("The id the of the movie")
             @PathVariable("id")
@@ -179,6 +179,8 @@ class MoviesApi {
                             message = "'$movieId' is not a valid movie id.")
                             .validated())
         }
+
+
 
         val movieDto = movieService.getById(id)
 
@@ -203,6 +205,8 @@ class MoviesApi {
 
         val tempDto = movieDto.copy()
 
+        //TODO: Figure out a way to make all this into a repeatable method.
+        //Possibly check out delegated properties
         if (movieObject.has("title")) {
             val title = movieObject.get("title")
             if (title.isJsonNull)
@@ -213,27 +217,135 @@ class MoviesApi {
                 return ResponseEntity.status(400).build()
         }
 
-        //TODO: try to implement delegate properties
+        if (movieObject.has("poster")) {
+            val poster = movieObject.get("poster")
+            if (poster.isJsonNull)
+                tempDto.poster = null
+            else if (poster.isJsonPrimitive && poster.asJsonPrimitive.isString)
+                tempDto.poster = poster.asString
+            else
+                return ResponseEntity.status(400).build()
+        }
 
-        return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404).validated())
+
+        if (movieObject.has("coverArt")) {
+            val coverArt = movieObject.get("coverArt")
+            if (coverArt.isJsonNull)
+                tempDto.title = null
+            else if (coverArt.isJsonPrimitive && coverArt.asJsonPrimitive.isString)
+                tempDto.coverArt = coverArt.asString
+            else
+                return ResponseEntity.status(400).build()
+        }
+
+        if (movieObject.has("trailer")) {
+            val trailer = movieObject.get("trailer")
+            if (trailer.isJsonNull)
+                tempDto.trailer = null
+            else if (trailer.isJsonPrimitive && trailer.asJsonPrimitive.isString)
+                tempDto.trailer = trailer.asString
+            else
+                return ResponseEntity.status(400).build()
+        }
+
+        if (movieObject.has("overview")) {
+            val overview = movieObject.get("overview")
+            if (overview.isJsonNull)
+                tempDto.overview = null
+            else if (overview.isJsonPrimitive && overview.asJsonPrimitive.isString)
+                tempDto.overview = overview.asString
+            else
+                return ResponseEntity.status(400).build()
+        }
+
+        if (movieObject.has("releaseDate")) {
+            val releaseDate = movieObject.get("releaseDate")
+            if (releaseDate.isJsonNull)
+                tempDto.releaseDate = null
+            else if (releaseDate.isJsonPrimitive && releaseDate.asJsonPrimitive.isString)
+                tempDto.releaseDate = releaseDate.asString
+            else
+                return ResponseEntity.status(400).build()
+        }
+
+        if (movieObject.has("genres")) {
+            val genres = movieObject.get("genres")
+            when {
+                genres.isJsonNull -> tempDto.genres = null
+                genres.isJsonArray -> setOf(genres.asJsonArray)
+                else -> return ResponseEntity.status(400).build()
+            }
+        }
+
+
+        if (movieObject.has("voteCount")) {
+            val voteCount = movieObject.get("voteCount")
+            if (voteCount.isJsonNull)
+                tempDto.voteCount = null
+            else if (voteCount.isJsonPrimitive && voteCount.asJsonPrimitive.isNumber)
+                tempDto.voteCount = voteCount.asInt
+            else
+                return ResponseEntity.status(400).build()
+        }
+
+        //TODO Is this correct for double?
+        if (movieObject.has("voteAverage")) {
+            val voteAverage = movieObject.get("voteAverage")
+            if (voteAverage.isJsonNull)
+                tempDto.voteAverage = null
+            else if (voteAverage.isJsonPrimitive && voteAverage.asJsonPrimitive.isString)
+                tempDto.voteAverage = voteAverage.asString
+            else
+                return ResponseEntity.status(400).build()
+        }
+
+        if (movieObject.has("popularity")) {
+            val popularity = movieObject.get("popularity")
+            if (popularity.isJsonNull)
+                tempDto.popularity = null
+            else if (popularity.isJsonPrimitive && popularity.asJsonPrimitive.isString)
+                tempDto.popularity = popularity.asString
+            else
+                return ResponseEntity.status(400).build()
+        }
+
+        if (movieObject.has("price")) {
+            val price = movieObject.get("price")
+            if (price.isJsonNull)
+                tempDto.price = null
+            else if (price.isJsonPrimitive && price.asJsonPrimitive.isString)
+                tempDto.price = price.asString
+            else
+                return ResponseEntity.status(400).build()
+        }
+
+
+        //TODO: Complete testing to make sure that using .copy() is actually possible.
+
+        return ResponseEntity.status(204).build()
+
+//        return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404).validated())
     }
 
 
-    //TODO: Implement a generic setter for the values
-    /*  fun setPrimitiveValueFromJson(tempDto: MovieDto, movieObject: JsonObject, field: String, type: String): {
-          if(movieObject.has(field)) {
-              val title = movieObject.get(field)
+    //TODO: Implement a generic setter for the values??
+/*      fun <T> getPrimitiveValueFromJson(jsonObject: JsonObject, fieldName: String): Any {
+        if (jsonObject.has(fieldName)) {
+            val value = jsonObject.get(fieldName)
+
+            var newValue: T
+
+            if (value.isJsonNull)
+//                return Null
+            else if (value.isJsonPrimitive && value.asJsonPrimitive.isString)
+                return value.asJsonPrimitive.asString
+            else if (value.isJsonPrimitive && value.asJsonPrimitive.isNumber)
+                return value.asJsonPrimitive.asNumber
+            else if (value.isJsonPrimitive && value.asJsonPrimitive.isBoolean)
+                return value.asJsonPrimitive.asBoolean
 
 
-              if(title.isJsonNull)
-                  tempDto::class.memberProperties
-                          .filter { it.toString() == field }
-                          .first()
-              else if (title.isJsonPrimitive)
-                  if(type == JSON_PRIMITIVE_TYPE_STRING)
-                      tempDto. = title.asString
-
-                  else
+            else
                   return ResponseEntity.status(400).build()
           }
       }*/

@@ -15,7 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.junit4.SpringRunner
-import java.util.*
+import java.time.LocalDate
+import java.time.Month
 import kotlin.collections.ArrayList
 
 @RunWith(SpringRunner::class)
@@ -30,14 +31,17 @@ class MoviesApplicationTests {
     protected lateinit var repository: MoviesRepository
 
     private val movieEntities = ArrayList<MovieEntity>()
-    
+
+    val defaultReleaseDate = LocalDate.of(1991, Month.JANUARY, 12)!!
+
     fun emptyListAndFillWithTestMovies() {
+
         movieEntities.removeAll(movieEntities)
-        movieEntities.add(MovieEntity("The Hitchhiker's Guide to the Galaxy", "Link to poster", "123", "123", "123", Date(), setOf("123"), 1, 5.0, 3.4, 120.0))
-        movieEntities.add(MovieEntity("A Movie About A Ginger", "Link to poster", "123", "123", "123", Date(), setOf("123"), 1, 5.0, 3.4, 120.0))
-        movieEntities.add(MovieEntity("Fast and the Furious", "link to poster", "123", "123", "123", Date(), setOf("123"), 1, 5.0, 3.4, 120.0))
-        movieEntities.add(MovieEntity("Moon Moon", "Link to poster", "123", "123", "123", Date(), setOf("123"), 1, 5.0, 3.4, 120.0))
-        movieEntities.add(MovieEntity("The Life of Pi", "Link to poster", "123", "123", "123", Date(), setOf("123"), 1, 5.0, 3.4, 120.0))
+        movieEntities.add(MovieEntity("The Hitchhiker's Guide to the Galaxy", "Link to poster", "123", "123", "123", defaultReleaseDate, setOf("123"), 1, 5.0, 3.4, 120.0))
+        movieEntities.add(MovieEntity("A Movie About A Ginger", "Link to poster", "123", "123", "123", defaultReleaseDate, setOf("123"), 1, 5.0, 3.4, 120.0))
+        movieEntities.add(MovieEntity("Fast and the Furious", "link to poster", "123", "123", "123", defaultReleaseDate, setOf("123"), 1, 5.0, 3.4, 120.0))
+        movieEntities.add(MovieEntity("Moon Moon", "Link to poster", "123", "123", "123", defaultReleaseDate, setOf("123"), 1, 5.0, 3.4, 120.0))
+        movieEntities.add(MovieEntity("The Life of Pi", "Link to poster", "123", "123", "123", defaultReleaseDate, setOf("123"), 1, 5.0, 3.4, 120.0))
     }
 
     fun getAllMovies(): MutableList<MovieDto>? {
@@ -62,7 +66,7 @@ class MoviesApplicationTests {
 
         repository.run {
             deleteAll()
-            movieEntities.forEach{
+            movieEntities.forEach {
                 save(it)
             }
         }
@@ -92,12 +96,14 @@ class MoviesApplicationTests {
         val testTitle = "TestMovie"
         val allMovies = getAllMovies()
 
+
         val location = given().contentType(ContentType.JSON)
-                .body(MovieDto(testTitle, "posterURL", "coverArtUrl", "trailerURL", "Test Overview", Date(), setOf("Drama"), 1, 5.0, 200.0, 120.0))
+                .body(MovieDto(testTitle, "posterURL", "coverArtUrl", "trailerURL", "Test Overview", defaultReleaseDate.toString(), setOf("Drama"), 1, 5.0, 200.0, 120.0))
                 .post()
                 .then()
                 .statusCode(201)
-                .extract().header("location")
+                .extract()
+                .header("location")
 
         given().accept(ContentType.JSON)
                 .basePath("")

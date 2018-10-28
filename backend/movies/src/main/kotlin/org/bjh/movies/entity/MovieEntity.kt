@@ -1,6 +1,6 @@
 package org.bjh.movies.entity
 
-import java.util.*
+import java.time.LocalDate
 import javax.persistence.ElementCollection
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -20,7 +20,7 @@ class MovieEntity(
         var coverArt: String? = null,
         var trailer: String? = null,
         var overview: String? = null,
-        var releaseDate: Date? = null,
+        var releaseDate: LocalDate? = null,
         @get:ElementCollection
         var genres: Set<String>? = null,
         var vote_count: Int?,
