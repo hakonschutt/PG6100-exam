@@ -19,6 +19,7 @@
 
     <modules>
         <module>utils</module>
+        <module>booking</module>
     </modules>
 <!--TODO: Implement missing dependencies here-->
 </project>
