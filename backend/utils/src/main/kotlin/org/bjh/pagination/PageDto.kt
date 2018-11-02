@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty
 class PageDto<T>(
 
         @get:ApiModelProperty("The list of resources in the current retrieved page")
-        var list: MutableList<T> = mutableListOf(),
+        var list: List<T> = mutableListOf(),
 
         @get:ApiModelProperty("The index of first element in this page")
         var rangeMin: Int = 0,

@@ -2,27 +2,41 @@ package org.bjh.converter
 
 import org.bjh.dto.VenueDto
 import org.bjh.entity.VenueEntity
+import org.bjh.pagination.PageDto
+import org.springframework.data.domain.Page
+import kotlin.streams.toList
 
 class VenueConverter {
     companion object {
 
-        fun transform(entity: VenueEntity): VenueDto {
+        fun transform(entity: VenueEntity, withRooms: Boolean=false): VenueDto {
             return VenueDto(
                     id = entity.id?.toString(),
                     name = entity.name,
                     geoLocation = entity.geoLocation,
                     address = entity.address,
-                    rooms = entity.rooms.asSequence().map { roomEntity ->  RoomConverter.transform(roomEntity) }.toSet()
+                    rooms = when {
+                        withRooms -> entity.rooms.asSequence().map { roomEntity ->
+                            RoomConverter.transform(roomEntity)
+                        }.toSet()
+                        else -> setOf()
+                    }
             ).apply {
                 id = entity.id?.toString()
             }
         }
-
-        fun transform(entities: Iterable<VenueEntity>): List<VenueDto> {
-            return entities.map { transform(it) }
+        fun transform(venueList: List<VenueEntity>,
+                      withRooms: Boolean,offset:Int= 0,limit:Int = 20)
+                : PageDto<VenueDto> {
+                val venueDto = venueList.map{ transform(it,withRooms)}
+            return PageDto(
+                    list = venueDto,
+                    rangeMin = offset,
+                    rangeMax = offset + venueList.size - 1,
+                    totalSize = venueList.size
+            )
         }
     }
-
 }
 
 

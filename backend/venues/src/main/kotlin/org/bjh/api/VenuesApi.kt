@@ -8,9 +8,9 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import org.bjh.dto.VenueDto
 import org.bjh.service.VenuesService
-import org.bjh.dto.MultipleVenuesResponseDto
 import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueResponseDto
+import org.bjh.pagination.PageDto
 import org.bjh.service.RoomService
 import org.bjh.wrappers.WrappedResponse
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,31 +20,54 @@ import org.springframework.web.bind.annotation.*
 
 const val BASE_JSON = "application/json;charset=UTF-8"
 const val V2_VENUES_JSON = "application/org.bjh.dto.VenueDto;charset=UTF-8"
+const val HAL_V1 = "application/hal+json;charset=UTF-8;version=1"
 
 @RestController
 @RequestMapping("/api/venues")
 @Api("Api for venues")
+
 class VenuesApi {
     @Autowired
     private lateinit var venuesService: VenuesService
     @Autowired
     private lateinit var roomService: RoomService
 
+    //todo set up query params for withrooms or nawt
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiResponse(code = 200, message = "Returns a list of venues")
-    fun getAllVenues(): ResponseEntity<WrappedResponse<List<VenueDto>>> {
+    fun getAllVenues(
 
-        val resultList = venuesService.findAll()
-        //todo add pagination
-        val wrappedResponse = MultipleVenuesResponseDto(code = 200, data = resultList, message = "list of venues").validated()
+            @ApiParam("Loading with rooms, or not, default is without")
+            @RequestParam("withRooms", required = false)
+            withRooms: Boolean = false,
+
+            @ApiParam("Offset param to determine what part ofthe  result table you want back")
+            @RequestParam("offset", required = false)
+            offset: Int = 15,
+            @ApiParam("Limit param to determine what size of the result table you want back")
+            @RequestParam("limit", required = false)
+            limit: Int = 20
+
+
+    ): ResponseEntity<WrappedResponse<PageDto<VenueDto>>> {
+
+        val resultList = venuesService.findAll(withRooms,offset,limit)
+
+
+        val wrappedResponse = VenueResponseDto(code = 200, data = resultList, message = "list of venues").validated()
 
         return ResponseEntity.status(200).body(wrappedResponse)
     }
 
+    //todo set up query params for withrooms or nawt
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun getVenue(@ApiParam("The unique id of the venue")
-                 @PathVariable("id") idFromPath: String): ResponseEntity<WrappedResponse<VenueDto>> {
-        val result: ResponseEntity<WrappedResponse<VenueDto>>
+                 @PathVariable("id") idFromPath: String,
+                 @ApiParam("loading with rooms, or not, default is with")
+                 @RequestParam("withRooms", required = false)
+                 withRooms: Boolean = true
+    ): ResponseEntity<WrappedResponse<PageDto<VenueDto>>> {
+        val result: ResponseEntity<WrappedResponse<PageDto<VenueDto>>>
         val id: Long
 
         try {
@@ -53,12 +76,12 @@ class VenuesApi {
             return ResponseEntity.status(404).build()
         }
 
-        val venue = venuesService.findById(id)
-        result = if (venue.id != null) {
+        val venuePage = venuesService.findAllById(id,withRooms)
+        result = if (venuePage.list.size > 0) {
             ResponseEntity.status(200)
                     .body(VenueResponseDto(
                             code = 200,
-                            data = venue,
+                            data = venuePage,
                             message = "The single venue that was requested")
                             .validated())
         } else {
@@ -91,12 +114,12 @@ class VenuesApi {
         }
         // should this return 400 if one or more of multiple rooms has errors?
         val rooms = dto.rooms
+                .asSequence()
                 .filter(checkIfRoomHasValidFieldValues).toSet()
 
         if (rooms.isEmpty()) {
             return ResponseEntity.status(400).build()
         }
-
 
 
         val venueId = venuesService.createVenue(dto)
@@ -148,12 +171,13 @@ class VenuesApi {
         } catch (e: Exception) {
             return ResponseEntity.status(404).build()
         }
-        val dto = venuesService.findById(id)
+        val dto = venuesService.findAllById(id = id, withRooms = true)
         //returns responseEntity if service did not find an already created entity
-        dto.id ?: return ResponseEntity.status(404).build()
+       if(dto.list.isEmpty()) return ResponseEntity.status(404).build()
         val jackson = ObjectMapper()
 
         val jsonNode: JsonNode
+        val dtoObj = dto.list[0]
         try {
 
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
@@ -162,9 +186,9 @@ class VenuesApi {
         }
         if (jsonNode.has("id")) return ResponseEntity.status(409).build()
 
-        var newName = dto.name
-        var newAddress = dto.address
-        var newGeo = dto.geoLocation
+        var newName = dtoObj.name
+        var newAddress = dtoObj.address
+        var newGeo = dtoObj.geoLocation
 
 
 
@@ -196,11 +220,11 @@ class VenuesApi {
                     return ResponseEntity.status(400).build()
             }
         }
-        dto.name = newName
-        dto.address = newAddress
-        dto.geoLocation = newGeo
+        dtoObj.name = newName
+        dtoObj.address = newAddress
+        dtoObj.geoLocation = newGeo
 
-        val response = venuesService.updateVenue(dto)
+        val response = venuesService.updateVenue(dtoObj)
 
         return if (response < 0) {
             ResponseEntity.status(500).build()
@@ -233,8 +257,9 @@ class VenuesApi {
         } catch (e: Exception) {
             return ResponseEntity.status(404).build()
         }
-        val venueDto = venuesService.findById(venueId)
-
+        val venueDtoList = venuesService.findAllById(id = venueId, withRooms = true)
+        if(venueDtoList.list.isEmpty()) return ResponseEntity.status(404).build()
+        val venueDto = venueDtoList.list.get(0)
         val isRoomInVenue = venueDto.rooms.any { it.id == roomIdFromPath }
 
         if (!isRoomInVenue) return ResponseEntity.status(404).build()
@@ -288,10 +313,10 @@ class VenuesApi {
         roomDto.columns = cols
         roomDto.rows = rows
 
-       val room = roomService.save(roomDto)
+        val room = roomService.save(roomDto)
 
 
-        return when{
+        return when {
             room.id == null -> ResponseEntity.status(500).build()
             else -> ResponseEntity.status(204).build()
         }
