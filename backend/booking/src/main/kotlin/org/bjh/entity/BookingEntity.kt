@@ -1,9 +1,10 @@
 package org.bjh.entity
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
+/**
+ * @author hakonschutt
+ */
 @Entity(name = "bookings")
 class BookingEntity(
         // TODO: Added a relational mapping to user and event Entity when the DTO's are split to a separate microservice
@@ -15,7 +16,12 @@ class BookingEntity(
         // var event: Event? = null
         var event: Long? = null,
 
+        @get:ElementCollection(fetch = FetchType.EAGER)
+        @get:OneToMany(cascade = [CascadeType.ALL])
+        @get:JoinTable(name="booking_tickets", joinColumns = [JoinColumn(name="ticket_id",referencedColumnName = "id")])
+        var tickets: Set<TicketEntity>,
+
         @get:Id
         @get:GeneratedValue
         var id: Long? = null
-){}
+)
