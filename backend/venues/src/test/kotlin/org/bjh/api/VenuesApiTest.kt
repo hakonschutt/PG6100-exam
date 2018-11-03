@@ -89,8 +89,8 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .jsonPath()
                 .getList("data.list", VenueDto::class.java)
 
-        Assert.assertThat(venueDtoList[venueDtoList.size-1].name, equalTo(newName))
-        Assert.assertThat(venueDtoList[venueDtoList.size-1].geoLocation, equalTo(geo))
+        Assert.assertThat(venueDtoList[venueDtoList.size - 1].name, equalTo(newName))
+        Assert.assertThat(venueDtoList[venueDtoList.size - 1].geoLocation, equalTo(geo))
 
     }
 
@@ -132,13 +132,6 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(201)
                 .extract().asString()
-        println(id)
-
-        val map = RestAssured
-                .given()
-                .get().then()
-                .statusCode(200)
-                .extract().path<Map<Int, PageDto<VenueDto>>>("data")
 
         RestAssured
                 .given()
@@ -174,7 +167,7 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(201)
                 .extract().asString()
 
-        val data  = given()
+        val data = given()
                 .get()
                 .then()
                 .statusCode(200)
@@ -187,7 +180,7 @@ class VenuesApiTest : LocalApplicationRunner() {
         val desiredVenue =
                 if (!data.isEmpty()) {
 
-                     data[data.size-1]
+                    data[data.size - 1]
                 } else {
                     VenueDto(id = null, geoLocation = null, address = null, rooms = setOf(), name = null)
                 }
@@ -246,4 +239,42 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(204)
     }
+
+    @Test
+    fun testPutMethod() {
+        val roomName = "sal-2"
+        val rows = 1
+        val cols = 1
+        val roomDto = RoomDto(id = null, name = roomName, rows = rows, columns = cols)
+
+        val name = "root"
+        val geo = "home"
+        val address = "127.0.0.1"
+        val venueDto = VenueDto(id = null, geoLocation = geo, name = name, rooms = setOf(roomDto), address = address)
+
+        val id =RestAssured.given().contentType(BASE_JSON)
+                .body(venueDto)
+                .post()
+                .then()
+                .statusCode(201)
+                .extract().asString()
+
+        venueDto.name = "DTO NAME"
+        venueDto.id = id
+
+        RestAssured.given().contentType(BASE_JSON)
+                .body(venueDto)
+                .put("/${id}")
+                .then()
+                .statusCode(204)
+                .extract().asString()
+
+        RestAssured
+                .given()
+                .get().then()
+                .statusCode(200)
+                .body("data.list[0].name", CoreMatchers.equalTo("DTO NAME"))
+
+    }
+
 }

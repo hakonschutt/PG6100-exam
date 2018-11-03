@@ -9,6 +9,7 @@ import org.bjh.pagination.PageDto
 
 import org.bjh.repository.VenuesRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -43,11 +44,12 @@ class VenuesService {
         } catch (e: Exception) {
             return -1
         }
-        val venue = venuesRepository.findById(id)
-        val venueEntity = venuesRepository.save(VenueEntity(id = id, name = dto.name, geoLocation = dto.geoLocation, address = dto.address,rooms=venue.get().rooms))
+        val venueEntity = venuesRepository.save(VenueEntity(id = id, name = dto.name, geoLocation = dto.geoLocation, address = dto.address,
+                rooms=RoomConverter.transformDtoToEntity(dto.rooms)))
+
         return venueEntity.id ?: -1
     }
-
+    @Cacheable("venuesCache")
     fun findAll(withRooms: Boolean, offset: Int=0, limit: Int=20): PageDto<VenueDto> {
 
         val venuList = venuesRepository.findAll(offset,limit)

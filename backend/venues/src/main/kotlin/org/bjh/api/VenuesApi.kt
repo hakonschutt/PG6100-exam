@@ -2,10 +2,7 @@ package org.bjh.api
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiParam
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.annotations.*
 import org.bjh.dto.VenueDto
 import org.bjh.service.VenuesService
 import org.bjh.dto.RoomDto
@@ -39,8 +36,8 @@ class VenuesApi {
     fun getAllVenues(
 
             @ApiParam("Loading with rooms, or not, default is without")
-            @RequestParam("withRooms", required = false,defaultValue = "false")
-            withRooms: Boolean ,
+            @RequestParam("withRooms", required = false, defaultValue = "false")
+            withRooms: Boolean,
 
             @ApiParam("Offset param to determine what part ofthe  result table you want back")
             @RequestParam("offset", required = false, defaultValue = "0")
@@ -52,7 +49,7 @@ class VenuesApi {
 
     ): ResponseEntity<WrappedResponse<PageDto<VenueDto>>> {
 
-        val resultList = venuesService.findAll(withRooms,offset,limit)
+        val resultList = venuesService.findAll(withRooms, offset, limit)
         val wrappedResponse = VenueResponseDto(code = 200, data = resultList, message = "list of venues").validated()
 
         return ResponseEntity.status(200).body(wrappedResponse)
@@ -75,7 +72,7 @@ class VenuesApi {
             return ResponseEntity.status(404).build()
         }
 
-        val venuePage = venuesService.findAllById(id,withRooms)
+        val venuePage = venuesService.findAllById(id, withRooms)
         result = if (venuePage.list.size > 0) {
             ResponseEntity.status(200)
                     .body(VenueResponseDto(
@@ -91,7 +88,11 @@ class VenuesApi {
     }
 
     @PostMapping(consumes = [V2_VENUES_JSON, BASE_JSON])
-    @ApiResponse(code = 201, message = "The id of newly created venue")
+    @ApiResponses(
+            //FIXME : Return url instead of id
+            ApiResponse(code = 201, message = "The id of newly created venue"),
+            ApiResponse(code = 400, message = "Bad request")
+    )
     fun createVenue(
             @ApiParam("Text of address, geoloacation, List of room ids. Should not specify id")
             @RequestBody
@@ -172,7 +173,7 @@ class VenuesApi {
         }
         val dto = venuesService.findAllById(id = id, withRooms = true)
         //returns responseEntity if service did not find an already created entity
-       if(dto.list.isEmpty()) return ResponseEntity.status(404).build()
+        if (dto.list.isEmpty()) return ResponseEntity.status(404).build()
         val jackson = ObjectMapper()
 
         val jsonNode: JsonNode
@@ -257,7 +258,7 @@ class VenuesApi {
             return ResponseEntity.status(404).build()
         }
         val venueDtoList = venuesService.findAllById(id = venueId, withRooms = true)
-        if(venueDtoList.list.isEmpty()) return ResponseEntity.status(404).build()
+        if (venueDtoList.list.isEmpty()) return ResponseEntity.status(404).build()
         val venueDto = venueDtoList.list[0]
         val isRoomInVenue = venueDto.rooms.any { it.id == roomIdFromPath }
 
@@ -320,4 +321,44 @@ class VenuesApi {
             else -> ResponseEntity.status(204).build()
         }
     }
+
+    @ApiOperation("Update a specific venue")
+    @PutMapping(path = ["/{id}"])
+    fun updateById(
+            @ApiParam("The id of the venue")
+            @PathVariable("id")
+            pathId: String,
+            @ApiParam("New data for updating the venue")
+            @RequestBody
+            dto: VenueDto
+    ): ResponseEntity<WrappedResponse<Void>> {
+        val id: Long
+        try {
+            id = pathId.toLong()
+        } catch (e: NumberFormatException) {
+            return ResponseEntity.status(400).body(WrappedResponse<Void>(code = 400, message = " Invalid id $pathId").validated())
+        }
+        if (dto.id == null) {
+            return ResponseEntity.status(400).body(WrappedResponse<Void>(code = 400, message = " Dto is missing id").validated())
+        }
+        if (dto.id != pathId) {
+            return ResponseEntity.status(409).body(WrappedResponse<Void>(code = 409, message = " Inconsistent id between URL and JSON payload").validated())
+        }
+
+        val dtoList = venuesService.findAllById(id,true).list
+        if(dtoList.isEmpty()){
+            return ResponseEntity.status(404).body(WrappedResponse<Void>(code = 404, message = " Dto is missing id").validated())
+        }
+        val dtoToSave = dtoList[0]
+        dtoToSave.name = dto.name!!
+        dtoToSave.rooms = dto.rooms!!
+        dtoToSave.address = dto.address!!
+        dtoToSave.geoLocation = dto.geoLocation!!
+
+
+        venuesService.updateVenue(dtoToSave)
+        return ResponseEntity.status(204).body(
+                WrappedResponse<Void>(code = 204).validated())
+    }
+
 }
