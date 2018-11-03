@@ -276,5 +276,9 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .body("data.list[0].name", CoreMatchers.equalTo("DTO NAME"))
 
     }
+    @Test
+    fun testGetVenue(){
+
+    }
 
 }
