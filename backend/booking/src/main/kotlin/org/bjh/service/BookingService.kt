@@ -68,4 +68,14 @@ class BookingService {
         return booking.id ?: 1L
     }
 
+    fun deleteBookingById(id: Long) : Boolean {
+        if (!bookingRepository.existsById(id)) {
+            return false
+        }
+
+        bookingRepository.deleteById(id)
+
+        return true
+    }
+
 }

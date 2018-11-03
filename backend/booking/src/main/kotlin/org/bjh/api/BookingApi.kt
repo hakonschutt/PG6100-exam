@@ -126,7 +126,7 @@ class BookingApi {
         if (dto.tickets.isEmpty() ||
             dto.event == null ||
             dto.user == null ) {
-            return ResponseEntity.status(422).build();
+            return ResponseEntity.status(422).build()
         }
 
         val checkTicketsIncludeValidFields: (TicketDto) -> Boolean = {
@@ -178,19 +178,45 @@ class BookingApi {
     fun updateBooking(
         @ApiParam(ID_PARAM)
         @PathVariable("id")
-        pathId: String?
-    ) : ResponseEntity<String> {}
+        pathId: String
+    ) : ResponseEntity<String> {
+        val id: Long
+
+        try {
+            id = pathId.toLong()
+        } catch (e: NumberFormatException) {
+            return ResponseEntity.status(400).build()
+        }
+    }
 
     @ApiOperation("Delete a booking with the given id")
     @DeleteMapping(path = ["/{id}"])
     @ApiResponses(
-        ApiResponse(code = 200, message = "Booking was deleted"),
+        ApiResponse(code = 204, message = "Booking was deleted, and is not returning any content"),
         ApiResponse(code = 400, message = "Booking id was not processable"),
         ApiResponse(code = 404, message = "Booking with specified id was not found")
     )
     fun deleteBooking(
         @ApiParam(ID_PARAM)
         @PathVariable("id")
-        pathId: String?
-    ) : ResponseEntity<Any> {}
+        pathId: String
+    ) : ResponseEntity<WrappedResponse<Unit>> {
+        val id: Long
+
+        try {
+            id = pathId.toLong()
+        } catch (e: NumberFormatException) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val bookingWasDeleted = bookingService.deleteBookingById(id)
+
+        if (!bookingWasDeleted) {
+            return ResponseEntity.status(404).build()
+        }
+
+        return ResponseEntity.status(204).body(
+            WrappedResponse<Unit>(code = 204, message = "Booking with id $id was deleted").validated()
+        )
+    }
 }
