@@ -1,7 +1,9 @@
 package org.bjh.service
 
 import org.bjh.converter.BookingConverter
+import org.bjh.converter.TicketConverter
 import org.bjh.dto.BookingDto
+import org.bjh.entity.BookingEntity
 import org.bjh.repository.BookingRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -41,6 +43,29 @@ class BookingService {
         }
 
         return bookings.toSet()
+    }
+
+    fun findById(id: Long, withTickets: Boolean) : BookingDto {
+        val booking = bookingRepository.findById(id)
+
+        return when {
+            booking.isPresent -> BookingConverter.transform(booking.get(), withTickets)
+            else ->
+                return BookingDto(id = null, user = null, event = null, tickets = setOf())
+        }
+    }
+
+    fun createBooking(dto: BookingDto) : Long {
+        val booking = bookingRepository.save(
+            BookingEntity(
+                id = null,
+                user = dto.user!!,
+                event = dto.event!!,
+                tickets = TicketConverter.transformDtosToEntities(dto.tickets)
+            )
+        )
+
+        return booking.id ?: 1L
     }
 
 }

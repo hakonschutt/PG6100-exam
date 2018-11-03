@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 
 const val ID_PARAM = "The numeric id of the booking"
 const val BASE_JSON = "application/json;charset=UTF-8"
@@ -27,6 +28,8 @@ class BookingApi {
 
     @Autowired
     private lateinit var ticketService: TicketService
+
+    private val BASE_PATH = "/api/bookings"
 
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiOperation("Get all the bookings")
@@ -81,12 +84,33 @@ class BookingApi {
     fun getBooking(
         @ApiParam(ID_PARAM)
         @PathVariable("id")
-        pathId: String?,
+        pathId: String,
 
         @ApiParam("Return response with ticket objects")
         @RequestParam("withTickets", required = false, defaultValue = "false")
         withTickets: Boolean
-    ) : ResponseEntity<WrappedResponse<BookingDto>> {}
+    ) : ResponseEntity<WrappedResponse<BookingDto>> {
+        val result: ResponseEntity<WrappedResponse<BookingDto>>
+        val id: Long
+
+        try {
+            id = pathId.toLong()
+        } catch (e: NumberFormatException) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val booking = bookingService.findById(id, withTickets)
+
+        result = if (booking.id != null) {
+            ResponseEntity.status(200).body(
+                WrappedResponse(code = 200, data = booking, message = "booking with id $pathId").validated()
+            )
+        } else {
+            ResponseEntity.status(404).build()
+        }
+
+        return result
+    }
 
     @PostMapping(consumes = [BASE_JSON])
     @ApiOperation("Create a new booking")
@@ -98,7 +122,32 @@ class BookingApi {
         @ApiParam("User id, event id, and a list of tickets")
         @RequestBody
         dto: BookingDto
-    ) : ResponseEntity<String> {}
+    ) : ResponseEntity<WrappedResponse<Unit>> {
+        if (dto.tickets.isEmpty() ||
+            dto.event == null ||
+            dto.user == null ) {
+            return ResponseEntity.status(422).build();
+        }
+
+        val checkTicketsIncludeValidFields: (TicketDto) -> Boolean = {
+            it.seat != null || it.price != null
+        }
+
+        val tickets = dto.tickets
+                .asSequence()
+                .filter(checkTicketsIncludeValidFields)
+                .toSet()
+
+        if (tickets.isEmpty()) {
+            return ResponseEntity.status(422).build()
+        }
+
+        val bookingId : Long = bookingService.createBooking(dto)
+
+        return ResponseEntity.created(URI.create("$BASE_PATH/$bookingId")).body(
+            WrappedResponse<Unit>(code = 201, message = "Booking was created").validated()
+        )
+    }
 
     @ApiOperation("Update a booking ticket with a given booking id")
     @PutMapping(path = ["/{id}/ticket"], consumes = [BASE_JSON])
@@ -115,7 +164,9 @@ class BookingApi {
         @ApiParam("Ticket information including seat and price")
         @RequestBody
         dto: TicketDto
-    ) : ResponseEntity<String> {}
+    ) : ResponseEntity<WrappedResponse<Unit>> {
+
+    }
 
     @ApiOperation("Update a booking with the given id")
     @PatchMapping(path = ["/{id}"], consumes = [BASE_JSON])
