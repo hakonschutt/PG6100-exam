@@ -2,14 +2,21 @@ package org.bjh.movies.repository
 
 import org.bjh.movies.entity.MovieEntity
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
 
 @Repository
 interface MoviesRepository : CrudRepository<MovieEntity, Long>, MoviesRepositoryCustom {
-    fun findAllByTitle(title: String): Iterable<MovieEntity>
+
+    @Query("SELECT * FROM movies OFFSET :offset LIMIT :limit", nativeQuery = true)
+    fun findAll(
+            @Param("offset") offset: Int = 0,
+            @Param("limit") limit: Int = 20)
+            : List<MovieEntity>
 }
 
 
@@ -21,7 +28,7 @@ interface MoviesRepositoryCustom {
 
 @Repository
 @Transactional
-class MoviesRepositoryImpl : MoviesRepositoryCustom{
+class MoviesRepositoryImpl : MoviesRepositoryCustom {
 
     //TODO: Check up on this.
     @Autowired

@@ -22,13 +22,8 @@ class MovieService {
         return MoviesConverter.transform(movie)
     }
 
-    fun getAll(): List<MovieDto> {
-        val list = moviesRepository.findAll()
-        return MoviesConverter.transform(list)
-    }
-
-    fun getAllByTitle(title: String): List<MovieDto> {
-        val list = moviesRepository.findAllByTitle(title)
+    fun getAll(offset: Int, limit: Int): List<MovieDto> {
+        val list = moviesRepository.findAll(offset, limit)
         return MoviesConverter.transform(list)
     }
 

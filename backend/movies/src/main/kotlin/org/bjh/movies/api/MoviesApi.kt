@@ -41,9 +41,16 @@ class MoviesApi {
     //TODO: Pagination with infinity-scroll. How to?
     @ApiOperation("Get all the movies")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
-    fun getAllMovies(): ResponseEntity<WrappedResponse<List<MovieDto>>> {
+    fun getAllMovies(@ApiParam("Offset in the list of news")
+                     @RequestParam("offset", defaultValue = "0")
+                     offset: Int,
 
-        val list = movieService.getAll()
+                     @ApiParam("Limit of news in a single retrieved page")
+                     @RequestParam("limit", defaultValue = "10")
+                     limit: Int
+    ): ResponseEntity<WrappedResponse<List<MovieDto>>>{
+
+        val list = movieService.getAll(offset, limit)
 
         return ResponseEntity.ok(
                 WrappedResponse(
@@ -181,8 +188,7 @@ class MoviesApi {
         }
 
 
-
-    var movieDto = movieService.getById(id)
+        var movieDto = movieService.getById(id)
 
         if (movieDto.id == null)
             return ResponseEntity.status(404).body(
@@ -202,7 +208,7 @@ class MoviesApi {
         if (movieObject.has("id")) {
             println()
 
-            println("ID: " +movieObject.get("id"))
+            println("ID: " + movieObject.get("id"))
             return ResponseEntity.status(409).build()
         }
 
