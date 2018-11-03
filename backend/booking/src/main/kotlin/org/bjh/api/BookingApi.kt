@@ -45,7 +45,9 @@ class BookingApi {
         @ApiParam("The limit of the response set")
         @RequestParam("limit", required = false, defaultValue = "20")
         limit: Int
-    ): ResponseEntity<WrappedResponse<List<BookingDto>>> {}
+    ): ResponseEntity<WrappedResponse<List<BookingDto>>> {
+
+    }
 
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiOperation("Get a single booking specified by id")
