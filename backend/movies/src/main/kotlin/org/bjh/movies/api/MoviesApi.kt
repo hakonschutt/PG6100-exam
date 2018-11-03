@@ -147,7 +147,7 @@ class MoviesApi {
         if (!deleted)
             return ResponseEntity.status(400).body(
                     WrappedResponse<Unit>(
-                            code = 400,
+                            code = 404,
                             message = "'$movieId' is not an existing movie id.")
                             .validated())
 
@@ -182,7 +182,7 @@ class MoviesApi {
 
 
 
-        val movieDto = movieService.getById(id)
+    var movieDto = movieService.getById(id)
 
         if (movieDto.id == null)
             return ResponseEntity.status(404).body(
@@ -200,6 +200,9 @@ class MoviesApi {
         }
 
         if (movieObject.has("id")) {
+            println()
+
+            println("ID: " +movieObject.get("id"))
             return ResponseEntity.status(409).build()
         }
 
@@ -209,6 +212,7 @@ class MoviesApi {
         //Possibly check out delegated properties
         if (movieObject.has("title")) {
             val title = movieObject.get("title")
+
             if (title.isJsonNull)
                 tempDto.title = null
             else if (title.isJsonPrimitive && title.asJsonPrimitive.isString)
@@ -318,13 +322,19 @@ class MoviesApi {
             else
                 return ResponseEntity.status(400).build()
         }
-
-
+        movieDto = tempDto
+        movieService.save(movieDto)
+        /*return when{
+            room.id == null -> ResponseEntity.status(500).build()
+            else -> ResponseEntity.status(204).build()
+        }
+        movieDto.title = tempDto.title
+        println("title" + tempDto.title)
+        movieDto = tempDto*/
         //TODO: Complete testing to make sure that using .copy() is actually possible.
 
         return ResponseEntity.status(204).build()
 
-//        return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404).validated())
     }
 
 

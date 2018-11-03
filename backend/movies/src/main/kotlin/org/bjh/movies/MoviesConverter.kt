@@ -2,8 +2,6 @@ package org.bjh.movies
 
 import org.bjh.movies.dto.MovieDto
 import org.bjh.movies.entity.MovieEntity
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 /**
  * Converter written by lecturer, Andrea Arcuri.
@@ -24,8 +22,8 @@ class MoviesConverter {
                     overview = entity.overview,
                     releaseDate = entity.releaseDate.toString(),
                     genres = entity.genres,
-                    voteCount = entity.vote_count,
-                    voteAverage = entity.vote_average.toString(),
+                    voteCount = entity.voteCount,
+                    voteAverage = entity.voteAverage.toString(),
                     popularity = entity.popularity.toString(),
                     price = entity.price.toString()
             ).apply {

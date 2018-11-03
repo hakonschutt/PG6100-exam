@@ -7,6 +7,7 @@ import org.bjh.movies.dto.MovieDto
 import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
 import org.hamcrest.CoreMatchers.*
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.junit4.SpringRunner
+import java.nio.file.Path
 import java.time.LocalDate
 import java.time.Month
 import kotlin.collections.ArrayList
@@ -82,7 +84,7 @@ class MoviesApplicationTests {
     }
 
     @Test
-    fun testNonExistingMovie() {
+    fun testGetNonExistingMovie() {
         given().accept(ContentType.JSON)
                 .get("/-1")
                 .then()
@@ -98,7 +100,7 @@ class MoviesApplicationTests {
 
 
         val location = given().contentType(ContentType.JSON)
-                .body(MovieDto(testTitle, "posterURL", "coverArtUrl", "trailerURL", "Test Overview", defaultReleaseDate.toString(), setOf("Drama"), 1, 5.0, 200.0, 120.0))
+                .body(MovieDto(testTitle, "posterURL", "coverArtUrl", "trailerURL", "Test Overview", defaultReleaseDate.toString(), setOf("Drama"), 1, "5.0", "200.0", "120.0"))
                 .post()
                 .then()
                 .statusCode(201)
@@ -153,5 +155,66 @@ class MoviesApplicationTests {
                 .then()
                 .statusCode(200)
                 .body("data.size()", equalTo(0))
+    }
+
+    @Test
+    fun testUpdateSpecificMovieWithPatch() {
+        val oldTitle = "OldMovieTitle"
+        val newTitle = "NewMovieTitle"
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val movieDto = MovieDto(
+                oldTitle,
+                "posterURL",
+                "coverArtUrl",
+                "trailerURL",
+                "Test Overview",
+                defaultReleaseDate.toString(),
+                setOf("Drama"),
+                1,
+                "5.0",
+                "200.0",
+                "120.0")
+
+
+        given().contentType(ContentType.JSON)
+                .body(movieDto)
+                .post()
+
+        val testList = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data", MovieDto::class.java)
+
+
+        val id = testList[5].id
+
+        val patchBody = "{\"title\":\"$newTitle\"}"
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(204)
+
+        val movieTitle = given().contentType(ContentType.JSON)
+                .get("$id")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .path<String>("data.title")
+
+        assertThat(movieTitle, not(equalTo(oldTitle)))
+
+        //TODO: Assert everything else is also as it used to be.
+        assertThat(movieTitle, equalTo(newTitle))
     }
 }

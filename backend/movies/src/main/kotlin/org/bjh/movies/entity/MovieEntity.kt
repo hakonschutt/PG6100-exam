@@ -23,8 +23,8 @@ class MovieEntity(
         var releaseDate: LocalDate? = null,
         @get:ElementCollection
         var genres: Set<String>? = null,
-        var vote_count: Int?,
-        var vote_average: Double? = null,
+        var voteCount: Int?,
+        var voteAverage: Double? = null,
         var popularity: Double? = null,
         var price: Double? = null,
 
