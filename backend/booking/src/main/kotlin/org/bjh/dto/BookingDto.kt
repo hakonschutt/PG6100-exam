@@ -2,7 +2,6 @@ package org.bjh.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import org.bjh.entity.TicketEntity
 
 /**
  * @author hakonschutt
@@ -19,7 +18,7 @@ data class BookingDto(
     var event: Long? = null,
 
     @ApiModelProperty("The associated tickets for the given booking")
-    var tickets: Set<TicketEntity>,
+    var tickets: Set<TicketDto>,
 
     @ApiModelProperty("The id of the booking")
     var id: Long? = null
