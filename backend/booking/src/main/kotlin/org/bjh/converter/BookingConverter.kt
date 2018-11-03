@@ -29,7 +29,7 @@ class BookingConverter {
 
         fun transform(
             entities: Set<BookingEntity>,
-            withTickets: Boolean = false,
+            withTickets: Boolean,
             offset : Int = 0,
             limit: Int = 20
         ): Set<BookingDto> {

@@ -3,7 +3,10 @@ package org.bjh.api
 import io.swagger.annotations.*
 import org.bjh.dto.BookingDto
 import org.bjh.dto.TicketDto
+import org.bjh.service.BookingService
+import org.bjh.service.TicketService
 import org.bjh.wrappers.WrappedResponse
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -18,6 +21,12 @@ const val BASE_JSON = "application/json;charset=UTF-8"
 @RequestMapping("/api/bookings")
 @Api("Api for bookings")
 class BookingApi {
+
+    @Autowired
+    private lateinit var bookingService : BookingService
+
+    @Autowired
+    private lateinit var ticketService: TicketService
 
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiOperation("Get all the bookings")
@@ -45,8 +54,21 @@ class BookingApi {
         @ApiParam("The limit of the response set")
         @RequestParam("limit", required = false, defaultValue = "20")
         limit: Int
-    ): ResponseEntity<WrappedResponse<List<BookingDto>>> {
+    ): ResponseEntity<WrappedResponse<Set<BookingDto>>> {
+        val result = if (eventId.isNullOrBlank() && userId.isNullOrBlank()) {
+            bookingService.findAll(withTickets);
+        } else if (!eventId.isNullOrBlank() && !userId.isNullOrBlank()) {
+            bookingService.findAllByEventIdAndUserId(withTickets)
+        } else if (!eventId.isNullOrBlank()) {
+            bookingService.findAllByEventId(withTickets);
+        } else {
+            bookingService.findAllByUserId(withTickets);
+        }
 
+        val statusCode : Int = if (result.isNotEmpty()) { 200 } else { 204 }
+        val wrappedResponse = WrappedResponse(code = statusCode, data = result, message = "list of bookings").validated()
+
+        return ResponseEntity.status(statusCode).body(wrappedResponse)
     }
 
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
