@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 
 @Service
@@ -50,7 +51,10 @@ class VenuesService {
     fun findAll(withRooms: Boolean, offset: Int=0, limit: Int=20): PageDto<VenueDto> {
 
         val venuList = venuesRepository.findAll(offset,limit)
+
         val page = VenueConverter.transform(venueList =venuList ,withRooms=withRooms,offset=offset,limit=limit)
+
+
         var builder = UriComponentsBuilder
                 .fromPath("/venues")
                 .queryParam("withRooms", withRooms)

@@ -1,11 +1,14 @@
 package org.bjh.api
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import org.bjh.LocalApplicationRunner
 import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueDto
+import org.bjh.pagination.PageDto
+import org.bjh.wrappers.WrappedResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert
@@ -14,32 +17,24 @@ import org.junit.Test
 
 class VenuesApiTest : LocalApplicationRunner() {
 
-    //    @Test
-//    fun getAllVenues() {
-//    }
-//
-//    @Test
-//    fun getVenue() {
-//    }
-//
-//    @Test
-//    fun createVenue() {
-//    }
-//
     @Test
     fun deleteVenue() {
+
         val sizeBefore = RestAssured.given()
                 .get()
                 .then()
                 .statusCode(200)
-                .extract().path<Int>("data.size()")
+                .extract().path<Int>("data.list.size()")
+
+        println("SIZEBEFORE $sizeBefore")
         val createdVenueId = createVenue()
+
         val sizeAfterAddition =
                 RestAssured.given()
                         .get()
                         .then()
                         .statusCode(200)
-                        .extract().path<Int>("data.size()")
+                        .extract().path<Int>("data.list.size()")
 
         assert(sizeBefore < sizeAfterAddition)
 
@@ -54,12 +49,10 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .get()
                 .then()
                 .statusCode(200)
-                .extract().path<Int>("data.size()")
+                .extract().path<Int>("data.list.size()")
 
 
         Assert.assertThat(sizeAfterDeletion, equalTo(sizeBefore))
-
-
     }
 
     @Test
@@ -70,9 +63,10 @@ class VenuesApiTest : LocalApplicationRunner() {
                         .get("/$venueDtoId")
                         .then()
                         .statusCode(200)
-                        .extract().path<String>("data[0].name")
+                        .extract().path<String>("data.list[0].name")
         val newName = "NEW_NAME"
-        val jsonBody = "{\"name\":\"$newName\"}"
+        val geo = "new_geo"
+        val jsonBody = "{\"name\":\"$newName\",\"geo\":\"$geo\"}"
 
 
 
@@ -87,12 +81,16 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(200)
                 .extract().response().asString())
 
-        val updatedName = given().get("/$venueDtoId")
+        val venueDtoList = given()
+                .get()
                 .then()
                 .statusCode(200)
-                .extract().path<String>("data.name")
+                .extract()
+                .jsonPath()
+                .getList("data.list", VenueDto::class.java)
 
-        Assert.assertThat(updatedName, equalTo(newName))
+        Assert.assertThat(venueDtoList[venueDtoList.size-1].name, equalTo(newName))
+        Assert.assertThat(venueDtoList[venueDtoList.size-1].geoLocation, equalTo(geo))
 
     }
 
@@ -134,19 +132,20 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(201)
                 .extract().asString()
+        println(id)
+
+        val map = RestAssured
+                .given()
+                .get().then()
+                .statusCode(200)
+                .extract().path<Map<Int, PageDto<VenueDto>>>("data")
 
         RestAssured
                 .given()
                 .get().then()
                 .statusCode(200)
-                .body("data[0].id", CoreMatchers.equalTo(id))
-
-        RestAssured
-                .given()
-                .get().then()
-                .statusCode(200)
-                .body("data[0].rooms[0].name", CoreMatchers.equalTo(roomName))
-
+                .body("data.list[0].name", CoreMatchers.equalTo("root"))
+                .body("data.list[0].rooms.size()", CoreMatchers.equalTo(0))
 
     }
 
@@ -175,15 +174,25 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(201)
                 .extract().asString()
 
-        val data = RestAssured
-                .given()
-                .get().then()
+        val data  = given()
+                .get()
+                .then()
                 .statusCode(200)
-                .extract().body().jsonPath().getList("data", VenueDto::class.java)
-        val desiredVenue = data[data.size - 1]
+                .extract()
+                .jsonPath()
+                .getList("data.list", VenueDto::class.java)
 
+        println(data)
+
+        val desiredVenue =
+                if (!data.isEmpty()) {
+
+                     data[data.size-1]
+                } else {
+                    VenueDto(id = null, geoLocation = null, address = null, rooms = setOf(), name = null)
+                }
         Assert.assertThat(desiredVenue.id, equalTo(id))
-//
+
         val roomsNamesExsist = desiredVenue.rooms.stream().allMatch {
             it.name == roomName || it.name == roomName2
         }
@@ -216,11 +225,11 @@ class VenuesApiTest : LocalApplicationRunner() {
         val venueId = createVenue()
 
         val data = given()
-                .get("/$venueId").then()
+                .get("/$venueId?withRooms=true").then()
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
-                .getObject("data", VenueDto::class.java)
+                .getObject("data.list[0]", VenueDto::class.java)
 
         val roomToEdit = data.rooms.map { it }[0]
         val roomId = roomToEdit.id

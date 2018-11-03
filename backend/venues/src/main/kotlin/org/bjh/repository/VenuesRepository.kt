@@ -10,9 +10,13 @@ import org.springframework.data.repository.query.Param;
 
 @Repository
 interface VenuesRepository : JpaRepository<VenueEntity, Long>{
-    @Query("select * from venues offset :offset limit :limit")
-     fun findAll(@Param ("offset") offset:Int,@Param ("limit")limit:Int):List<VenueEntity>
 
-    @Query("select * from venues where id=:id")
-    fun findAllById(@Param("id")id:Long):List<VenueEntity>
+    @Query("SELECT * FROM venues OFFSET :offset LIMIT :limit", nativeQuery = true)
+     fun findAll(
+            @Param ("offset") offset:Int=0,
+            @Param ("limit")limit:Int=20)
+            :List<VenueEntity>
+
+    @Query("SELECT v FROM venues v WHERE v.id = :id")
+    fun findAllById( @Param("id")id:Long ):List<VenueEntity>
 }

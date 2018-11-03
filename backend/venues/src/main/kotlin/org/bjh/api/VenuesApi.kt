@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.lang.NumberFormatException
 
 const val BASE_JSON = "application/json;charset=UTF-8"
 const val V2_VENUES_JSON = "application/org.bjh.dto.VenueDto;charset=UTF-8"
@@ -38,22 +39,20 @@ class VenuesApi {
     fun getAllVenues(
 
             @ApiParam("Loading with rooms, or not, default is without")
-            @RequestParam("withRooms", required = false)
-            withRooms: Boolean = false,
+            @RequestParam("withRooms", required = false,defaultValue = "false")
+            withRooms: Boolean ,
 
             @ApiParam("Offset param to determine what part ofthe  result table you want back")
-            @RequestParam("offset", required = false)
-            offset: Int = 15,
+            @RequestParam("offset", required = false, defaultValue = "0")
+            offset: Int,
             @ApiParam("Limit param to determine what size of the result table you want back")
-            @RequestParam("limit", required = false)
-            limit: Int = 20
+            @RequestParam("limit", required = false, defaultValue = "20")
+            limit: Int
 
 
     ): ResponseEntity<WrappedResponse<PageDto<VenueDto>>> {
 
         val resultList = venuesService.findAll(withRooms,offset,limit)
-
-
         val wrappedResponse = VenueResponseDto(code = 200, data = resultList, message = "list of venues").validated()
 
         return ResponseEntity.status(200).body(wrappedResponse)
@@ -259,7 +258,7 @@ class VenuesApi {
         }
         val venueDtoList = venuesService.findAllById(id = venueId, withRooms = true)
         if(venueDtoList.list.isEmpty()) return ResponseEntity.status(404).build()
-        val venueDto = venueDtoList.list.get(0)
+        val venueDto = venueDtoList.list[0]
         val isRoomInVenue = venueDto.rooms.any { it.id == roomIdFromPath }
 
         if (!isRoomInVenue) return ResponseEntity.status(404).build()
