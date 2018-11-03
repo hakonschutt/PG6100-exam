@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank
 /**
  * @author bjornosal
  */
-@Entity
+@Entity(name="movies")
 class MovieEntity(
 
         @get:NotBlank

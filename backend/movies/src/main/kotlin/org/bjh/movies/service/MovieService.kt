@@ -4,6 +4,7 @@ import org.bjh.movies.MoviesConverter
 import org.bjh.movies.dto.MovieDto
 import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
+import org.bjh.pagination.PageDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,26 +23,31 @@ class MovieService {
         return MoviesConverter.transform(movie)
     }
 
-    fun getAll(offset: Int, limit: Int): List<MovieDto> {
+    fun getAll(offset: Int, limit: Int): PageDto<MovieDto> {
         val list = moviesRepository.findAll(offset, limit)
         return MoviesConverter.transform(list)
+    }
+
+    fun getAllById(id: Long) : PageDto<MovieDto> {
+        val movie = moviesRepository.findAllById(id)
+        return MoviesConverter.transform(movie)
     }
 
     fun save(movie: MovieDto): MovieEntity {
 
         val entity = MovieEntity(
-                id = movie.id!!.toLong(),
-                title = movie.title!!,
-                poster = movie.poster!!,
-                coverArt = movie.coverArt!!,
-                trailer = movie.trailer!!,
-                overview = movie.overview!!,
-                releaseDate = LocalDate.parse(movie.releaseDate!!),
-                genres = movie.genres!!,
-                voteCount = movie.voteCount!!,
-                voteAverage = movie.voteAverage!!.toDouble(),
-                popularity = movie.popularity!!.toDouble(),
-                price = movie.price!!.toDouble())
+                id = movie.id?.toLong(),
+                title = movie.title,
+                poster = movie.poster,
+                coverArt = movie.coverArt,
+                trailer = movie.trailer,
+                overview = movie.overview,
+                releaseDate = LocalDate.parse(movie.releaseDate),
+                genres = movie.genres,
+                voteCount = movie.voteCount,
+                voteAverage = movie.voteAverage?.toDouble(),
+                popularity = movie.popularity?.toDouble(),
+                price = movie.price?.toDouble())
 
         return moviesRepository.save(entity)
     }

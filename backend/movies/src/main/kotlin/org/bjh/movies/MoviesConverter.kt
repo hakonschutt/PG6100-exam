@@ -2,6 +2,7 @@ package org.bjh.movies
 
 import org.bjh.movies.dto.MovieDto
 import org.bjh.movies.entity.MovieEntity
+import org.bjh.pagination.PageDto
 
 /**
  * Converter written by lecturer, Andrea Arcuri.
@@ -31,8 +32,10 @@ class MoviesConverter {
             }
         }
 
-        fun transform(entities: Iterable<MovieEntity>): List<MovieDto> {
-            return entities.map { transform(it) }
+        fun transform(entities: Iterable<MovieEntity>): PageDto<MovieDto> {
+            val movies = entities.map { transform(it) }
+
+            return PageDto(list = movies, totalSize = movies.size)
         }
     }
 }

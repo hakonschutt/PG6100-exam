@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import org.bjh.movies.dto.MovieDto
 import org.bjh.movies.service.MovieService
+import org.bjh.pagination.PageDto
 import org.bjh.wrappers.WrappedResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -48,7 +49,7 @@ class MoviesApi {
                      @ApiParam("Limit of news in a single retrieved page")
                      @RequestParam("limit", defaultValue = "10")
                      limit: Int
-    ): ResponseEntity<WrappedResponse<List<MovieDto>>>{
+    ): ResponseEntity<WrappedResponse<PageDto<MovieDto>>> {
 
         val list = movieService.getAll(offset, limit)
 
@@ -65,23 +66,23 @@ class MoviesApi {
             path = ["/{id}"])
     fun getMovieById(@ApiParam("Unique ID of a movie")
                      @PathVariable("id")
-                     movieId: String): ResponseEntity<WrappedResponse<MovieDto>> {
+                     movieId: String): ResponseEntity<WrappedResponse<PageDto<MovieDto>>> {
 
         val id: Long
         try {
             id = movieId.toLong()
         } catch (ne: NumberFormatException) {
             return ResponseEntity.status(400).body(
-                    WrappedResponse<MovieDto>(
+                    WrappedResponse<PageDto<MovieDto>>(
                             code = 400,
                             message = "'$movieId' is not a valid movie id.")
                             .validated())
         }
 
-        val movieDto = movieService.getById(id)
-        if (movieDto.id == null)
+        val movieDto = movieService.getAllById(id)
+        if (movieDto.list[0].id == null)
             return ResponseEntity.status(404)
-                    .body(WrappedResponse<MovieDto>(
+                    .body(WrappedResponse<PageDto<MovieDto>>(
                             code = 404,
                             message = "Movie cannot be null")
                             .validated())
@@ -188,7 +189,7 @@ class MoviesApi {
         }
 
 
-        var movieDto = movieService.getById(id)
+        var movieDto = movieService.getAllById(id).list[0]
 
         if (movieDto.id == null)
             return ResponseEntity.status(404).body(
@@ -330,39 +331,8 @@ class MoviesApi {
         }
         movieDto = tempDto
         movieService.save(movieDto)
-        /*return when{
-            room.id == null -> ResponseEntity.status(500).build()
-            else -> ResponseEntity.status(204).build()
-        }
-        movieDto.title = tempDto.title
-        println("title" + tempDto.title)
-        movieDto = tempDto*/
-        //TODO: Complete testing to make sure that using .copy() is actually possible.
 
         return ResponseEntity.status(204).build()
 
     }
-
-
-    //TODO: Implement a generic setter for the values??
-/*      fun <T> getPrimitiveValueFromJson(jsonObject: JsonObject, fieldName: String): Any {
-        if (jsonObject.has(fieldName)) {
-            val value = jsonObject.get(fieldName)
-
-            var newValue: T
-
-            if (value.isJsonNull)
-//                return Null
-            else if (value.isJsonPrimitive && value.asJsonPrimitive.isString)
-                return value.asJsonPrimitive.asString
-            else if (value.isJsonPrimitive && value.asJsonPrimitive.isNumber)
-                return value.asJsonPrimitive.asNumber
-            else if (value.isJsonPrimitive && value.asJsonPrimitive.isBoolean)
-                return value.asJsonPrimitive.asBoolean
-
-
-            else
-                  return ResponseEntity.status(400).build()
-          }
-      }*/
 }

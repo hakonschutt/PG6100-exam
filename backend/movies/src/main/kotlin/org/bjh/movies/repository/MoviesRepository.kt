@@ -17,6 +17,9 @@ interface MoviesRepository : CrudRepository<MovieEntity, Long>, MoviesRepository
             @Param("offset") offset: Int = 0,
             @Param("limit") limit: Int = 20)
             : List<MovieEntity>
+
+    @Query("SELECT m FROM movies m WHERE m.id = :id")
+    fun findAllById( @Param("id")id:Long ):List<MovieEntity>
 }
 
 
