@@ -16,7 +16,7 @@ class BookingEntity(
         // var event: Event? = null
         var event: Long? = null,
 
-        @get:ElementCollection(fetch = FetchType.EAGER)
+        @get:ElementCollection(fetch = FetchType.LAZY)
         @get:OneToMany(cascade = [CascadeType.ALL])
         @get:JoinTable(name="booking_tickets", joinColumns = [JoinColumn(name="ticket_id",referencedColumnName = "id")])
         var tickets: Set<TicketEntity>,
