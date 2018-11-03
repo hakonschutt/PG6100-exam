@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*
 
 const val ID_PARAM = "The numeric id of the booking"
 const val BASE_JSON = "application/json;charset=UTF-8"
-const val V2_NEWS_JSON = "application/org.bjh.dto.BookingDto+json;charset=UTF-8;version=2"
 
 /**
  * @author hakonschutt
@@ -19,12 +18,6 @@ const val V2_NEWS_JSON = "application/org.bjh.dto.BookingDto+json;charset=UTF-8;
 @RequestMapping("/api/bookings")
 @Api("Api for bookings")
 class BookingApi {
-
-    // bookings/ -> getAll
-    // bookings/{id} -> getSingle
-    // bookings/user/{userId} -> getAllByUser
-    // bookings/event/{eventId} -> getAllByEvent
-
 
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiOperation("Get all the bookings")
