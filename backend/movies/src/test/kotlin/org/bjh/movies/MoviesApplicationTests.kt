@@ -16,11 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.junit4.SpringRunner
-import java.nio.file.Path
 import java.time.LocalDate
 import java.time.Month
 import kotlin.collections.ArrayList
-import kotlin.test.todo
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = [(MoviesApplication::class)],
@@ -169,7 +167,7 @@ class MoviesApplicationTests {
                 .statusCode(200)
                 .body("data.size()", equalTo(5))
 
-        val originalMovieDto = MovieDto(
+        val movieDto = MovieDto(
                 oldTitle,
                 posterUrl,
                 "coverArtUrl",
@@ -184,7 +182,7 @@ class MoviesApplicationTests {
 
 
         given().contentType(ContentType.JSON)
-                .body(originalMovieDto)
+                .body(movieDto)
                 .post()
 
         val movieList = given().accept(ContentType.JSON)
@@ -198,14 +196,7 @@ class MoviesApplicationTests {
 
         val id = movieList[5].id
 
-        val patchBody = "{\"title\":\"$newTitle\", \"poster\":null}"
-        given().contentType("application/merge-patch+json")
-                .body(patchBody)
-                .patch("$id")
-                .then()
-                .statusCode(204)
-
-        val patchedMovieDto = given().accept(ContentType.JSON)
+        val originalMovieDto = given().accept(ContentType.JSON)
                 .get("$id")
                 .then()
                 .statusCode(200)
@@ -213,15 +204,31 @@ class MoviesApplicationTests {
                 .jsonPath()
                 .getList("data.list", MovieDto::class.java)[0]
 
-        println(patchedMovieDto)
+        val patchBody = "{\"title\":\"$newTitle\", \"poster\":null}"
 
-        val comparableMovieDto = patchedMovieDto.copy(title = oldTitle, poster = posterUrl, id=patchedMovieDto.id)
+        repeat(1000) {
+            given().contentType("application/merge-patch+json")
+                    .body(patchBody)
+                    .patch("$id")
+                    .then()
+                    .statusCode(204)
 
-        assertThat(patchedMovieDto, not(equalTo(originalMovieDto)))
-        assertThat(patchedMovieDto.title, not(equalTo(oldTitle)))
-        assertThat(patchedMovieDto.title, equalTo(newTitle))
-        assertThat(originalMovieDto.poster, not(nullValue()))
-        assertThat(patchedMovieDto.poster, nullValue())
-        assertThat(comparableMovieDto, equalTo(originalMovieDto))
+            val patchedMovieDto = given().accept(ContentType.JSON)
+                    .get("$id")
+                    .then()
+                    .statusCode(200)
+                    .extract()
+                    .jsonPath()
+                    .getList("data.list", MovieDto::class.java)[0]
+
+            val comparableMovieDto = patchedMovieDto.copy(title = oldTitle, poster = posterUrl)
+
+            assertThat(patchedMovieDto, not(equalTo(originalMovieDto)))
+            assertThat(patchedMovieDto.title, not(equalTo(oldTitle)))
+            assertThat(patchedMovieDto.title, equalTo(newTitle))
+            assertThat(originalMovieDto.poster, not(nullValue()))
+            assertThat(patchedMovieDto.poster, nullValue())
+            assertThat(comparableMovieDto, equalTo(originalMovieDto))
+        }
     }
 }
