@@ -8,7 +8,6 @@ import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.IsInstanceOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

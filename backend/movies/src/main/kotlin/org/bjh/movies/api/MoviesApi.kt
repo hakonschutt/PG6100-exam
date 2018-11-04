@@ -96,24 +96,6 @@ class MoviesApi {
 
     }
 
-    /* //TODO: Figure out if I can run /{title} just as with id.
-     @ApiOperation("Get a movie by title")
-     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)],
-             path = ["/{title}"])
-     fun getMovieByTitle(@ApiParam("Title of a movie")
-                         @PathVariable("title") title: String): ResponseEntity<WrappedResponse<List<MovieDto>>> {
-
-         return ResponseEntity.status(400).body(
-                 WrappedResponse<List<MovieDto>>(code = 400, message = "Can't get movie by title.")
-                         .validated())
-
-         return ResponseEntity.ok(
-                 WrappedResponse(
-                         code = 200,
-                         data = movieService.getAllByTitle(title))
-                         .validated())
-     }*/
-
     @ApiOperation("Create a movie")
     @PostMapping(consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
     fun createMovie(@ApiParam("Information for new movie")
@@ -131,18 +113,49 @@ class MoviesApi {
                 WrappedResponse<Unit>(code = 201, message = "Movie was created").validated())
     }
 
-    @ApiOperation("Update/by id")
+    @ApiOperation("Update an existing resource ")
     @PutMapping(path = ["/{id}"])
     fun putMovie(@ApiParam("The id of the movie")
                  @PathVariable("id")
-                 movieId: String): ResponseEntity<WrappedResponse<PageDto<MovieDto>>> {
+                 movieId: String,
 
-        //TODO: continue here ye
+                 @ApiParam("")
+                 @RequestBody movieDto: MovieDto
+    ): ResponseEntity<WrappedResponse<Unit>> {
+        if (movieDto.id != movieId) {
+            return ResponseEntity.status(409).build()
+        }
+        val id: Long
+        try {
+            id = movieId.toLong()
+        } catch (e: Exception) {
+            return ResponseEntity.status(400).build()
+        }
+
+        if (movieDto.id == null) {
+            return ResponseEntity.status(400).build()
+        }
+
+        if (movieDto.id != movieId) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val movieList = movieService.getAllById(id).list
+
+        if (movieList.isEmpty())
+            return ResponseEntity.status(400).build()
+
+
+
+        movieService.save(movieList[0])
+
         return ResponseEntity.status(204).body(
-                WrappedResponse(
+                WrappedResponse<Unit>(
                         code = 204,
-                        message = "Updated???? movie with id: $movieId"))
+                        message = "Updated movie with id: $movieId")
+                        .validated())
     }
+
 
     //TODO: Check codes being sent here.
     @ApiOperation("Delete a movie by id")
