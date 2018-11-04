@@ -43,11 +43,11 @@ class BookingApi {
     fun getAllBookings(
         @ApiParam("The user id to query by")
         @RequestParam("userId", required = false)
-        userId: String?,
+        pathUserId: String?,
 
         @ApiParam("The event id to query by")
         @RequestParam("eventId", required = false)
-        eventId: String?,
+        pathEventId: String?,
 
         @ApiParam("Return response with ticket objects")
         @RequestParam("withTickets", required = false, defaultValue = "false")
@@ -61,14 +61,24 @@ class BookingApi {
         @RequestParam("limit", required = false, defaultValue = "20")
         limit: Int
     ): ResponseEntity<WrappedResponse<Set<BookingDto>>> {
-        val result = if (eventId.isNullOrBlank() && userId.isNullOrBlank()) {
+        var userId : Long = -1L
+        var eventId : Long = -1L
+
+        try {
+            if (!pathEventId.isNullOrBlank()) { eventId = pathEventId!!.toLong() }
+            if (!pathUserId.isNullOrBlank()) { userId = pathUserId!!.toLong() }
+        } catch (e: NumberFormatException) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val result = if (eventId == -1L && userId == -1L) {
             bookingService.findAll(withTickets);
-        } else if (!eventId.isNullOrBlank() && !userId.isNullOrBlank()) {
-            bookingService.findAllByEventIdAndUserId(withTickets)
-        } else if (!eventId.isNullOrBlank()) {
-            bookingService.findAllByEventId(withTickets);
+        } else if (eventId != -1L && userId != -1L) {
+            bookingService.findAllByEventIdAndUserId(withTickets = withTickets, eventId = eventId, userId = userId)
+        } else if (eventId != -1L) {
+            bookingService.findAllByEventId(withTickets, eventId = eventId)
         } else {
-            bookingService.findAllByUserId(withTickets);
+            bookingService.findAllByUserId(withTickets, userId = userId)
         }
 
         val statusCode : Int = if (result.isNotEmpty()) { 200 } else { 204 }
@@ -152,23 +162,57 @@ class BookingApi {
         )
     }
 
-    @ApiOperation("Update a booking ticket with a given booking id")
-    @PutMapping(path = ["/{id}/ticket"], consumes = [BASE_JSON])
+    @ApiOperation("Update a booking with a given booking id")
+    @PutMapping(path = ["/{id}"], consumes = [BASE_JSON])
     @ApiResponses(
         ApiResponse(code = 200, message = "Booking ticket was updated"),
-        ApiResponse(code = 400, message = "Booking id was not processable"),
-        ApiResponse(code = 404, message = "Booking with specified id was not found")
+        ApiResponse(code = 400, message = "Ticket id was not processable"),
+        ApiResponse(code = 404, message = "Booking with specified id was not found"),
+        ApiResponse(code = 409, message = "Conflict"),
+        ApiResponse(code = 500, message = "Server is experiencing issues")
     )
-    fun updateBookingTicket(
+    fun updateFullBooking(
         @ApiParam(ID_PARAM)
         @PathVariable("id")
-        pathId: String?,
+        pathId: String,
 
-        @ApiParam("Ticket information including seat and price")
+        @ApiParam("Booking information including ticket, event, user and id")
         @RequestBody
-        dto: TicketDto
+        dto: BookingDto
     ) : ResponseEntity<WrappedResponse<Unit>> {
-        // TODO: Implmenent a put route where tickets are updated
+        val id: Long
+
+        try {
+            id = pathId.toLong()
+        } catch (e: NumberFormatException) {
+            return ResponseEntity.status(400).build()
+        }
+
+        if (dto.id == null) {
+            return ResponseEntity.status(400).build()
+        }
+
+        if (dto.id != id) {
+            return ResponseEntity.status(409).build()
+        }
+
+        val bookingDto = bookingService.findById(id = id, withTickets = true)
+
+        if (bookingDto.id == null) {
+            return ResponseEntity.status(404).build()
+        }
+
+        bookingDto.user = dto.user!!
+        bookingDto.event = dto.event!!
+        bookingDto.tickets = dto.tickets
+
+        val isUpdated = bookingService.updateBooking(bookingDto)
+
+        return if (isUpdated) {
+            ResponseEntity.status(204).build()
+        } else {
+            ResponseEntity.status(500).build()
+        }
     }
 
     @ApiOperation("Update a booking with the given id")
@@ -249,7 +293,6 @@ class BookingApi {
         } else {
             ResponseEntity.status(500).build()
         }
-
     }
 
     @ApiOperation("Update a booking with the given id")
@@ -285,19 +328,19 @@ class BookingApi {
         val bookingDto = bookingService.findById(id = bookingId, withTickets = true)
 
         if (bookingDto.id == null) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(404).build()
         }
 
         val isTicketPresent = bookingDto.tickets.any { it.id == ticketId }
 
         if (!isTicketPresent) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(404).build()
         }
 
         val ticketDto = ticketService.findById(ticketId)
 
         if (ticketDto.id == null) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(404).build()
         }
 
         val jackson = ObjectMapper()
