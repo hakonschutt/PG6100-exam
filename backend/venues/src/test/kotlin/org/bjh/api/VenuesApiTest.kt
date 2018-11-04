@@ -98,16 +98,8 @@ class VenuesApiTest : LocalApplicationRunner() {
     }
 
     @Test
-    fun testCreateAndGetWithNewFormat() {
-        val roomName = "sal-1"
-        val rows = 1
-        val cols = 1
-        val roomDto = RoomDto(id = null, name = roomName, rows = rows, columns = cols)
+    fun testWrappedResponseGetSendtFromServer() {
 
-        val name = "root"
-        val geo = "home"
-        val address = "127.0.0.1"
-        val venueDto = VenueDto(id = null, geoLocation = geo, name = name, rooms = setOf(roomDto), address = address)
 
         RestAssured.given()
                 .get()
@@ -282,18 +274,32 @@ class VenuesApiTest : LocalApplicationRunner() {
 
        val dto =  RestAssured
                 .given()
-                .get("/${venueDto.id}").then()
+                .get("/${venueDto.id}?withRooms=true").then()
                 .statusCode(200)
                 .extract()
                 .jsonPath()
                 .getList("data.list", VenueDto::class.java)[0]
+        dto.rooms.stream().forEach{
+            Assert.assertThat(it.name, equalTo(roomDto.name))
+        }
         Assert.assertThat(dto.name, equalTo("DTO NAME"))
-//                .body("data.list[0].name", CoreMatchers.equalTo("DTO NAME"))
+        Assert.assertThat(dto.address, equalTo(venueDto.address))
+        Assert.assertThat(dto.geoLocation, equalTo(venueDto.geoLocation))
+
 
     }
     @Test
-    fun testGetVenue(){
+    fun testGetNonExsistingVenue(){
+        RestAssured
+                .given()
+                .get("/1910391230219312093").then()
+                .statusCode(404)
+        RestAssured
+                .given()
+                .get("/abc}").then()
+                .statusCode(400)
 
     }
+
 
 }

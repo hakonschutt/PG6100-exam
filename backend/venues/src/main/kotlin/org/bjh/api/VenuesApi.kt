@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*
 import java.lang.NumberFormatException
 
 const val BASE_JSON = "application/json;charset=UTF-8"
-const val V2_VENUES_JSON = "application/org.bjh.dto.VenueDto;charset=UTF-8"
-const val HAL_V1 = "application/hal+json;charset=UTF-8;version=1"
 
 @RestController
 @RequestMapping("/api/venues")
@@ -69,7 +67,7 @@ class VenuesApi {
         try {
             id = idFromPath.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(400).build()
         }
 
         val venuePage = venuesService.findAllById(id, withRooms)
@@ -87,7 +85,7 @@ class VenuesApi {
 
     }
 
-    @PostMapping(consumes = [V2_VENUES_JSON, BASE_JSON])
+    @PostMapping(consumes = [BASE_JSON])
     @ApiResponses(
             //FIXME : Return url instead of id
             ApiResponse(code = 201, message = "The id of newly created venue"),
@@ -170,7 +168,7 @@ class VenuesApi {
         try {
             id = idFromPath.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(400).build()
         }
         val dto = venuesService.findAllById(id = id, withRooms = true)
         //returns responseEntity if service did not find an already created entity

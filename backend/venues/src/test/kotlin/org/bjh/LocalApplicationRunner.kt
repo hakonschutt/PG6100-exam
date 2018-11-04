@@ -46,6 +46,12 @@ abstract class LocalApplicationRunner {
                                     )
                             ))
                 }
+        repository.run {
+            deleteAll()
+            venueEntities.forEach {
+                save(it)
+            }
+        }
     }
 
     @Before
@@ -58,13 +64,9 @@ abstract class LocalApplicationRunner {
         RestAssured.basePath = "/api/venues"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
         prepTestData()
-        cacheManager.getCache("venuesCache").clear()
-        repository.run {
-            deleteAll()
-            venueEntities.forEach {
-                save(it)
-            }
-        }
 
+        if (cacheManager.getCache("venuesCache") != null) {
+            cacheManager.getCache("venuesCache").clear()
+        }
     }
 }
