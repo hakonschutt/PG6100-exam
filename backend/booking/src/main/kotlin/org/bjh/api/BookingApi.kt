@@ -1,5 +1,7 @@
 package org.bjh.api
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.swagger.annotations.*
 import org.bjh.dto.BookingDto
 import org.bjh.dto.TicketDto
@@ -14,6 +16,7 @@ import java.net.URI
 
 const val ID_PARAM = "The numeric id of the booking"
 const val BASE_JSON = "application/json;charset=UTF-8"
+const val MERGE_PATCH = "application/merge-patch+json"
 
 /**
  * @author hakonschutt
@@ -165,20 +168,26 @@ class BookingApi {
         @RequestBody
         dto: TicketDto
     ) : ResponseEntity<WrappedResponse<Unit>> {
-
+        // TODO: Implmenent a put route where tickets are updated
     }
 
     @ApiOperation("Update a booking with the given id")
-    @PatchMapping(path = ["/{id}"], consumes = [BASE_JSON])
+    @PatchMapping(path = ["/{id}"], consumes = [MERGE_PATCH])
     @ApiResponses(
-        ApiResponse(code = 200, message = "Booking was updated"),
-        ApiResponse(code = 400, message = "Booking id was not processable"),
-        ApiResponse(code = 404, message = "Booking with specified id was not found")
+        ApiResponse(code = 204, message = "Booking was updated"),
+        ApiResponse(code = 400, message = "Booking patch was not processable"),
+        ApiResponse(code = 404, message = "Booking with specified id was not found"),
+        ApiResponse(code = 409, message = "Conflict"),
+        ApiResponse(code = 500, message = "Server is experiencing issues")
     )
-    fun updateBooking(
+    fun mergePatchBooking(
         @ApiParam(ID_PARAM)
         @PathVariable("id")
-        pathId: String
+        pathId: String,
+
+        @ApiParam("The partial patch")
+        @RequestBody
+        jsonPatch: String
     ) : ResponseEntity<String> {
         val id: Long
 
@@ -186,6 +195,156 @@ class BookingApi {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
             return ResponseEntity.status(400).build()
+        }
+
+        val dto = bookingService.findById(id = id, withTickets = true)
+
+        if (dto.id == null) {
+            return ResponseEntity.status(404).build()
+        }
+
+        val jackson = ObjectMapper()
+        val jsonNode : JsonNode
+
+        try {
+            jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
+        } catch (e: Exception) {
+            return ResponseEntity.status(400).build()
+        }
+
+        if (jsonNode.has("id")) {
+            return ResponseEntity.status(409).build()
+        }
+
+        var newUser = dto.user
+        var newEvent = dto.event
+
+        if (jsonNode.has("user")) {
+            val node = jsonNode.get("user")
+
+            newUser = when {
+                node.isNull -> null
+                node.isLong -> node.asLong()
+                else -> return ResponseEntity.status(400).build()
+            }
+        }
+
+        if (jsonNode.has("event")) {
+            val node = jsonNode.get("event")
+
+            newEvent = when {
+                node.isNull -> null
+                node.isLong -> node.asLong()
+                else -> return ResponseEntity.status(400).build()
+            }
+        }
+
+        dto.user = newUser
+        dto.event = newEvent
+
+        val isUpdated = bookingService.updateBooking(dto)
+
+        return if (isUpdated) {
+            ResponseEntity.status(204).build()
+        } else {
+            ResponseEntity.status(500).build()
+        }
+
+    }
+
+    @ApiOperation("Update a booking with the given id")
+    @PatchMapping(path = ["/{bookingId}/tickets/{ticketId}"], consumes = [BASE_JSON])
+    @ApiResponses(
+        ApiResponse(code = 204, message = "Ticket was updated"),
+        ApiResponse(code = 400, message = "Ticket patch was not processable"),
+        ApiResponse(code = 404, message = "Items with specified ids were not found")
+    )
+    fun mergePatchTicket(
+        @ApiParam(ID_PARAM)
+        @PathVariable("bookingId")
+        pathBookingId: String,
+
+        @ApiParam("The numeric id of the ticket")
+        @PathVariable("ticketId")
+        pathTicketId: String,
+
+        @ApiParam("The partial patch")
+        @RequestBody
+        jsonPatch: String
+    ) : ResponseEntity<String> {
+        val bookingId : Long
+        val ticketId : Long
+
+        try {
+            bookingId = pathBookingId.toLong()
+            ticketId = pathTicketId.toLong()
+        } catch (e: NumberFormatException) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val bookingDto = bookingService.findById(id = bookingId, withTickets = true)
+
+        if (bookingDto.id == null) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val isTicketPresent = bookingDto.tickets.any { it.id == ticketId }
+
+        if (!isTicketPresent) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val ticketDto = ticketService.findById(ticketId)
+
+        if (ticketDto.id == null) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val jackson = ObjectMapper()
+        val jsonNode : JsonNode
+
+        try {
+            jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
+        } catch (e: Exception) {
+            return ResponseEntity.status(400).build()
+        }
+
+        if (jsonNode.has("id")) {
+            return ResponseEntity.status(409).build()
+        }
+
+        var newPrice = ticketDto.price
+        var newSeat = ticketDto.seat
+
+        if (jsonNode.has("price")) {
+            val node = jsonNode.get("price")
+
+            newPrice = when {
+                node.isNull -> null
+                node.isDouble -> node.asDouble()
+                else -> return ResponseEntity.status(400).build()
+            }
+        }
+
+        if (jsonNode.has("seat")) {
+            val node = jsonNode.get("seat")
+
+            newSeat = when {
+                node.isNull -> null
+                node.isTextual -> node.asText()
+                else -> return ResponseEntity.status(400).build()
+            }
+        }
+
+        ticketDto.price = newPrice
+        ticketDto.seat = newSeat
+
+        val isUpdated = ticketService.updateTicket(ticketDto)
+
+        return if (isUpdated) {
+            ResponseEntity.status(204).build()
+        } else {
+            ResponseEntity.status(500).build()
         }
     }
 

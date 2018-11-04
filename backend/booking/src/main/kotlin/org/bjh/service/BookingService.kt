@@ -67,6 +67,20 @@ class BookingService {
 
         return booking.id ?: 1L
     }
+    fun updateBooking(dto: BookingDto) : Boolean {
+        val id: Long
+        try {
+            id = dto.id!!.toLong()
+        } catch (e: Exception) {
+            return false
+        }
+
+        val bookingEntity = bookingRepository.save(
+            BookingEntity(id = id, user = dto.user, event = dto.event, tickets = TicketConverter.transformDtosToEntities(dto.tickets))
+        )
+
+        return bookingEntity.id != null
+    }
 
     fun deleteBookingById(id: Long) : Boolean {
         if (!bookingRepository.existsById(id)) {
