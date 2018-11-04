@@ -6,6 +6,7 @@ import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
 import org.bjh.pagination.PageDto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -23,6 +24,7 @@ class MovieService {
         return MoviesConverter.transform(movie)
     }
 
+    @Cacheable("moviesCache")
     fun getAll(offset: Int, limit: Int): PageDto<MovieDto> {
         val list = moviesRepository.findAll(offset, limit)
         return MoviesConverter.transform(list)

@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.cache.CacheManager
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDate
 import java.time.Month
@@ -28,6 +29,7 @@ class MoviesApplicationTests {
     @LocalServerPort
     protected var port = 0
 
+
     @Autowired
     protected lateinit var repository: MoviesRepository
 
@@ -36,7 +38,6 @@ class MoviesApplicationTests {
     val defaultReleaseDate = LocalDate.of(1991, Month.JANUARY, 12)!!
 
     fun emptyListAndFillWithTestMovies() {
-
         movieEntities.removeAll(movieEntities)
         movieEntities.add(MovieEntity("The Hitchhiker's Guide to the Galaxy", "Link to poster", "123", "123", "123", defaultReleaseDate, setOf("123"), 1, 5.0, 3.4, 120.0))
         movieEntities.add(MovieEntity("A Movie About A Ginger", "Link to poster", "123", "123", "123", defaultReleaseDate, setOf("123"), 1, 5.0, 3.4, 120.0))
@@ -58,6 +59,7 @@ class MoviesApplicationTests {
     @Before
     @After
     fun clean() {
+
         emptyListAndFillWithTestMovies()
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
@@ -133,6 +135,26 @@ class MoviesApplicationTests {
     }
 
     @Test
+    fun testUpdateExistingMovieWithPut()  {
+        val allMovies = getAllMovies()
+        val movie = allMovies!![0]
+        val alteredMovieToPut = movie.copy(title="NEW TITLE")
+
+        given().contentType(ContentType.JSON)
+                .body(movie)
+                .put(alteredMovieToPut.id)
+                .then()
+                .statusCode(204)
+                .body("code", equalTo(204))
+                .body("message", not(equalTo(null)))
+    }
+
+   /* @Test
+    fun testUpdateNonExistantMovieWithPut() {
+        val
+    }*/
+
+    @Test
     fun testDeleteOneMovie() {
         val allMovies = getAllMovies()
 
@@ -156,7 +178,7 @@ class MoviesApplicationTests {
                 .parallelStream()
                 .forEach {
                     given().accept(ContentType.JSON)
-                            .delete("/${it.id}")
+                            .delete("${it.id}")
                             .then()
                             .statusCode(204)
                 }
@@ -244,3 +266,4 @@ class MoviesApplicationTests {
         }
     }
 }
+
