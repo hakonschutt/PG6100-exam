@@ -131,6 +131,19 @@ class MoviesApi {
                 WrappedResponse<Unit>(code = 201, message = "Movie was created").validated())
     }
 
+    @ApiOperation("Update/by id")
+    @PutMapping(path = ["/{id}"])
+    fun putMovie(@ApiParam("The id of the movie")
+                 @PathVariable("id")
+                 movieId: String): ResponseEntity<WrappedResponse<PageDto<MovieDto>>> {
+
+        //TODO: continue here ye
+        return ResponseEntity.status(204).body(
+                WrappedResponse(
+                        code = 204,
+                        message = "Updated???? movie with id: $movieId"))
+    }
+
     //TODO: Check codes being sent here.
     @ApiOperation("Delete a movie by id")
     @DeleteMapping(path = ["/{id}"])

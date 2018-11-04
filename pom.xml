@@ -99,7 +99,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-parent</artifactId>
 			<version>${version.springboot}</version>
-			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
 		<dependency>
@@ -110,7 +109,6 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-dependencies</artifactId>
 			<version>${version.springcloud}</version>
-			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
 

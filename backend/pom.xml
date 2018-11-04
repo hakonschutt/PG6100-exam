@@ -17,9 +17,19 @@
     </parent>
 
     <modules>
-        <module>template</module>
-        <module>movies</module>
         <module>utils</module>
+        <module>movies</module>
+        <module>template</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.bjh.utils</groupId>
+                <artifactId>utils</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 <!--TODO: Implement missing dependencies here-->
 </project>
