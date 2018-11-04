@@ -142,9 +142,10 @@ class VenuesApi {
             return ResponseEntity.status(404).build()
         }
         val deletedVenueId = venuesService.delete(id)
+        println("deletedVenue ${deletedVenueId}")
 
         return if (deletedVenueId > -1) {
-            ResponseEntity.status(200).build()
+            ResponseEntity.status(204).build()
         } else {
             ResponseEntity.status(404).build()
         }

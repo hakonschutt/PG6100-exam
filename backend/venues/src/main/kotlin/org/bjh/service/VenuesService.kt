@@ -92,11 +92,11 @@ class VenuesService {
 
     fun delete(id: Long): Long {
 
-        val deleted = (venuesRepository.findById(id).get())
-        if (deleted.id != null){
-            venuesRepository.delete(deleted)
+        val listOfentities = (venuesRepository.findAllById(id))
+        if (listOfentities.isNotEmpty()){
+            venuesRepository.delete(listOfentities[0])
         }
-        return deleted.id ?: -1L
+        return listOfentities[0].id ?: -1L
 
     }
 }

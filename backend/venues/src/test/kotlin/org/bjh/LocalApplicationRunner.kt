@@ -10,6 +10,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.cache.CacheManager
 import org.springframework.test.context.junit4.SpringRunner
 
 
@@ -21,6 +22,8 @@ abstract class LocalApplicationRunner {
     private val venueEntities = ArrayList<VenueEntity>()
     @Autowired
     protected lateinit var repository: VenuesRepository
+    @Autowired
+    protected lateinit var cacheManager: CacheManager
 
     @LocalServerPort
     protected var port = 0
@@ -33,6 +36,7 @@ abstract class LocalApplicationRunner {
                 .forEach { data ->
                     venueEntities
                             .add(VenueEntity(
+                                    address = "Address -$data",
                                     name = "Venue - $data",
                                     geoLocation = (data * 10).toString(),
                                     rooms = setOf(RoomEntity(id = null,
@@ -54,6 +58,7 @@ abstract class LocalApplicationRunner {
         RestAssured.basePath = "/api/venues"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
         prepTestData()
+        cacheManager.getCache("venuesCache").clear()
         repository.run {
             deleteAll()
             venueEntities.forEach {

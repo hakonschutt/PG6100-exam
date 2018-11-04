@@ -11,11 +11,15 @@ import org.bjh.pagination.PageDto
 import org.bjh.wrappers.WrappedResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.Matchers.lessThan
 import org.junit.Assert
 import org.junit.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.CacheManager
 
 
 class VenuesApiTest : LocalApplicationRunner() {
+
 
     @Test
     fun deleteVenue() {
@@ -26,24 +30,18 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(200)
                 .extract().path<Int>("data.list.size()")
 
-        println("SIZEBEFORE $sizeBefore")
-        val createdVenueId = createVenue()
-
-        val sizeAfterAddition =
-                RestAssured.given()
-                        .get()
-                        .then()
-                        .statusCode(200)
-                        .extract().path<Int>("data.list.size()")
-
-        assert(sizeBefore < sizeAfterAddition)
-
+        val data = given()
+                .get().then()
+                .statusCode(200)
+                .extract().body()
+                .jsonPath()
+                .getList("data.list", VenueDto::class.java)[0]
 
         RestAssured.given()
-                .delete("/${createdVenueId}")
+                .delete("/${data.id}")
                 .then()
-                .statusCode(200)
-
+                .statusCode(204)
+        cacheManager.getCache("venuesCache").clear()
 
         val sizeAfterDeletion = RestAssured.given()
                 .get()
@@ -52,7 +50,12 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .extract().path<Int>("data.list.size()")
 
 
-        Assert.assertThat(sizeAfterDeletion, equalTo(sizeBefore))
+        Assert.assertThat(sizeAfterDeletion, lessThan(sizeBefore))
+
+        RestAssured.given()
+                .get("/${data.id}")
+                .then()
+                .statusCode(404)
     }
 
     @Test
@@ -132,13 +135,21 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(201)
                 .extract().asString()
+        val data = given()
+                .get("/$id").then()
+                .statusCode(200)
+                .extract().body()
+                .jsonPath()
+                .getList("data.list", VenueDto::class.java)[0]
 
         RestAssured
                 .given()
-                .get().then()
+                .get("/$id").then()
                 .statusCode(200)
-                .body("data.list[0].name", CoreMatchers.equalTo("root"))
-                .body("data.list[0].rooms.size()", CoreMatchers.equalTo(0))
+                .body("data.list[0].name", CoreMatchers.equalTo(data.name))
+                .body("data.list[0].rooms.size()", CoreMatchers.equalTo(data.rooms.size))
+
+
 
     }
 
@@ -267,13 +278,17 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .put("/${id}")
                 .then()
                 .statusCode(204)
-                .extract().asString()
 
-        RestAssured
+
+       val dto =  RestAssured
                 .given()
-                .get().then()
+                .get("/${venueDto.id}").then()
                 .statusCode(200)
-                .body("data.list[0].name", CoreMatchers.equalTo("DTO NAME"))
+                .extract()
+                .jsonPath()
+                .getList("data.list", VenueDto::class.java)[0]
+        Assert.assertThat(dto.name, equalTo("DTO NAME"))
+//                .body("data.list[0].name", CoreMatchers.equalTo("DTO NAME"))
 
     }
     @Test
