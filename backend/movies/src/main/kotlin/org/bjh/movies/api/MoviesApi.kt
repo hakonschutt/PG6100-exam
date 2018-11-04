@@ -79,8 +79,9 @@ class MoviesApi {
                             .validated())
         }
 
-        val movieDto = movieService.getAllById(id)
-        if (movieDto.list[0].id == null)
+        val requestResult = movieService.getAllById(id)
+        if (requestResult.list.isEmpty() ||
+                (requestResult.list.isNotEmpty() && requestResult.list[0].id == null))
             return ResponseEntity.status(404)
                     .body(WrappedResponse<PageDto<MovieDto>>(
                             code = 404,
@@ -90,7 +91,7 @@ class MoviesApi {
         return ResponseEntity.ok(
                 WrappedResponse(
                         code = 200,
-                        data = movieDto)
+                        data = requestResult)
                         .validated())
 
     }

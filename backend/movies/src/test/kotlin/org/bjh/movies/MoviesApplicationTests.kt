@@ -8,6 +8,7 @@ import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.IsInstanceOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -51,9 +52,8 @@ class MoviesApplicationTests {
                 .then()
                 .statusCode(200)
                 .extract()
-                .response()
                 .jsonPath()
-                .getList("data", MovieDto::class.java)
+                .getList("data.list", MovieDto::class.java)
     }
 
     @Before
@@ -79,13 +79,13 @@ class MoviesApplicationTests {
                 .get()
                 .then()
                 .statusCode(200)
-                .body("data.size()", equalTo(5))
+                .body("data.list.size()", equalTo(5))
     }
 
     @Test
     fun testGetNonExistingMovie() {
         given().accept(ContentType.JSON)
-                .get("/-1")
+                .get("-1")
                 .then()
                 .statusCode(404)
                 .body("code", equalTo(404))
@@ -93,10 +93,22 @@ class MoviesApplicationTests {
     }
 
     @Test
+    fun testGetMovie() {
+        getAllMovies()?.parallelStream()?.forEach { it ->
+            assertThat(given().accept(ContentType.JSON)
+                    .get(it.id)
+                    .then()
+                    .statusCode(200)
+                    .extract()
+                    .jsonPath()
+                    .getList("data.list", MovieDto::class.java)[0], equalTo(it))
+        }
+    }
+
+    @Test
     fun testCreateMovie() {
         val testTitle = "TestMovie"
         val allMovies = getAllMovies()
-
 
         val location = given().contentType(ContentType.JSON)
                 .body(MovieDto(testTitle, "posterURL", "coverArtUrl", "trailerURL", "Test Overview", defaultReleaseDate.toString(), setOf("Drama"), 1, "5.0", "200.0", "120.0"))
@@ -111,13 +123,14 @@ class MoviesApplicationTests {
                 .get(location)
                 .then()
                 .statusCode(200)
-                .body("data.title", equalTo(testTitle))
+                .body("data.list[0].title", equalTo(testTitle))
 
         given().accept(ContentType.JSON)
                 .get()
                 .then()
                 .statusCode(200)
-                .body("data.size()", equalTo(allMovies!!.size + 1))
+                .body("data.list.size()", equalTo(allMovies!!.size + 1))
+
     }
 
     @Test
@@ -133,7 +146,7 @@ class MoviesApplicationTests {
                 .get()
                 .then()
                 .statusCode(200)
-                .body("data.size()", equalTo(allMovies.size - 1))
+                .body("data.list.size()", equalTo(allMovies.size - 1))
     }
 
     @Test
@@ -153,7 +166,7 @@ class MoviesApplicationTests {
                 .get()
                 .then()
                 .statusCode(200)
-                .body("data.size()", equalTo(0))
+                .body("data.list.size()", equalTo(0))
     }
 
     @Test
