@@ -36,5 +36,4 @@ abstract class LocalApplicationRunner {
         RestAssured.basePath = "/api/bookings"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
     }
-
 }
