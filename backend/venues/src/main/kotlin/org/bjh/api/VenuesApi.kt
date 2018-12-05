@@ -54,6 +54,7 @@ class VenuesApi {
     }
 
     //todo set up query params for withrooms or nawt
+
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun getVenue(@ApiParam("The unique id of the venue")
                  @PathVariable("id") idFromPath: String,
@@ -154,7 +155,7 @@ class VenuesApi {
             ApiResponse(code = 409, message = "Conflict"),
             ApiResponse(code = 400, message = "Bad request due to invalid syntax."),
             ApiResponse(code = 204, message = "The server has successfully fulfilled the request"),
-            ApiResponse(code = 500, message = "Server is expecting unpredictable")
+            ApiResponse(code = 500, message = "Server is being unpredictable")
     )
     fun mergePatchVenue(@ApiParam("The unique id of the venue")
                         @PathVariable("id")

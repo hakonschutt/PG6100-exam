@@ -32,8 +32,6 @@ class PageDto<T>(
 
 ) : HalObject() {
 
-
-
     @get:JsonIgnore
     var next: HalLink?
         set(value) {

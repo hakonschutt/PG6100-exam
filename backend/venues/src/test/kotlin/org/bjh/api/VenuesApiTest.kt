@@ -7,6 +7,7 @@ import io.restassured.RestAssured.given
 import org.bjh.LocalApplicationRunner
 import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueDto
+import org.bjh.pagination.HalObject
 import org.bjh.pagination.PageDto
 import org.bjh.wrappers.WrappedResponse
 import org.hamcrest.CoreMatchers
@@ -16,6 +17,8 @@ import org.junit.Assert
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 
 class VenuesApiTest : LocalApplicationRunner() {
@@ -24,11 +27,6 @@ class VenuesApiTest : LocalApplicationRunner() {
     @Test
     fun deleteVenue() {
 
-        val sizeBefore = RestAssured.given()
-                .get()
-                .then()
-                .statusCode(200)
-                .extract().path<Int>("data.list.size()")
 
         val data = given()
                 .get().then()
@@ -43,21 +41,46 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(204)
         cacheManager.getCache("venuesCache").clear()
 
-        val sizeAfterDeletion = RestAssured.given()
-                .get()
-                .then()
-                .statusCode(200)
-                .extract().path<Int>("data.list.size()")
-
-
-        Assert.assertThat(sizeAfterDeletion, lessThan(sizeBefore))
 
         RestAssured.given()
                 .get("/${data.id}")
                 .then()
                 .statusCode(404)
     }
+    @Test
+    fun testPagination(){
 
+        val pageDto =  given()
+                .get("/?withRooms=true&offset=0&limit=1").then()
+                .statusCode(200)
+                .extract().body()
+                .jsonPath()
+                .getObject("data",PageDto::class.java)
+        println("\n ${pageDto._links["next"]} ${pageDto.list} \n")
+
+        val firstVenue = pageDto.list[0]
+        val nextPageDto = given()
+                .get(pageDto._links["next"]!!.href.substring(7)).then()
+                .statusCode(200)
+                .extract().body()
+                .jsonPath()
+                .getObject("data",PageDto::class.java)
+
+        val pageTwoVenueDto =  nextPageDto.list[0]
+        assertNotEquals(firstVenue,pageTwoVenueDto)
+        println(message = nextPageDto.next!!.href + "j")
+        println(nextPageDto.previous!!.href)
+        Assert.assertThat(firstVenue, equalTo(
+                given()
+                        .get(nextPageDto.previous!!.href.substring(7)).then()
+                        .statusCode(200)
+                        .extract().body()
+                        .jsonPath()
+                        .getObject("data",PageDto::class.java).list[0]
+        ))
+
+
+    }
     @Test
     fun mergePatchVenue() {
         val venueDtoId = createVenue()
@@ -85,7 +108,7 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .extract().response().asString())
 
         val venueDtoList = given()
-                .get()
+                .get("/$venueDtoId")
                 .then()
                 .statusCode(200)
                 .extract()
@@ -94,13 +117,10 @@ class VenuesApiTest : LocalApplicationRunner() {
 
         Assert.assertThat(venueDtoList[venueDtoList.size - 1].name, equalTo(newName))
         Assert.assertThat(venueDtoList[venueDtoList.size - 1].geoLocation, equalTo(geo))
-
     }
 
     @Test
     fun testWrappedResponseGetSendtFromServer() {
-
-
         RestAssured.given()
                 .get()
                 .then()
@@ -142,7 +162,6 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .body("data.list[0].rooms.size()", CoreMatchers.equalTo(data.rooms.size))
 
 
-
     }
 
     @Test
@@ -171,7 +190,7 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .extract().asString()
 
         val data = given()
-                .get()
+                .get("/${id}?withRooms=true")
                 .then()
                 .statusCode(200)
                 .extract()
@@ -180,13 +199,11 @@ class VenuesApiTest : LocalApplicationRunner() {
 
         println(data)
 
-        val desiredVenue =
-                if (!data.isEmpty()) {
-
-                    data[data.size - 1]
-                } else {
-                    VenueDto(id = null, geoLocation = null, address = null, rooms = setOf(), name = null)
-                }
+        val desiredVenue = if (!data.isEmpty()) {
+            data[data.size - 1]
+        } else {
+            VenueDto(id = null, geoLocation = null, address = null, rooms = setOf(), name = null)
+        }
         Assert.assertThat(desiredVenue.id, equalTo(id))
 
         val roomsNamesExsist = desiredVenue.rooms.stream().allMatch {
@@ -255,7 +272,7 @@ class VenuesApiTest : LocalApplicationRunner() {
         val address = "127.0.0.1"
         val venueDto = VenueDto(id = null, geoLocation = geo, name = name, rooms = setOf(roomDto), address = address)
 
-        val id =RestAssured.given().contentType(BASE_JSON)
+        val id = RestAssured.given().contentType(BASE_JSON)
                 .body(venueDto)
                 .post()
                 .then()
@@ -272,14 +289,14 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(204)
 
 
-       val dto =  RestAssured
+        val dto = RestAssured
                 .given()
                 .get("/${venueDto.id}?withRooms=true").then()
                 .statusCode(200)
                 .extract()
                 .jsonPath()
                 .getList("data.list", VenueDto::class.java)[0]
-        dto.rooms.stream().forEach{
+        dto.rooms.stream().forEach {
             Assert.assertThat(it.name, equalTo(roomDto.name))
         }
         Assert.assertThat(dto.name, equalTo("DTO NAME"))
@@ -288,8 +305,9 @@ class VenuesApiTest : LocalApplicationRunner() {
 
 
     }
+
     @Test
-    fun testGetNonExsistingVenue(){
+    fun testGetNonExsistingVenue() {
         RestAssured
                 .given()
                 .get("/1910391230219312093").then()

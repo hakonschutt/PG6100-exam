@@ -73,13 +73,13 @@ class VenuesService {
                     .build().toString()
             )
         }
-        if (offset + limit < venuList.size) {
+
+        if (offset + limit < venuesRepository.count()) {
             page.next = HalLink(builder.cloneBuilder()
                     .queryParam("offset", offset + limit)
                     .build().toString()
             )
         }
-
         return page
 
     }
