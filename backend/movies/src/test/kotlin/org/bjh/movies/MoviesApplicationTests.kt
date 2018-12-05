@@ -134,25 +134,27 @@ class MoviesApplicationTests {
 
     }
 
+    //TODO: Fixme
     @Test
     fun testUpdateExistingMovieWithPut()  {
         val allMovies = getAllMovies()
         val movie = allMovies!![0]
-        val alteredMovieToPut = movie.copy(title="NEW TITLE")
+        val modifiedTitle = "NEW TITLE"
+        val alteredMovieToPut = movie.copy(title=modifiedTitle)
 
         given().contentType(ContentType.JSON)
-                .body(movie)
-                .put(alteredMovieToPut.id)
+                .body(alteredMovieToPut)
+                .put(movie.id)
                 .then()
                 .statusCode(204)
-                .body("code", equalTo(204))
-                .body("message", not(equalTo(null)))
+
+        given().accept(ContentType.JSON)
+                .get(movie.id)
+                .then()
+                .statusCode(200)
+                .body("data.list[0].title", equalTo(modifiedTitle))
     }
 
-   /* @Test
-    fun testUpdateNonExistantMovieWithPut() {
-        val
-    }*/
 
     @Test
     fun testDeleteOneMovie() {

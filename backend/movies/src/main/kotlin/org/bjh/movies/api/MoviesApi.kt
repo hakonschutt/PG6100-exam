@@ -32,12 +32,7 @@ class MoviesApi {
     @Autowired
     private lateinit var movieService: MovieService
 
-    private val JSON_PRIMITIVE_TYPE_NUMBER = "number"
-    private val JSON_PRIMITIVE_TYPE_STRING = "string"
-    private val JSON_PRIMITIVE_TYPE_BOOLEAN = "boolean"
-    private val BASE_PATH = "/api/movies"
-
-    //TODO: Add ReponseDto to responses?
+    private val basePath = "/api/movies"
 
     //TODO: Pagination with infinity-scroll. How to?
     @ApiOperation("Get all the movies")
@@ -109,7 +104,7 @@ class MoviesApi {
                             .validated())
 
 
-        return ResponseEntity.created(URI.create(BASE_PATH + "/" + createdId)).body(
+        return ResponseEntity.created(URI.create(basePath + "/" + createdId)).body(
                 WrappedResponse<Unit>(code = 201, message = "Movie was created").validated())
     }
 
@@ -148,12 +143,13 @@ class MoviesApi {
 
 
         movieService.save(movieList[0])
-
-        return ResponseEntity.status(204).body(
+        val stuff = ResponseEntity.status(204).body(
                 WrappedResponse<Unit>(
                         code = 204,
                         message = "Updated movie with id: $movieId")
                         .validated())
+        print("STUFF "  + stuff)
+        return stuff
     }
 
 
@@ -180,7 +176,7 @@ class MoviesApi {
         val deleted = movieService.deleteMovieById(id)
 
         if (!deleted)
-            return ResponseEntity.status(400).body(
+            return ResponseEntity.status(404).body(
                     WrappedResponse<Unit>(
                             code = 404,
                             message = "'$movieId' is not an existing movie id.")
@@ -234,16 +230,13 @@ class MoviesApi {
         }
 
         if (movieObject.has("id")) {
-            println()
-
-            println("ID: " + movieObject.get("id"))
             return ResponseEntity.status(409).build()
         }
 
         val tempDto = movieDto.copy()
 
         //TODO: Figure out a way to make all this into a repeatable method.
-        //Possibly check out delegated properties
+        //TODO: Set a primitive value based on an object based on the name of the field generically,
         if (movieObject.has("title")) {
             val title = movieObject.get("title")
 
