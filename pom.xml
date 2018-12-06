@@ -6,7 +6,7 @@
 	<groupId>org.bjh</groupId>
 	<artifactId>exam</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>exam</name>
 	<description>PG6100 - Exam Root</description>
@@ -61,6 +61,7 @@
 		<version.springboot>2.0.3.RELEASE</version.springboot>
 		<version.springcloud>Finchley.RELEASE</version.springcloud>
 		<version.springfox>2.9.2</version.springfox>
+		<version.jacoco>0.8.2</version.jacoco>
 		<version.graphql-spring>4.2.0</version.graphql-spring>
 		<kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 		<version.jackson>2.8.9</version.jackson>
@@ -99,7 +100,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-parent</artifactId>
 			<version>${version.springboot}</version>
-			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
 		<dependency>
@@ -110,7 +110,6 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-dependencies</artifactId>
 			<version>${version.springcloud}</version>
-			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
 
@@ -167,6 +166,7 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<!--TODO Check dependencies-->
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -262,10 +262,50 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${version.jacoco}</version>
+			</plugin>
 		</plugins>
 
 		<pluginManagement>
 			<plugins>
+				<!--For generating code coverage-->
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>default-prepare-agent</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>default-report</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>default-prepare-agent-integration</id>
+							<phase>package</phase>
+							<goals>
+								<goal>prepare-agent-integration</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>default-report-integration</id>
+							<goals>
+								<goal>report-integration</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+
 				<plugin>
 					<!-- see https://kotlinlang.org/docs/reference/using-maven.html -->
 					<artifactId>kotlin-maven-plugin</artifactId>
@@ -275,6 +315,7 @@
                         Kotlin has a major "limitation" that all classes are final by default.
                         Someone call it a "feature", others (like me) call it a "design flaw".
                         See more at: https://discuss.kotlinlang.org/t/classes-final-by-default/166/77
+
 
                         Why is it a problem? for example, it does not play well with all major frameworks
                         out there like JPA, Spring, mocking, etc, as they require to create proxy
