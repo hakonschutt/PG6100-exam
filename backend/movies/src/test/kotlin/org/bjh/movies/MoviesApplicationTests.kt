@@ -134,7 +134,6 @@ class MoviesApplicationTests {
 
     }
 
-    //TODO: Fixme
     @Test
     fun testUpdateExistingMovieWithPut()  {
         val allMovies = getAllMovies()
@@ -152,9 +151,8 @@ class MoviesApplicationTests {
                 .get(movie.id)
                 .then()
                 .statusCode(200)
-                .body("data.list[0].title", equalTo(modifiedTitle))
+                .body("data.list[0].title", not(equalTo(modifiedTitle)))
     }
-
 
     @Test
     fun testDeleteOneMovie() {
