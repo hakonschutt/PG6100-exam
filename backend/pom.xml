@@ -20,6 +20,7 @@
     <modules>
         <module>venues</module>
         <module>utils</module>
+        <module>booking</module>
     </modules>
     <dependencies>
       
