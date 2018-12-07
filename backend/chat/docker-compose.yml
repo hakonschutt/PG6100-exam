@@ -19,7 +19,6 @@ version: '3.3'
 services:
   rabbitmq:
     image:  "rabbitmq:3"
-
   chat:
     image: maven:3
     stop_signal: SIGKILL

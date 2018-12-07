@@ -1,5 +1,5 @@
 FROM openjdk:8-alpine
 
-ADD target/chat-sender.jar .
+ADD target/chat.jar .
 
-CMD java -jar chat-sender.jar
+CMD java -jar chat.jar

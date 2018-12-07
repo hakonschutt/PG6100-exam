@@ -1,7 +1,5 @@
 package org.bjh;
 
-import org.bjh.workers.WorkReceiver
-import org.bjh.workers.WorkSender
 import org.bjh.pojo.QueueNameHolder
 import org.springframework.amqp.core.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +25,6 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory
 @SpringBootApplication
 @EnableSwagger2
 @EnableScheduling
-
 class ChatRunner {
     @Bean
     fun swaggerApi(): Docket {
@@ -46,48 +43,63 @@ class ChatRunner {
                 .build()
     }
 
+
+
+
+
+    /*
+        Here using a Direct exchange, but
+        not the default one
+     */
     @Bean
-    fun queue(): Queue {
-        return Queue("MessageQueue")
+    fun direct(): DirectExchange {
+        return DirectExchange("tut.direct")
     }
 
-//    @Bean//https://stackoverflow.com/questions/50473562/spring-bus-rabbit-amqp-client-drops-connection-on-idle-for-long-time
-//    fun amqpAdmin(connectionFactory: ConnectionFactory): AmqpAdmin {
-//        return object : RabbitAdmin(connectionFactory) {
-//
-//            override fun initialize() {
-//                while (true) { // might want to give up after some number of tries
-//                    try {
-//                        super.initialize()
-//                        break
-//                    } catch (e: Exception) {
-//                        println("Failed to declare elements: " + (e.cause?.cause?.message ?: "what"))
-//                        try {
-//                            Thread.sleep(1000)
-//                        } catch (e1: InterruptedException) {
-//                            Thread.currentThread().interrupt()
-//                        }
-//
-//                    }
-//
-//                }
-//            }
-//
-//        }
-//    }
+    /*
+        Creating 2 different queues, X and Y
+     */
 
     @Bean
-    fun worker0(): WorkReceiver {
-        return WorkReceiver("a")
+    fun queueX(): Queue {
+        return AnonymousQueue()
+    }
+    @Bean
+    fun queueY(): Queue {
+        return AnonymousQueue()
+    }
+
+
+
+    @Bean
+    fun bindingX_ERROR(direct: DirectExchange,
+                       queueX: Queue): Binding {
+        return BindingBuilder
+                .bind(queueX)
+                .to(direct)
+                .with("ERROR")
     }
 
     @Bean
-    fun sender(): WorkSender {
-        return WorkSender("ok")
+    fun bindingY_ERROR(direct: DirectExchange,
+                       queueY: Queue): Binding {
+        return BindingBuilder
+                .bind(queueY)
+                .to(direct)
+                .with("ERROR")
+    }
+
+
+    @Bean
+    fun bindingY_WARN(direct: DirectExchange,
+                      queueY: Queue): Binding {
+        return BindingBuilder
+                .bind(queueY)
+                .to(direct)
+                .with("WARN")
     }
 
 }
-
 
 fun main(args: Array<String>) {
     runApplication<ChatRunner>(*args)
