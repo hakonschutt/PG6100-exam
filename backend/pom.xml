@@ -5,6 +5,7 @@
 
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
     <name>backend</name>
@@ -16,9 +17,12 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-
     <modules>
+        <module>venues</module>
         <module>utils</module>
     </modules>
+    <dependencies>
+      
+    </dependencies>
 <!--TODO: Implement missing dependencies here-->
 </project>
