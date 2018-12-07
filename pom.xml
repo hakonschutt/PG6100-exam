@@ -6,8 +6,7 @@
 	<groupId>org.bjh</groupId>
 	<artifactId>exam</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-
+	<packaging>pom</packaging>
 	<name>exam</name>
 	<description>PG6100 - Exam Root</description>
 

@@ -1,0 +1,40 @@
+#tests:
+#  image: maven:3
+#  stop_signal: SIGKILL
+#  stdin_open: true
+#  tty: true
+#  working_dir: /home/kleppa/dev/enterprise/PG6100-exam/backend
+#  volumes:
+#  - /home/kleppa/dev/enterprise/PG6100-exam/backend:/home/kleppa/dev/enterprise/PG6100-exam/backend
+#  - /var/run/docker.sock:/var/run/docker.sock
+#  - ~/.m2:/root/.m2
+#  command: mvn test
+#rabbitmq:
+#  image: rabbitmq:management
+#  ports:
+#  - "5679:5672"
+#  - "15672:15672"
+version: '3.3'
+
+services:
+  rabbitmq:
+    image:  "rabbitmq:3"
+
+  chat:
+    image: maven:3
+    stop_signal: SIGKILL
+    stdin_open: true
+    tty: true
+    working_dir: /home/kleppa/dev/enterprise/PG6100-exam/backend
+    volumes:
+    - /home/kleppa/dev/enterprise/PG6100-exam/backend:/home/kleppa/dev/enterprise/PG6100-exam/backend
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ~/.m2:/root/.m2
+    command: mvn test -X -e
+    depends_on:
+      - rabbitmq
+
+  # Starting the same service twice.
+  # To access it from localhost, need to bind them
+  # to different TCP ports.
+

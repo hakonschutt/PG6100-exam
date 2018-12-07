@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
     <name>backend</name>
@@ -19,6 +19,7 @@
 
     <modules>
         <module>utils</module>
+        <module>chat</module>
     </modules>
 <!--TODO: Implement missing dependencies here-->
 </project>
