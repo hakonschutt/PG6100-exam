@@ -34,7 +34,7 @@ class BookingConverter {
             offset : Int = 0,
             limit: Int = 20
         ): PageDto<BookingDto> {
-            val bookings = entities.map{ transform(it, withTickets) }
+            val bookings = entities.asSequence().map{ transform(it, withTickets) }.toMutableList()
 
             return PageDto(
                 list = bookings,
