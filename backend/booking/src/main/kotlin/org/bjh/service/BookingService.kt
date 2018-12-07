@@ -4,45 +4,140 @@ import org.bjh.converter.BookingConverter
 import org.bjh.converter.TicketConverter
 import org.bjh.dto.BookingDto
 import org.bjh.entity.BookingEntity
+import org.bjh.pagination.HalLink
+import org.bjh.pagination.PageDto
 import org.bjh.repository.BookingRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 class BookingService {
     @Autowired
     private lateinit var bookingRepository : BookingRepository
 
-    fun findAll (withTickets : Boolean) : Set<BookingDto> {
-        val bookings = bookingRepository.findAll().map { bookingEntity ->
-            BookingConverter.transform(bookingEntity, withTickets)
+    fun findAll (withTickets : Boolean, offset: Int = 0, limit: Int = 20) : PageDto<BookingDto> {
+        val bookings = bookingRepository.findAll(offset, limit);
+        val page = BookingConverter.transform(bookings, withTickets, offset, limit)
+
+        val builder = UriComponentsBuilder
+            .fromPath("/bookings")
+            .queryParam("withTickets", withTickets)
+            .queryParam("limit", limit)
+
+        page._self = HalLink(builder.cloneBuilder()
+            .queryParam("offset", offset)
+            .build().toString()
+        )
+
+        if (!bookings.isEmpty() && offset > 0) {
+            page.previous = HalLink(builder.cloneBuilder()
+                    .queryParam("offset", Math.max(offset - limit, 0))
+                    .build().toString()
+            )
         }
 
-        return bookings.toSet()
+        if (offset + limit < bookingRepository.count()) {
+            page.next = HalLink(builder.cloneBuilder()
+                    .queryParam("offset", offset + limit)
+                    .build().toString()
+            )
+        }
+
+        return page
     }
 
-    fun findAllByEventIdAndUserId(withTickets: Boolean, eventId: Long, userId: Long) : Set<BookingDto> {
-        val bookings = bookingRepository.findAllByEventIdAndUserId(eventId, userId).map { bookingEntity ->
-            BookingConverter.transform(bookingEntity, withTickets)
+    fun findAllByEventIdAndUserId(withTickets: Boolean, eventId: Long, userId: Long, offset: Int = 0, limit: Int = 20) : PageDto<BookingDto> {
+        val bookings = bookingRepository.findAllByEventIdAndUserId(eventId, userId, offset, limit)
+        val page = BookingConverter.transform(bookings, withTickets, offset, limit)
+
+        val builder = UriComponentsBuilder
+                .fromPath("/bookings")
+                .queryParam("withTickets", withTickets)
+                .queryParam("limit", limit)
+
+        page._self = HalLink(builder.cloneBuilder()
+                .queryParam("offset", offset)
+                .build().toString()
+        )
+
+        if (!bookings.isEmpty() && offset > 0) {
+            page.previous = HalLink(builder.cloneBuilder()
+                    .queryParam("offset", Math.max(offset - limit, 0))
+                    .build().toString()
+            )
         }
 
-        return bookings.toSet()
+        if (offset + limit < bookingRepository.countByEventIdAndUserId(eventId, userId)) {
+            page.next = HalLink(builder.cloneBuilder()
+                    .queryParam("offset", offset + limit)
+                    .build().toString()
+            )
+        }
+
+        return page
     }
 
-    fun findAllByEventId(withTickets: Boolean, eventId: Long) : Set<BookingDto> {
-        val bookings = bookingRepository.findAllByEventId(eventId).map { bookingEntity ->
-            BookingConverter.transform(bookingEntity, withTickets)
+    fun findAllByEventId(withTickets: Boolean, eventId: Long, offset: Int = 0, limit: Int = 20) : PageDto<BookingDto> {
+        val bookings = bookingRepository.findAllByEventId(eventId, offset, limit)
+        val page = BookingConverter.transform(bookings, withTickets, offset, limit)
+
+        val builder = UriComponentsBuilder
+                .fromPath("/bookings")
+                .queryParam("withTickets", withTickets)
+                .queryParam("limit", limit)
+
+        page._self = HalLink(builder.cloneBuilder()
+                .queryParam("offset", offset)
+                .build().toString()
+        )
+
+        if (!bookings.isEmpty() && offset > 0) {
+            page.previous = HalLink(builder.cloneBuilder()
+                    .queryParam("offset", Math.max(offset - limit, 0))
+                    .build().toString()
+            )
         }
 
-        return bookings.toSet()
+        if (offset + limit < bookingRepository.countByEventId(eventId)) {
+            page.next = HalLink(builder.cloneBuilder()
+                    .queryParam("offset", offset + limit)
+                    .build().toString()
+            )
+        }
+
+        return page
     }
 
-    fun findAllByUserId(withTickets: Boolean, userId: Long) : Set<BookingDto> {
-        val bookings = bookingRepository.findAllByUserId(userId).map { bookingEntity ->
-            BookingConverter.transform(bookingEntity, withTickets)
+    fun findAllByUserId(withTickets: Boolean, userId: Long, offset: Int = 0, limit: Int = 20) : PageDto<BookingDto> {
+        val bookings = bookingRepository.findAllByUserId(userId, offset, limit)
+        val page = BookingConverter.transform(bookings, withTickets, offset, limit)
+
+        val builder = UriComponentsBuilder
+                .fromPath("/bookings")
+                .queryParam("withTickets", withTickets)
+                .queryParam("limit", limit)
+
+        page._self = HalLink(builder.cloneBuilder()
+                .queryParam("offset", offset)
+                .build().toString()
+        )
+
+        if (!bookings.isEmpty() && offset > 0) {
+            page.previous = HalLink(builder.cloneBuilder()
+                    .queryParam("offset", Math.max(offset - limit, 0))
+                    .build().toString()
+            )
         }
 
-        return bookings.toSet()
+        if (offset + limit < bookingRepository.countByUserId(userId)) {
+            page.next = HalLink(builder.cloneBuilder()
+                    .queryParam("offset", offset + limit)
+                    .build().toString()
+            )
+        }
+
+        return page
     }
 
     fun findById(id: Long, withTickets: Boolean) : BookingDto {
@@ -67,6 +162,7 @@ class BookingService {
 
         return booking.id ?: 1L
     }
+
     fun updateBooking(dto: BookingDto) : Boolean {
         val id: Long
         try {

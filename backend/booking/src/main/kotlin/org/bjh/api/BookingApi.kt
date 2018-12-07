@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.swagger.annotations.*
 import org.bjh.dto.BookingDto
 import org.bjh.dto.TicketDto
+import org.bjh.pagination.PageDto
 import org.bjh.service.BookingService
 import org.bjh.service.TicketService
 import org.bjh.wrappers.WrappedResponse
@@ -38,7 +39,7 @@ class BookingApi {
     @ApiOperation("Get all the bookings")
     @ApiResponses(
         ApiResponse(code = 200, message = "Returns a list of all bookings"),
-        ApiResponse(code = 204, message = "Returns an empty list")
+        ApiResponse(code = 422, message = "Query parameters are incorrect")
     )
     fun getAllBookings(
         @ApiParam("The user id to query by")
@@ -60,7 +61,7 @@ class BookingApi {
         @ApiParam("The limit of the response set")
         @RequestParam("limit", required = false, defaultValue = "20")
         limit: Int
-    ): ResponseEntity<WrappedResponse<Set<BookingDto>>> {
+    ): ResponseEntity<WrappedResponse<PageDto<BookingDto>>> {
         var userId : Long = -1L
         var eventId : Long = -1L
 
@@ -68,23 +69,22 @@ class BookingApi {
             if (!pathEventId.isNullOrBlank()) { eventId = pathEventId!!.toLong() }
             if (!pathUserId.isNullOrBlank()) { userId = pathUserId!!.toLong() }
         } catch (e: NumberFormatException) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(422).build()
         }
 
         val result = if (eventId == -1L && userId == -1L) {
-            bookingService.findAll(withTickets);
+            bookingService.findAll(withTickets = withTickets, offset =  offset, limit = limit)
         } else if (eventId != -1L && userId != -1L) {
-            bookingService.findAllByEventIdAndUserId(withTickets = withTickets, eventId = eventId, userId = userId)
+            bookingService.findAllByEventIdAndUserId(withTickets = withTickets, eventId = eventId, userId = userId, offset =  offset, limit = limit)
         } else if (eventId != -1L) {
-            bookingService.findAllByEventId(withTickets, eventId = eventId)
+            bookingService.findAllByEventId(withTickets = withTickets, eventId = eventId, offset =  offset, limit = limit)
         } else {
-            bookingService.findAllByUserId(withTickets, userId = userId)
+            bookingService.findAllByUserId(withTickets = withTickets, userId = userId, offset =  offset, limit = limit)
         }
 
-        val statusCode : Int = if (result.isNotEmpty()) { 200 } else { 204 }
-        val wrappedResponse = WrappedResponse(code = statusCode, data = result, message = "list of bookings").validated()
+        val wrappedResponse = WrappedResponse(code = 200, data = result, message = "list of bookings").validated()
 
-        return ResponseEntity.status(statusCode).body(wrappedResponse)
+        return ResponseEntity.status(200).body(wrappedResponse)
     }
 
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
@@ -139,7 +139,9 @@ class BookingApi {
         if (dto.tickets.isEmpty() ||
             dto.event == null ||
             dto.user == null ) {
-            return ResponseEntity.status(422).build()
+            return ResponseEntity.status(422).body(
+                WrappedResponse<Unit>(code = 422, message = "Unprocessable booking").validated()
+            )
         }
 
         val checkTicketsIncludeValidFields: (TicketDto) -> Boolean = {
@@ -152,7 +154,9 @@ class BookingApi {
                 .toSet()
 
         if (tickets.isEmpty()) {
-            return ResponseEntity.status(422).build()
+            return ResponseEntity.status(422).body(
+                WrappedResponse<Unit>(code = 422, message = "Unprocessable tickets").validated()
+            )
         }
 
         val bookingId : Long = bookingService.createBooking(dto)
@@ -185,21 +189,29 @@ class BookingApi {
         try {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                WrappedResponse<Unit>(code = 400, message = "Unable to process id type").validated()
+            )
         }
 
         if (dto.id == null) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                WrappedResponse<Unit>(code = 400, message = "Unable to read booking id").validated()
+            )
         }
 
         if (dto.id != id) {
-            return ResponseEntity.status(409).build()
+            return ResponseEntity.status(409).body(
+                WrappedResponse<Unit>(code = 409, message = "Can not override original id value").validated()
+            )
         }
 
         val bookingDto = bookingService.findById(id = id, withTickets = true)
 
         if (bookingDto.id == null) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(
+                WrappedResponse<Unit>(code = 404, message = "Unable to located original value").validated()
+            )
         }
 
         bookingDto.user = dto.user!!
@@ -209,9 +221,13 @@ class BookingApi {
         val isUpdated = bookingService.updateBooking(bookingDto)
 
         return if (isUpdated) {
-            ResponseEntity.status(204).build()
+            ResponseEntity.status(204).body(
+                WrappedResponse<Unit>(code = 204, message = "Booking was fully updated").validated()
+            )
         } else {
-            ResponseEntity.status(500).build()
+            ResponseEntity.status(500).body(
+                WrappedResponse<Unit>(code = 500, message = "Internal error").validated()
+            )
         }
     }
 
@@ -232,19 +248,23 @@ class BookingApi {
         @ApiParam("The partial patch")
         @RequestBody
         jsonPatch: String
-    ) : ResponseEntity<String> {
+    ) : ResponseEntity<WrappedResponse<Unit>> {
         val id: Long
 
         try {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                WrappedResponse<Unit>(code = 400, message = "Booking ids were of incorrect type").validated()
+            )
         }
 
         val dto = bookingService.findById(id = id, withTickets = true)
 
         if (dto.id == null) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(
+                WrappedResponse<Unit>(code = 404, message = "Unable to find booking with id $id").validated()
+            )
         }
 
         val jackson = ObjectMapper()
@@ -253,11 +273,15 @@ class BookingApi {
         try {
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
         } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                WrappedResponse<Unit>(code = 400, message = "Unable to read patch values").validated()
+            )
         }
 
         if (jsonNode.has("id")) {
-            return ResponseEntity.status(409).build()
+            return ResponseEntity.status(409).body(
+                WrappedResponse<Unit>(code = 409, message = "Unable to overwrite body id").validated()
+            )
         }
 
         var newUser = dto.user
@@ -269,7 +293,9 @@ class BookingApi {
             newUser = when {
                 node.isNull -> null
                 node.isLong -> node.asLong()
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(code = 400, message = "User value was of incorrect type").validated()
+                )
             }
         }
 
@@ -279,7 +305,9 @@ class BookingApi {
             newEvent = when {
                 node.isNull -> null
                 node.isLong -> node.asLong()
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(code = 400, message = "Event value was of incorrect type").validated()
+                )
             }
         }
 
@@ -289,9 +317,13 @@ class BookingApi {
         val isUpdated = bookingService.updateBooking(dto)
 
         return if (isUpdated) {
-            ResponseEntity.status(204).build()
+            ResponseEntity.status(204).body(
+                WrappedResponse<Unit>(code = 204, message = "Booking was updated").validated()
+            )
         } else {
-            ResponseEntity.status(500).build()
+            ResponseEntity.status(500).body(
+                WrappedResponse<Unit>(code = 500, message = "Internal error").validated()
+            )
         }
     }
 
@@ -300,7 +332,8 @@ class BookingApi {
     @ApiResponses(
         ApiResponse(code = 204, message = "Ticket was updated"),
         ApiResponse(code = 400, message = "Ticket patch was not processable"),
-        ApiResponse(code = 404, message = "Items with specified ids were not found")
+        ApiResponse(code = 404, message = "Items with specified ids were not found"),
+        ApiResponse(code = 409, message = "Conflict")
     )
     fun mergePatchTicket(
         @ApiParam(ID_PARAM)
@@ -314,7 +347,7 @@ class BookingApi {
         @ApiParam("The partial patch")
         @RequestBody
         jsonPatch: String
-    ) : ResponseEntity<String> {
+    ) : ResponseEntity<WrappedResponse<Unit>> {
         val bookingId : Long
         val ticketId : Long
 
@@ -322,25 +355,33 @@ class BookingApi {
             bookingId = pathBookingId.toLong()
             ticketId = pathTicketId.toLong()
         } catch (e: NumberFormatException) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                WrappedResponse<Unit>(code = 400, message = "Booking ids were of incorrect type").validated()
+            )
         }
 
         val bookingDto = bookingService.findById(id = bookingId, withTickets = true)
 
         if (bookingDto.id == null) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(
+                WrappedResponse<Unit>(code = 404, message = "Unable to find booking instance").validated()
+            )
         }
 
         val isTicketPresent = bookingDto.tickets.any { it.id == ticketId }
 
         if (!isTicketPresent) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(
+                WrappedResponse<Unit>(code = 404, message = "Ticket was not present on booking").validated()
+            )
         }
 
         val ticketDto = ticketService.findById(ticketId)
 
         if (ticketDto.id == null) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(
+                WrappedResponse<Unit>(code = 404, message = "Ticket was not located in the database").validated()
+            )
         }
 
         val jackson = ObjectMapper()
@@ -349,11 +390,15 @@ class BookingApi {
         try {
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
         } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                WrappedResponse<Unit>(code = 400, message = "Unable to process sent object").validated()
+            )
         }
 
         if (jsonNode.has("id")) {
-            return ResponseEntity.status(409).build()
+            return ResponseEntity.status(409).body(
+                WrappedResponse<Unit>(code = 409, message = "Unable to overwrite body id").validated()
+            )
         }
 
         var newPrice = ticketDto.price
@@ -365,7 +410,9 @@ class BookingApi {
             newPrice = when {
                 node.isNull -> null
                 node.isDouble -> node.asDouble()
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(code = 400, message = "Price value was of incorrect type").validated()
+                )
             }
         }
 
@@ -375,7 +422,9 @@ class BookingApi {
             newSeat = when {
                 node.isNull -> null
                 node.isTextual -> node.asText()
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(code = 400, message = "Seat value was of incorrect type").validated()
+                )
             }
         }
 
@@ -385,9 +434,13 @@ class BookingApi {
         val isUpdated = ticketService.updateTicket(ticketDto)
 
         return if (isUpdated) {
-            ResponseEntity.status(204).build()
+            ResponseEntity.status(204).body(
+                WrappedResponse<Unit>(code = 204, message = "Ticket with is $ticketId was updated").validated()
+            )
         } else {
-            ResponseEntity.status(500).build()
+            ResponseEntity.status(500).body(
+                WrappedResponse<Unit>(code = 500, message = "Internal error").validated()
+            )
         }
     }
 
@@ -408,13 +461,17 @@ class BookingApi {
         try {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                WrappedResponse<Unit>(code = 400, message = "Booking id was not of correct type").validated()
+            )
         }
 
         val bookingWasDeleted = bookingService.deleteBookingById(id)
 
         if (!bookingWasDeleted) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(
+                WrappedResponse<Unit>(code = 404, message = "Unable to delete booking with id $id").validated()
+            )
         }
 
         return ResponseEntity.status(204).body(

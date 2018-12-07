@@ -2,6 +2,7 @@ package org.bjh.converter
 
 import org.bjh.dto.BookingDto
 import org.bjh.entity.BookingEntity
+import org.bjh.pagination.PageDto
 
 /**
  * @author hakonschutt
@@ -28,12 +29,19 @@ class BookingConverter {
         }
 
         fun transform(
-            entities: Set<BookingEntity>,
+            entities: List<BookingEntity>,
             withTickets: Boolean,
             offset : Int = 0,
             limit: Int = 20
-        ): Set<BookingDto> {
-            return entities.asSequence().map { transform(it, withTickets) }.toSet()
+        ): PageDto<BookingDto> {
+            val bookings = entities.map{ transform(it, withTickets) }
+
+            return PageDto(
+                list = bookings,
+                rangeMin = offset,
+                rangeMax = offset + entities.size - 1,
+                totalSize = entities.size
+            )
         }
 
         fun transformDtoToEntity(entities: Set<BookingDto>) : Set<BookingEntity> {
