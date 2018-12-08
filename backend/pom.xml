@@ -16,9 +16,20 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-
     <modules>
         <module>utils</module>
+        <module>venues</module>
+        <module>template</module>
     </modules>
-<!--TODO: Implement missing dependencies here-->
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.bjh.utils</groupId>
+                <artifactId>utils</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <!--TODO: Implement missing dependencies here-->
 </project>
