@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
 
-// Taken from Andreas Repo
+// Taken from Andrea's Repo
 @ApiModel(description = "Paginated list of resources with HAL links, like to 'next' and 'previous' pages ")
 class PageDto<T>(
 
@@ -74,5 +74,3 @@ class PageDto<T>(
         this._self = _self
     }
 }
-
-
