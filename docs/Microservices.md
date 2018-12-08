@@ -78,6 +78,10 @@ class AuthEntity(
 #### Endpoints
 - [ ] Endpoint 1
 
+### Events
+Needs amount of bookings
+Needs amount of seats available
+
 
 ### Venues
 Geolokasjon?
