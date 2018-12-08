@@ -19,6 +19,7 @@
     <modules>
         <module>utils</module>
         <module>movies</module>
+        <module>venues</module>
         <module>template</module>
     </modules>
 
