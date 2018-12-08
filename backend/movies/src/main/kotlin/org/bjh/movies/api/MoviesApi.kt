@@ -34,7 +34,6 @@ class MoviesApi {
 
     private val basePath = "/api/movies"
 
-    //TODO: Pagination with infinity-scroll. How to?
     @ApiOperation("Get all the movies")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun getAllMovies(@ApiParam("Offset in the list of news")
@@ -46,14 +45,17 @@ class MoviesApi {
                      limit: Int
     ): ResponseEntity<WrappedResponse<PageDto<MovieDto>>> {
 
-        val list = movieService.getAll(offset, limit)
+        var validatedOffset = offset
+        if (offset < 0)
+            validatedOffset = 0
+
+        val list = movieService.getAll(validatedOffset, limit)
 
         return ResponseEntity.ok(
                 WrappedResponse(
                         code = 200,
                         data = list)
-                        .validated()
-        )
+                        .validated())
     }
 
     @ApiOperation("Get a specific movie by id")
@@ -81,13 +83,15 @@ class MoviesApi {
                     .body(WrappedResponse<PageDto<MovieDto>>(
                             code = 404,
                             message = "Movie cannot be null")
-                            .validated())
+                            .validated()
+                    )
 
         return ResponseEntity.ok(
                 WrappedResponse(
                         code = 200,
                         data = requestResult)
-                        .validated())
+                        .validated()
+        )
 
     }
 
@@ -143,17 +147,14 @@ class MoviesApi {
 
 
         movieService.save(movieList[0])
-        val stuff = ResponseEntity.status(204).body(
+        return ResponseEntity.status(204).body(
                 WrappedResponse<Unit>(
                         code = 204,
                         message = "Updated movie with id: $movieId")
                         .validated())
-        print("STUFF "  + stuff)
-        return stuff
     }
 
 
-    //TODO: Check codes being sent here.
     @ApiOperation("Delete a movie by id")
     @DeleteMapping(path = ["/{id}"])
     fun deleteById(
@@ -208,7 +209,8 @@ class MoviesApi {
                     WrappedResponse<Unit>(
                             code = 400,
                             message = "'$movieId' is not a valid movie id.")
-                            .validated())
+                            .validated()
+            )
         }
 
 
@@ -235,8 +237,6 @@ class MoviesApi {
 
         val tempDto = movieDto.copy()
 
-        //TODO: Figure out a way to make all this into a repeatable method.
-        //TODO: Set a primitive value based on an object based on the name of the field generically,
         if (movieObject.has("title")) {
             val title = movieObject.get("title")
 

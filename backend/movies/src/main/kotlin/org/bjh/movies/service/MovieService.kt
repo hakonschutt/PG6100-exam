@@ -20,7 +20,6 @@ class MovieService {
 
     fun getById(id: Long): MovieDto {
         val movie = moviesRepository.findById(id).orElse(null) ?: return MovieDto(null)
-        //TODO: Does this work if null?
         return MoviesConverter.transform(movie)
     }
 
@@ -55,26 +54,24 @@ class MovieService {
     }
 
     fun createMovie(movieDto: MovieDto): Long {
-        //TODO: Is this the correct way to change the values?
         val movieEntity = MovieEntity(
                 movieDto.title,
-                movieDto.poster!!,
-                movieDto.coverArt!!,
-                movieDto.trailer!!,
-                movieDto.overview!!,
-                LocalDate.parse(movieDto.releaseDate)!!,
-                movieDto.genres!!,
-                movieDto.voteCount!!,
-                movieDto.voteAverage!!.toDouble(),
-                movieDto.popularity!!.toDouble(),
-                movieDto.price!!.toDouble()
+                movieDto.poster,
+                movieDto.coverArt,
+                movieDto.trailer,
+                movieDto.overview,
+                LocalDate.parse(movieDto.releaseDate),
+                movieDto.genres,
+                movieDto.voteCount,
+                movieDto.voteAverage?.toDouble(),
+                movieDto.popularity?.toDouble(),
+                movieDto.price?.toDouble()
         )
         moviesRepository.save(movieEntity)
 
         return movieEntity.id ?: -1L
     }
 
-    //TODO: What is the best way to handle non-existing id?
     fun deleteMovieById(id: Long): Boolean {
 
         if (!moviesRepository.existsById(id))

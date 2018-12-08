@@ -23,7 +23,6 @@ interface MoviesRepository : CrudRepository<MovieEntity, Long>, MoviesRepository
 }
 
 
-//TODO: Do I need any custom methods? Time will tell.
 @Transactional
 interface MoviesRepositoryCustom {
     //Implement extra methods here
@@ -33,7 +32,6 @@ interface MoviesRepositoryCustom {
 @Transactional
 class MoviesRepositoryImpl : MoviesRepositoryCustom {
 
-    //TODO: Check up on this.
     @Autowired
     private lateinit var em: EntityManager
 }
