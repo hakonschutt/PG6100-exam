@@ -18,6 +18,7 @@
 
     <modules>
         <module>utils</module>
+        <module>booking</module>
         <module>movies</module>
         <module>venues</module>
         <module>template</module>
