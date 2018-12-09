@@ -6,7 +6,7 @@
     <artifactId>utils</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>utils</name>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <parent>
         <groupId>org.bjh</groupId>
