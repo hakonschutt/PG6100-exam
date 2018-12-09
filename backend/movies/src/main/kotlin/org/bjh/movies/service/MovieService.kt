@@ -1,7 +1,7 @@
 package org.bjh.movies.service
 
+import org.bjh.dto.MovieDto
 import org.bjh.movies.MoviesConverter
-import org.bjh.movies.dto.MovieDto
 import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
 import org.bjh.pagination.PageDto
