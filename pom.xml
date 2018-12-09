@@ -272,7 +272,6 @@
 
 		<pluginManagement>
 			<plugins>
-				<!--For generating code coverage-->
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
@@ -489,8 +488,8 @@
                         <nodeVersion>v6.9.5</nodeVersion>
                     </configuration>
                 </plugin>
-
             </plugins>
+
 
         </pluginManagement>
     </build>

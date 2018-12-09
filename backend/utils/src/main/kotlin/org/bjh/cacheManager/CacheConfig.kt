@@ -17,6 +17,7 @@ class CacheConfig {
         val cacheList:MutableList<Cache> = ArrayList()
         //Add your caches here:
         cacheList.add(ConcurrentMapCache("venuesCache"))
+        cacheList.add(ConcurrentMapCache("moviesCache"))
         smpCacheManager.setCaches(cacheList)
         return smpCacheManager
     }
