@@ -1,0 +1,48 @@
+header {
+	display: block;
+	height: 60px;
+	background-color: map-get($base-colors, black);
+
+	.logo-wrap {
+		display: inline-block;
+		height: 60px;
+
+		img {
+			height: 40px;
+			margin: 10px 0;
+			padding: 0 0.5rem;
+		}
+	}
+
+	nav[role='navigation'] {
+		display: inline-block;
+		width: calc(100% - 150px);
+		float: right;
+
+		text-align: right;
+
+		ul {
+			display: block;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+
+			li {
+				display: inline-block;
+				height: 60px;
+				line-height: 60px;
+
+				a {
+					display: block;
+					position: relative;
+					height: 60px;
+					width: auto;
+					padding: 0 1rem;
+					color: map-get($base-colors, white);
+					text-decoration: none;
+					font-weight: 600;
+				}
+			}
+		}
+	}
+}
