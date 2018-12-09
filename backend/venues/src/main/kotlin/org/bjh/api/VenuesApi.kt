@@ -15,6 +15,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.lang.NumberFormatException
+import java.net.URI
 
 const val BASE_JSON = "application/json;charset=UTF-8"
 
@@ -27,8 +28,9 @@ class VenuesApi {
     private lateinit var venuesService: VenuesService
     @Autowired
     private lateinit var roomService: RoomService
+    private val basePath = "/api/venues"
 
-    //todo set up query params for withrooms or nawt
+
     @ApiOperation("Fetches lists of venues")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiResponse(code = 200, message = "Returns a list of venues")
@@ -54,7 +56,6 @@ class VenuesApi {
         return ResponseEntity.status(200).body(wrappedResponse)
     }
 
-    //todo set up query params for withrooms or nawt
 
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun getVenue(@ApiParam("The unique id of the venue")
@@ -86,10 +87,10 @@ class VenuesApi {
         return result
 
     }
+
     @ApiOperation("Creates a venue")
     @PostMapping(consumes = [BASE_JSON])
     @ApiResponses(
-            //FIXME : Return url instead of id
             ApiResponse(code = 201, message = "The id of newly created venue"),
             ApiResponse(code = 400, message = "Bad request")
     )
@@ -97,8 +98,7 @@ class VenuesApi {
             @ApiParam("Text of address, geoloacation, List of room ids. Should not specify id")
             @RequestBody
             dto: VenueDto)
-            : ResponseEntity<WrappedResponse<Long>> {
-        //todo change this response
+            : ResponseEntity<WrappedResponse<Unit>> {
 
         if (!dto.id.isNullOrEmpty() && dto.rooms.isEmpty() &&
                 !(dto.address == null || dto.geoLocation == null)) {
@@ -124,8 +124,11 @@ class VenuesApi {
 
         val venueId = venuesService.createVenue(dto)
 
-        return ResponseEntity.status(201).body(WrappedResponse(code=201,message = "created", data = venueId).validated())
+        return ResponseEntity.created(URI.create(basePath + "/" + venueId)).body(
+                WrappedResponse<Unit>(code = 201, message = "venue that was created").validated())
+
     }
+
     @ApiOperation("Deletes a venue with the given id")
     @DeleteMapping(path = ["/{id}"])
     @ApiResponses(
@@ -150,6 +153,7 @@ class VenuesApi {
             ResponseEntity.status(404).build()
         }
     }
+
     @ApiOperation("Patched venue with given id")
     @PatchMapping(path = ["/{id}"], consumes = ["application/merge-patch+json"])
     @ApiResponses(
@@ -346,8 +350,8 @@ class VenuesApi {
             return ResponseEntity.status(409).body(WrappedResponse<Unit>(code = 409, message = " Inconsistent id between URL and JSON payload").validated())
         }
 
-        val dtoList = venuesService.findAllById(id,true).list
-        if(dtoList.isEmpty()){
+        val dtoList = venuesService.findAllById(id, true).list
+        if (dtoList.isEmpty()) {
             return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404, message = " Dto is missing id").validated())
         }
         val dtoToSave = dtoList[0]
