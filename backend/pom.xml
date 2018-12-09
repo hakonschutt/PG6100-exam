@@ -19,6 +19,7 @@
 
     <modules>
         <module>venues</module>
+        <module>user-details</module>
         <module>utils</module>
     </modules>
     <dependencies>
