@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.net.URI
 
 const val ID_PARAM = "The numeric id of the booking"
 const val BASE_JSON = "application/json;charset=UTF-8"
@@ -114,7 +113,9 @@ class BookingApi {
         try {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(422).body(
+                WrappedResponse<BookingDto>(code = 422, message = "Booking id is of invalid type").validated()
+            )
         }
 
         val booking = bookingService.findById(id, withTickets)
@@ -124,7 +125,9 @@ class BookingApi {
                 WrappedResponse(code = 200, data = booking, message = "booking with id $pathId").validated()
             )
         } else {
-            ResponseEntity.status(404).build()
+            ResponseEntity.status(404).body(
+                WrappedResponse<BookingDto>(code = 404, message = "Booking was not found").validated()
+            )
         }
 
         return result
@@ -140,12 +143,12 @@ class BookingApi {
         @ApiParam("User id, event id, and a list of tickets")
         @RequestBody
         dto: BookingDto
-    ) : ResponseEntity<WrappedResponse<Unit>> {
+    ) : ResponseEntity<WrappedResponse<Long>> {
         if (dto.tickets.isEmpty() ||
             dto.event == null ||
             dto.user == null ) {
             return ResponseEntity.status(422).body(
-                WrappedResponse<Unit>(code = 422, message = "Unprocessable booking").validated()
+                WrappedResponse<Long>(code = 422, message = "Unprocessable booking values").validated()
             )
         }
 
@@ -160,14 +163,14 @@ class BookingApi {
 
         if (tickets.isEmpty()) {
             return ResponseEntity.status(422).body(
-                WrappedResponse<Unit>(code = 422, message = "Unprocessable tickets").validated()
+                WrappedResponse<Long>(code = 422, message = "Unprocessable tickets").validated()
             )
         }
 
         val bookingId : Long = bookingService.createBooking(dto)
 
-        return ResponseEntity.created(URI.create("$BASE_PATH/$bookingId")).body(
-            WrappedResponse<Unit>(code = 201, message = "Booking was created").validated()
+        return ResponseEntity.status(201).body(
+            WrappedResponse(code = 201, data = bookingId, message = "Booking was created").validated()
         )
     }
 
@@ -295,10 +298,10 @@ class BookingApi {
         if (jsonNode.has("user")) {
             val node = jsonNode.get("user")
 
-            newUser = when {
-                node.isNull -> null
-                node.isLong -> node.asLong()
-                else -> return ResponseEntity.status(400).body(
+            try {
+                newUser = node.toString().toLong()
+            } catch (e: NumberFormatException) {
+                return ResponseEntity.status(400).body(
                     WrappedResponse<Unit>(code = 400, message = "User value was of incorrect type").validated()
                 )
             }
@@ -307,10 +310,10 @@ class BookingApi {
         if (jsonNode.has("event")) {
             val node = jsonNode.get("event")
 
-            newEvent = when {
-                node.isNull -> null
-                node.isLong -> node.asLong()
-                else -> return ResponseEntity.status(400).body(
+            try {
+                newEvent = node.toString().toLong()
+            } catch (e: NumberFormatException) {
+                return ResponseEntity.status(400).body(
                     WrappedResponse<Unit>(code = 400, message = "Event value was of incorrect type").validated()
                 )
             }
@@ -333,7 +336,7 @@ class BookingApi {
     }
 
     @ApiOperation("Update a booking with the given id")
-    @PatchMapping(path = ["/{bookingId}/tickets/{ticketId}"], consumes = [BASE_JSON])
+    @PatchMapping(path = ["/{bookingId}/tickets/{ticketId}"], consumes = [MERGE_PATCH])
     @ApiResponses(
         ApiResponse(code = 204, message = "Ticket was updated"),
         ApiResponse(code = 400, message = "Ticket patch was not processable"),
