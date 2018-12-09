@@ -1,10 +1,12 @@
 // GLOBAL
-@import "global/mixins";
-@import "global/variables";
-@import "global/global";
+@import 'global/mixins';
+@import 'global/variables';
+@import 'global/global';
 
 // COMPONENTS
-// @import "components/header";
-
-// PAGES
-// @import "pages/page-loader";
+@import 'components/header';
+@import 'components/footer';
+@import 'components/slider';
+@import 'components/statement-image';
+@import 'components/movie-view';
+@import 'components/chat';

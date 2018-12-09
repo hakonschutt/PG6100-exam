@@ -1,0 +1,69 @@
+.global-slider {
+	display: block;
+	margin-top: 80px;
+	width: 100%;
+	height: auto;
+	min-height: 200px;
+	position: relative;
+	color: white;
+	overflow: hidden;
+
+	.slider-inner {
+		display: block;
+		height: 100%;
+		width: 100%;
+		background-color: red;
+		position: absolute;
+		margin: 0 60px;
+
+		.movies-list {
+			display: block;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			.single-movie {
+				display: inline-block;
+			}
+		}
+	}
+
+	.side-navigation-button {
+		position: absolute;
+		top: 0;
+		height: 100%;
+		overflow: hidden;
+		width: 60px;
+		padding: 0;
+		background-color: rgba(map-get($base-colors, black), 0.5);
+		border: none;
+		transform: all 0.5s ease;
+		z-index: 10;
+		cursor: pointer;
+
+		svg {
+			height: 30px;
+			max-width: 30px;
+			margin: auto 15px;
+			opacity: 0.8;
+		}
+
+		&:focus {
+			outline: none;
+		}
+
+		&.inactive {
+			opacity: 0;
+			cursor: default;
+		}
+
+		&.right {
+			right: 0;
+			transform: rotate(180deg);
+		}
+
+		&.left {
+			left: 0;
+		}
+	}
+}
