@@ -21,7 +21,7 @@
         <module>movies</module>
         <module>venues</module>
         <module>user-details</module>
-        <module>template</module>
+        <!--<module>template</module>-->
     </modules>
 
     <dependencyManagement>
