@@ -18,17 +18,11 @@
 
     <modules>
         <module>utils</module>
-<<<<<<< HEAD
         <module>booking</module>
-=======
         <module>movies</module>
         <module>venues</module>
         <module>template</module>
-<<<<<<< HEAD
->>>>>>> master
-=======
         <module>report</module>
->>>>>>> master
     </modules>
 
     <dependencyManagement>

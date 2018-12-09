@@ -162,6 +162,20 @@ class BookingApiTest : LocalApplicationRunner() {
     }
 
     @Test
+    fun testCreateBookingWithFaultTicketValues() {
+        val booking = BookingDto(id = null, event = 1L, user = 2L, tickets = setOf(TicketDto(id = null, seat = null, price =  null)))
+
+        given()
+            .contentType(BASE_JSON)
+            .body(booking)
+            .post()
+            .then()
+            .statusCode(422)
+            .body("message", equalTo("Unprocessable tickets"))
+            .body("code", equalTo(422))
+    }
+
+    @Test
     fun testCreateBooking() {
         val booking = BookingDto(id = null, event = 1L, user = 2L, tickets = setOf(TicketDto(id = null, seat = "A2", price = 20.00 )))
 
@@ -203,6 +217,68 @@ class BookingApiTest : LocalApplicationRunner() {
             .statusCode(400)
             .body("message", equalTo("Unable to process id type"))
             .body("code", equalTo(400))
+    }
+
+    @Test
+    fun testPutBookingWithoutId() {
+        val ticket = TicketDto(id = null, seat = "A2", price = 20.00 )
+        val booking = BookingDto(id = null, event = 1L, user = 2L, tickets = setOf(ticket))
+
+        val id = given()
+            .contentType(BASE_JSON)
+            .body(booking)
+            .post()
+            .then()
+            .statusCode(201)
+            .body("message", equalTo("Booking was created"))
+            .extract()
+            .body()
+            .jsonPath()
+            .getLong("data")
+
+        booking.event = 2L
+        booking.user = 1L
+        booking.id = null
+
+        given()
+            .contentType(BASE_JSON)
+            .body(booking)
+            .put("/$id")
+            .then()
+            .statusCode(400)
+            .body("message", equalTo("Unable to read booking id"))
+            .body("code", equalTo(400))
+    }
+
+    @Test
+    fun testPutBookingWithDifferentIds() {
+        val ticket = TicketDto(id = null, seat = "A2", price = 20.00 )
+        val booking = BookingDto(id = null, event = 1L, user = 2L, tickets = setOf(ticket))
+
+        val id = given()
+                .contentType(BASE_JSON)
+                .body(booking)
+                .post()
+                .then()
+                .statusCode(201)
+                .body("message", equalTo("Booking was created"))
+                .extract()
+                .body()
+                .jsonPath()
+                .getLong("data")
+
+        booking.event = 2L
+        booking.user = 1L
+        booking.id = id * 2
+
+        given()
+            .contentType(BASE_JSON)
+            .body(booking)
+            .put("/$id")
+            .then()
+            .statusCode(409)
+            .body("message", equalTo("Can not override original id value"))
+            .body("code", equalTo(409))
     }
 
     @Test
