@@ -1,24 +1,16 @@
 package org.bjh.api
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import org.bjh.LocalApplicationRunner
 import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueDto
-import org.bjh.pagination.HalObject
 import org.bjh.pagination.PageDto
-import org.bjh.wrappers.WrappedResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.Matchers.lessThan
 import org.junit.Assert
 import org.junit.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.CacheManager
 import kotlin.test.assertNotEquals
-import kotlin.test.assertTrue
 
 
 class VenuesApiTest : LocalApplicationRunner() {

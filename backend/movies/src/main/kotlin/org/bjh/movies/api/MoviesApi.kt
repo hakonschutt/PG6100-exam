@@ -6,7 +6,7 @@ import com.google.gson.JsonSyntaxException
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
-import org.bjh.movies.dto.MovieDto
+import org.bjh.dto.MovieDto
 import org.bjh.movies.service.MovieService
 import org.bjh.pagination.PageDto
 import org.bjh.wrappers.WrappedResponse

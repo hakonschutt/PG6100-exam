@@ -3,8 +3,6 @@ package org.bjh.converter
 import org.bjh.dto.VenueDto
 import org.bjh.entity.VenueEntity
 import org.bjh.pagination.PageDto
-import org.springframework.data.domain.Page
-import kotlin.streams.toList
 
 class VenueConverter {
     companion object {
