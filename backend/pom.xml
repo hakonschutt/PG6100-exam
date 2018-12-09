@@ -24,6 +24,10 @@
         <module>movies</module>
         <module>venues</module>
         <module>template</module>
+<<<<<<< HEAD
+>>>>>>> master
+=======
+        <module>report</module>
 >>>>>>> master
     </modules>
 
