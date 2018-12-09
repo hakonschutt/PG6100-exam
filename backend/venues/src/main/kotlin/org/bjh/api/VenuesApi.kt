@@ -2,63 +2,81 @@ package org.bjh.api
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiParam
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.annotations.*
 import org.bjh.dto.VenueDto
 import org.bjh.service.VenuesService
-import org.bjh.dto.MultipleVenuesResponseDto
 import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueResponseDto
+import org.bjh.pagination.PageDto
 import org.bjh.service.RoomService
 import org.bjh.wrappers.WrappedResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.lang.NumberFormatException
 
 const val BASE_JSON = "application/json;charset=UTF-8"
-const val V2_VENUES_JSON = "application/org.bjh.dto.VenueDto;charset=UTF-8"
 
 @RestController
 @RequestMapping("/api/venues")
 @Api("Api for venues")
+
 class VenuesApi {
     @Autowired
     private lateinit var venuesService: VenuesService
     @Autowired
     private lateinit var roomService: RoomService
 
+    //todo set up query params for withrooms or nawt
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiResponse(code = 200, message = "Returns a list of venues")
-    fun getAllVenues(): ResponseEntity<WrappedResponse<List<VenueDto>>> {
+    fun getAllVenues(
 
-        val resultList = venuesService.findAll()
-        //todo add pagination
-        val wrappedResponse = MultipleVenuesResponseDto(code = 200, data = resultList, message = "list of venues").validated()
+            @ApiParam("Loading with rooms, or not, default is without")
+            @RequestParam("withRooms", required = false, defaultValue = "false")
+            withRooms: Boolean,
+
+            @ApiParam("Offset param to determine what part ofthe  result table you want back")
+            @RequestParam("offset", required = false, defaultValue = "0")
+            offset: Int,
+            @ApiParam("Limit param to determine what size of the result table you want back")
+            @RequestParam("limit", required = false, defaultValue = "20")
+            limit: Int
+
+
+    ): ResponseEntity<WrappedResponse<PageDto<VenueDto>>> {
+
+        val resultList = venuesService.findAll(withRooms, offset, limit)
+        val wrappedResponse = VenueResponseDto(code = 200, data = resultList, message = "list of venues").validated()
 
         return ResponseEntity.status(200).body(wrappedResponse)
     }
 
+    //todo set up query params for withrooms or nawt
+
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun getVenue(@ApiParam("The unique id of the venue")
-                 @PathVariable("id") idFromPath: String): ResponseEntity<WrappedResponse<VenueDto>> {
-        val result: ResponseEntity<WrappedResponse<VenueDto>>
+                 @PathVariable("id") idFromPath: String,
+                 @ApiParam("loading with rooms, or not, default is with")
+                 @RequestParam("withRooms", required = false)
+                 withRooms: Boolean = true
+    ): ResponseEntity<WrappedResponse<PageDto<VenueDto>>> {
+        val result: ResponseEntity<WrappedResponse<PageDto<VenueDto>>>
         val id: Long
 
         try {
             id = idFromPath.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(400).build()
         }
 
-        val venue = venuesService.findById(id)
-        result = if (venue.id != null) {
+        val venuePage = venuesService.findAllById(id, withRooms)
+        result = if (venuePage.list.size > 0) {
             ResponseEntity.status(200)
                     .body(VenueResponseDto(
                             code = 200,
-                            data = venue,
+                            data = venuePage,
                             message = "The single venue that was requested")
                             .validated())
         } else {
@@ -68,8 +86,12 @@ class VenuesApi {
 
     }
 
-    @PostMapping(consumes = [V2_VENUES_JSON, BASE_JSON])
-    @ApiResponse(code = 201, message = "The id of newly created venue")
+    @PostMapping(consumes = [BASE_JSON])
+    @ApiResponses(
+            //FIXME : Return url instead of id
+            ApiResponse(code = 201, message = "The id of newly created venue"),
+            ApiResponse(code = 400, message = "Bad request")
+    )
     fun createVenue(
             @ApiParam("Text of address, geoloacation, List of room ids. Should not specify id")
             @RequestBody
@@ -91,12 +113,12 @@ class VenuesApi {
         }
         // should this return 400 if one or more of multiple rooms has errors?
         val rooms = dto.rooms
+                .asSequence()
                 .filter(checkIfRoomHasValidFieldValues).toSet()
 
         if (rooms.isEmpty()) {
             return ResponseEntity.status(400).build()
         }
-
 
 
         val venueId = venuesService.createVenue(dto)
@@ -119,9 +141,10 @@ class VenuesApi {
             return ResponseEntity.status(404).build()
         }
         val deletedVenueId = venuesService.delete(id)
+        println("deletedVenue ${deletedVenueId}")
 
         return if (deletedVenueId > -1) {
-            ResponseEntity.status(200).build()
+            ResponseEntity.status(204).build()
         } else {
             ResponseEntity.status(404).build()
         }
@@ -132,7 +155,7 @@ class VenuesApi {
             ApiResponse(code = 409, message = "Conflict"),
             ApiResponse(code = 400, message = "Bad request due to invalid syntax."),
             ApiResponse(code = 204, message = "The server has successfully fulfilled the request"),
-            ApiResponse(code = 500, message = "Server is expecting unpredictable")
+            ApiResponse(code = 500, message = "Server is being unpredictable")
     )
     fun mergePatchVenue(@ApiParam("The unique id of the venue")
                         @PathVariable("id")
@@ -146,14 +169,15 @@ class VenuesApi {
         try {
             id = idFromPath.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(400).build()
         }
-        val dto = venuesService.findById(id)
+        val dto = venuesService.findAllById(id = id, withRooms = true)
         //returns responseEntity if service did not find an already created entity
-        dto.id ?: return ResponseEntity.status(404).build()
+        if (dto.list.isEmpty()) return ResponseEntity.status(404).build()
         val jackson = ObjectMapper()
 
         val jsonNode: JsonNode
+        val dtoObj = dto.list[0]
         try {
 
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
@@ -162,9 +186,9 @@ class VenuesApi {
         }
         if (jsonNode.has("id")) return ResponseEntity.status(409).build()
 
-        var newName = dto.name
-        var newAddress = dto.address
-        var newGeo = dto.geoLocation
+        var newName = dtoObj.name
+        var newAddress = dtoObj.address
+        var newGeo = dtoObj.geoLocation
 
 
 
@@ -196,11 +220,11 @@ class VenuesApi {
                     return ResponseEntity.status(400).build()
             }
         }
-        dto.name = newName
-        dto.address = newAddress
-        dto.geoLocation = newGeo
+        dtoObj.name = newName
+        dtoObj.address = newAddress
+        dtoObj.geoLocation = newGeo
 
-        val response = venuesService.updateVenue(dto)
+        val response = venuesService.updateVenue(dtoObj)
 
         return if (response < 0) {
             ResponseEntity.status(500).build()
@@ -233,8 +257,9 @@ class VenuesApi {
         } catch (e: Exception) {
             return ResponseEntity.status(404).build()
         }
-        val venueDto = venuesService.findById(venueId)
-
+        val venueDtoList = venuesService.findAllById(id = venueId, withRooms = true)
+        if (venueDtoList.list.isEmpty()) return ResponseEntity.status(404).build()
+        val venueDto = venueDtoList.list[0]
         val isRoomInVenue = venueDto.rooms.any { it.id == roomIdFromPath }
 
         if (!isRoomInVenue) return ResponseEntity.status(404).build()
@@ -288,12 +313,52 @@ class VenuesApi {
         roomDto.columns = cols
         roomDto.rows = rows
 
-       val room = roomService.save(roomDto)
+        val room = roomService.save(roomDto)
 
 
-        return when{
+        return when {
             room.id == null -> ResponseEntity.status(500).build()
             else -> ResponseEntity.status(204).build()
         }
     }
+
+    @ApiOperation("Update a specific venue")
+    @PutMapping(path = ["/{id}"])
+    fun updateById(
+            @ApiParam("The id of the venue")
+            @PathVariable("id")
+            pathId: String,
+            @ApiParam("New data for updating the venue")
+            @RequestBody
+            dto: VenueDto
+    ): ResponseEntity<WrappedResponse<Void>> {
+        val id: Long
+        try {
+            id = pathId.toLong()
+        } catch (e: NumberFormatException) {
+            return ResponseEntity.status(400).body(WrappedResponse<Void>(code = 400, message = " Invalid id $pathId").validated())
+        }
+        if (dto.id == null) {
+            return ResponseEntity.status(400).body(WrappedResponse<Void>(code = 400, message = " Dto is missing id").validated())
+        }
+        if (dto.id != pathId) {
+            return ResponseEntity.status(409).body(WrappedResponse<Void>(code = 409, message = " Inconsistent id between URL and JSON payload").validated())
+        }
+
+        val dtoList = venuesService.findAllById(id,true).list
+        if(dtoList.isEmpty()){
+            return ResponseEntity.status(404).body(WrappedResponse<Void>(code = 404, message = " Dto is missing id").validated())
+        }
+        val dtoToSave = dtoList[0]
+        dtoToSave.name = dto.name!!
+        dtoToSave.rooms = dto.rooms!!
+        dtoToSave.address = dto.address!!
+        dtoToSave.geoLocation = dto.geoLocation!!
+
+
+        venuesService.updateVenue(dtoToSave)
+        return ResponseEntity.status(204).body(
+                WrappedResponse<Void>(code = 204).validated())
+    }
+
 }

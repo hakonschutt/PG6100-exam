@@ -5,12 +5,12 @@ import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
 
-// Taken from Andreas Repo
+// Taken from Andrea's Repo
 @ApiModel(description = "Paginated list of resources with HAL links, like to 'next' and 'previous' pages ")
 class PageDto<T>(
 
         @get:ApiModelProperty("The list of resources in the current retrieved page")
-        var list: MutableList<T> = mutableListOf(),
+        var list: List<T> = mutableListOf(),
 
         @get:ApiModelProperty("The index of first element in this page")
         var rangeMin: Int = 0,
@@ -31,8 +31,6 @@ class PageDto<T>(
 
 
 ) : HalObject() {
-
-
 
     @get:JsonIgnore
     var next: HalLink?
@@ -76,5 +74,3 @@ class PageDto<T>(
         this._self = _self
     }
 }
-
-

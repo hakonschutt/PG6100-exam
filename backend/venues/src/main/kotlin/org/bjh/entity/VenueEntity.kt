@@ -1,5 +1,6 @@
 package org.bjh.entity
 
+import org.springframework.data.domain.Page
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
