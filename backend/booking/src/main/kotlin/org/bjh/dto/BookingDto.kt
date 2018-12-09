@@ -8,12 +8,9 @@ import io.swagger.annotations.ApiModelProperty
  */
 @ApiModel(description = "Booking information")
 data class BookingDto(
-    // TODO: Added a relational mapping to user and event Entity when the DTO's are split to a separate microservice
-    // var user: User? = null
     @ApiModelProperty("The associated user for the given booking")
     var user: Long? = null,
 
-    // var event: Event? = null
     @ApiModelProperty("The associated event for the given booking")
     var event: Long? = null,
 

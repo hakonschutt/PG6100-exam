@@ -7,12 +7,8 @@ import javax.persistence.*
  */
 @Entity(name = "bookings")
 class BookingEntity(
-        // @get:ManyToOne
-        // var user: User? = null
         var user: Long? = null,
 
-        // @get:ManyToOne
-        // var event: Event? = null
         var event: Long? = null,
 
         @get:ElementCollection(fetch = FetchType.LAZY)
