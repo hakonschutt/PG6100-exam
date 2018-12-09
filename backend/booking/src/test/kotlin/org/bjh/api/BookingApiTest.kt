@@ -10,6 +10,8 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
+
 
 class BookingApiTest : LocalApplicationRunner() {
 
@@ -30,13 +32,13 @@ class BookingApiTest : LocalApplicationRunner() {
         bookingRepository.save(booking)
     }
 
-    fun testGetAllBookingsRequest(route : String, size : Int) : PageDto<*> {
+    fun testGetAllBookingsRequest(route : String, size : Int) : List<BookingDto> {
         generateBooking(1L, 2L)
         generateBooking(2L, 3L)
         generateBooking(2L, 2L)
         generateBooking(2L, 3L)
 
-        return given()
+        val data = given()
             .get(route)
             .then()
             .statusCode(200)
@@ -45,27 +47,50 @@ class BookingApiTest : LocalApplicationRunner() {
             .extract()
             .body()
             .jsonPath()
-            .getObject("data", PageDto::class.java)
+            .getList("data.list", BookingDto::class.java)
+
+        return data as List<BookingDto>
     }
 
     @Test
     fun testGetAllBookings() {
-        val data = testGetAllBookingsRequest("", 4)
+        val list = testGetAllBookingsRequest("", 4)
+
+        list.stream().forEach{ assertTrue(it is BookingDto) }
     }
 
     @Test
     fun testGetAllBookingsByEventId() {
-        val data = testGetAllBookingsRequest("?withTickets=false&eventId=2", 2)
+        val list = testGetAllBookingsRequest("?withTickets=false&eventId=2", 2)
+
+        list.stream().forEach{ assertEquals(it.event, 2L) }
     }
 
     @Test
     fun testGetAllBookingsByUserId() {
-        val data = testGetAllBookingsRequest("?withTickets=false&userId=2", 3)
+        val list = testGetAllBookingsRequest("?withTickets=false&userId=2", 3)
+
+        list.stream().forEach{ assertEquals(it.user, 2L) }
     }
 
     @Test
     fun testGetAllBookingsByUserIdAndEventId() {
-        val data = testGetAllBookingsRequest("?withTickets=false&userId=2&eventId=2", 1)
+        val list = testGetAllBookingsRequest("?withTickets=false&userId=2&eventId=2", 1)
+
+        list.stream().forEach{
+            assertEquals(it.event, 2L)
+            assertEquals(it.user, 2L)
+        }
+    }
+
+    @Test
+    fun testGetAllBookingsByUserIdAndEventIdWithUnprocessableEntities() {
+        given()
+            .get("?withTickets=false&eventId=fail&userId=fail")
+            .then()
+            .statusCode(422)
+            .body("message", equalTo("Unprocessable ids"))
+            .body("code", equalTo(422))
     }
 
     @Test

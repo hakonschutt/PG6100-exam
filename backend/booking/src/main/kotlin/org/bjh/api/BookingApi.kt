@@ -23,8 +23,11 @@ const val MERGE_PATCH = "application/merge-patch+json"
  * @author hakonschutt
  */
 @RestController
-@RequestMapping("/api/bookings")
-@Api("Api for bookings")
+@RequestMapping(
+    path = ["/api/bookings"],
+    produces = [(MediaType.APPLICATION_JSON_VALUE)]
+)
+@Api(value = "/api/bookings", description = "REST endpoints for bookings")
 class BookingApi {
 
     @Autowired
@@ -69,7 +72,9 @@ class BookingApi {
             if (!pathEventId.isNullOrBlank()) { eventId = pathEventId!!.toLong() }
             if (!pathUserId.isNullOrBlank()) { userId = pathUserId!!.toLong() }
         } catch (e: NumberFormatException) {
-            return ResponseEntity.status(422).build()
+            return ResponseEntity.status(422).body(
+                WrappedResponse<PageDto<BookingDto>>(code = 422, message = "Unprocessable ids").validated()
+            )
         }
 
         val result = if (eventId == -1L && userId == -1L) {
