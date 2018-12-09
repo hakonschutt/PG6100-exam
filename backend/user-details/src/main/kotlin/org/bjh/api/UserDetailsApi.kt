@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@ApiModel("Api for User Details")
+@Api("Api for User Details")
 @RequestMapping("/api/users")
 class UserDetailsApi {
     @Autowired
@@ -22,7 +22,7 @@ class UserDetailsApi {
 
     private val basePath = "/api/users"
     @ApiOperation("Fetch all users")
-    @GetMapping("/users")
+    @GetMapping()
     @ApiResponse(code = 200, message = "Returns a list of all the user details")
     fun getAllUserDetails(
             @ApiParam("Loading with purchase history, or not, default is without")
@@ -50,24 +50,18 @@ class UserDetailsApi {
 
         return ResponseEntity.ok().body(wrappedResponse)
     }
+
     @ApiOperation("Fetch a user based on email")
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
-    fun getVenue(@ApiParam("The unique id of the venue")
-                 @PathVariable("id") idFromPath: String,
-                 @ApiParam("loading with history, or not, default is with")
-                 @RequestParam("withHistory", required = false)
-                 withHistory: Boolean = true
+    fun getUser(@ApiParam("The unique id of the User")
+                @PathVariable("id") idFromPath: String,
+                @ApiParam("loading with history, or not, default is with")
+                @RequestParam("withHistory", required = false)
+                withHistory: Boolean = true
     ): ResponseEntity<WrappedResponse<PageDto<UserDetailDto>>> {
         val result: ResponseEntity<WrappedResponse<PageDto<UserDetailDto>>>
-        val id: Long
 
-        try {
-            id = idFromPath.toLong()
-        } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
-        }
-
-        val userpg = userDetailsService.findAllById(id, withHistory = withHistory)
+        val userpg = userDetailsService.findAllById(idFromPath, withHistory = withHistory)
         result = if (userpg.list.size > 0) {
             ResponseEntity.status(200)
                     .body(UserDetailWrapper(
@@ -80,8 +74,8 @@ class UserDetailsApi {
         }
         return result
     }
-    @ApiOperation("create a user")
 
+    @ApiOperation("create a user")
     @PostMapping(consumes = ["application/json;charset=UTF-8"])
     @ApiResponses(
             ApiResponse(code = 201, message = "The url of newly created user"),
@@ -95,9 +89,8 @@ class UserDetailsApi {
         }
         val user = userDetailsService.createUser(dto)
 
-        WrappedResponse<Unit>(code = 201, message = "Movie was created").validated()
         return ResponseEntity.created(URI.create(basePath + "/" + user.email)).body(
-                WrappedResponse<Unit>(code = 201, message = "Movie was created").validated())
+                WrappedResponse<Unit>(code = 201, message = "User was created").validated())
 
     }
 

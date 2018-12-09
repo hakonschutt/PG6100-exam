@@ -14,6 +14,6 @@ interface UserDetailsRepository : PagingAndSortingRepository<UserDetailEntity,St
             @Param("offset") offset:Int=0,
             @Param ("limit")limit:Int=20)
             :List<UserDetailEntity>
-    @Query("SELECT v FROM venues v WHERE v.id = :id")
-    fun findAllById( @Param("id")id:Long ):List<UserDetailEntity>
+    @Query("SELECT b FROM booking b WHERE b.email = :email")
+    fun findAllById( @Param("email")email:String ):List<UserDetailEntity>
 }

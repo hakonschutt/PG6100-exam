@@ -27,7 +27,6 @@ class VenuesApiTest : LocalApplicationRunner() {
     @Test
     fun deleteVenue() {
 
-
         val data = given()
                 .get().then()
                 .statusCode(200)
@@ -318,6 +317,4 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(400)
 
     }
-
-
 }

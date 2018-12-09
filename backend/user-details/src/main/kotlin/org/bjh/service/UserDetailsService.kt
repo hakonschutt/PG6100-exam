@@ -65,7 +65,7 @@ class UserDetailsService {
 
     }
 
-    fun findAllById(id: Long, withHistory: Boolean): PageDto<UserDetailDto> {
+    fun findAllById(id: String, withHistory: Boolean): PageDto<UserDetailDto> {
         val dto = userDetailsRepository.findAllById(id)
 
         return UserDetailsConverter.transform(dto, withHistory)
