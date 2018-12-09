@@ -7,7 +7,6 @@ import javax.persistence.*
  */
 @Entity(name = "bookings")
 class BookingEntity(
-        // TODO: Added a relational mapping to user and event Entity when the DTO's are split to a separate microservice
         // @get:ManyToOne
         // var user: User? = null
         var user: Long? = null,
