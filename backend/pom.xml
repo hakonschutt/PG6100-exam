@@ -20,6 +20,7 @@
         <module>utils</module>
         <module>movies</module>
         <module>venues</module>
+        <module>userdetails</module>
         <module>template</module>
         <module>report</module>
     </modules>
