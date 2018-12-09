@@ -22,12 +22,8 @@ import kotlin.test.assertTrue
 
 
 class VenuesApiTest : LocalApplicationRunner() {
-
-
     @Test
     fun deleteVenue() {
-
-
         val data = given()
                 .get().then()
                 .statusCode(200)
@@ -47,15 +43,16 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(404)
     }
-    @Test
-    fun testPagination(){
 
-        val pageDto =  given()
+    @Test
+    fun testPagination() {
+
+        val pageDto = given()
                 .get("/?withRooms=true&offset=0&limit=1").then()
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
-                .getObject("data",PageDto::class.java)
+                .getObject("data", PageDto::class.java)
         println("\n ${pageDto._links["next"]} ${pageDto.list} \n")
 
         val firstVenue = pageDto.list[0]
@@ -64,10 +61,10 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
-                .getObject("data",PageDto::class.java)
+                .getObject("data", PageDto::class.java)
 
-        val pageTwoVenueDto =  nextPageDto.list[0]
-        assertNotEquals(firstVenue,pageTwoVenueDto)
+        val pageTwoVenueDto = nextPageDto.list[0]
+        assertNotEquals(firstVenue, pageTwoVenueDto)
         println(message = nextPageDto.next!!.href + "j")
         println(nextPageDto.previous!!.href)
         Assert.assertThat(firstVenue, equalTo(
@@ -76,17 +73,18 @@ class VenuesApiTest : LocalApplicationRunner() {
                         .statusCode(200)
                         .extract().body()
                         .jsonPath()
-                        .getObject("data",PageDto::class.java).list[0]
+                        .getObject("data", PageDto::class.java).list[0]
         ))
 
 
     }
+
     @Test
     fun mergePatchVenue() {
-        val venueDtoId = createVenue()
+        val venueDtoURL = createVenue()
         val oldName =
                 RestAssured.given()
-                        .get("/$venueDtoId")
+                        .get(venueDtoURL!!.substring(11))
                         .then()
                         .statusCode(200)
                         .extract().path<String>("data.list[0].name")
@@ -98,17 +96,12 @@ class VenuesApiTest : LocalApplicationRunner() {
 
         given().contentType("application/merge-patch+json")
                 .body(jsonBody)
-                .patch("/$venueDtoId")
+                .patch(venueDtoURL.substring(11))
                 .then()
                 .statusCode(204)
 
-        println("RESPONSE: " + given().get("/$venueDtoId")
-                .then()
-                .statusCode(200)
-                .extract().response().asString())
-
         val venueDtoList = given()
-                .get("/$venueDtoId")
+                .get(venueDtoURL.substring(11))
                 .then()
                 .statusCode(200)
                 .extract()
@@ -146,9 +139,11 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .post()
                 .then()
                 .statusCode(201)
-                .extract().asString()
+                .extract()
+                .header("location")
+
         val data = given()
-                .get("/$id").then()
+                .get(id.substring(11)).then()
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
@@ -156,7 +151,7 @@ class VenuesApiTest : LocalApplicationRunner() {
 
         RestAssured
                 .given()
-                .get("/$id").then()
+                .get(id.substring(11)).then()
                 .statusCode(200)
                 .body("data.list[0].name", CoreMatchers.equalTo(data.name))
                 .body("data.list[0].rooms.size()", CoreMatchers.equalTo(data.rooms.size))
@@ -187,24 +182,25 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .post()
                 .then()
                 .statusCode(201)
-                .extract().asString()
+                .extract().header("location")
 
         val data = given()
-                .get("/${id}?withRooms=true")
+                .get("/$id?withRooms=true".substring(12))
                 .then()
                 .statusCode(200)
                 .extract()
                 .jsonPath()
                 .getList("data.list", VenueDto::class.java)
-
-        println(data)
+        val createdEnt = given().get(id.substring(11)).then().extract().body()
+                .jsonPath()
+                .getObject("data.list[0]", VenueDto::class.java)
 
         val desiredVenue = if (!data.isEmpty()) {
             data[data.size - 1]
         } else {
             VenueDto(id = null, geoLocation = null, address = null, rooms = setOf(), name = null)
         }
-        Assert.assertThat(desiredVenue.id, equalTo(id))
+        Assert.assertThat(desiredVenue.id, equalTo(createdEnt.id))
 
         val roomsNamesExsist = desiredVenue.rooms.stream().allMatch {
             it.name == roomName || it.name == roomName2
@@ -229,7 +225,8 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .post()
                 .then()
                 .statusCode(201)
-                .extract().asString()
+                .extract()
+                .header("location")
 
     }
 
@@ -238,7 +235,7 @@ class VenuesApiTest : LocalApplicationRunner() {
         val venueId = createVenue()
 
         val data = given()
-                .get("/$venueId?withRooms=true").then()
+                .get("/$venueId?withRooms=true".substring(12)).then()
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
@@ -255,7 +252,7 @@ class VenuesApiTest : LocalApplicationRunner() {
 
         given().contentType("application/merge-patch+json")
                 .body("{\"columns\":$newRoomCol}")
-                .patch("/$venueId/rooms/$roomId")
+                .patch("/$venueId/rooms/$roomId".substring(12))
                 .then()
                 .statusCode(204)
     }
@@ -277,17 +274,24 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .post()
                 .then()
                 .statusCode(201)
-                .extract().asString()
+                .extract().header("location")
 
         venueDto.name = "DTO NAME"
-        venueDto.id = id
+
+        val dtoToFind = RestAssured
+                .given()
+                .get("/$id?withRooms=true".substring(12)).then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", VenueDto::class.java)[0]
+        venueDto.id = dtoToFind.id
 
         RestAssured.given().contentType(BASE_JSON)
                 .body(venueDto)
-                .put("/${id}")
+                .put(dtoToFind.id)
                 .then()
                 .statusCode(204)
-
 
         val dto = RestAssured
                 .given()
@@ -319,5 +323,32 @@ class VenuesApiTest : LocalApplicationRunner() {
 
     }
 
+    @Test
+    fun testNotNullPatchId() {
+        val venueDtoUrl = createVenue()
+        val oldName =
+                RestAssured.given()
+                        .get(venueDtoUrl!!.substring(11))
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data.list[0].name")
+        val createdId =
+                RestAssured.given()
+                        .get(venueDtoUrl!!.substring(11))
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data.list[0].id")
+        val newName = "NEW_NAME"
+        val geo = "new_geo"
+        val jsonBody = "{\"name\":\"$newName \"id\":\"$createdId\",\",\"geo\":\"$geo\"}"
+
+
+        given().contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch("/$createdId")
+                .then()
+                .statusCode(400)
+
+    }
 
 }
