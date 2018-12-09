@@ -17,6 +17,7 @@
     </parent>
 
     <modules>
+        <module>dto</module>
         <module>utils</module>
         <module>booking</module>
         <module>movies</module>
