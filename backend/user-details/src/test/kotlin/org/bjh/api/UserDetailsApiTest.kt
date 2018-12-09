@@ -10,10 +10,10 @@ import org.junit.Assert
 import org.junit.Test
 import kotlin.test.assertNotEquals
 
-class UserDetailsApiTest: LocalApplicationTestRunner(){
+class UserDetailsApiTest : LocalApplicationTestRunner() {
 
     @Test
-    fun testDeleteUser () {
+    fun testDeleteUser() {
 
         val data = RestAssured.given()
                 .get().then()
@@ -33,8 +33,9 @@ class UserDetailsApiTest: LocalApplicationTestRunner(){
                 .then()
                 .statusCode(404)
     }
+
     @Test
-    fun testGetUser(){
+    fun testGetUser() {
         val data = RestAssured.given()
                 .get().then()
                 .statusCode(200)
@@ -47,25 +48,28 @@ class UserDetailsApiTest: LocalApplicationTestRunner(){
                 .then()
                 .statusCode(204)
     }
+
     @Test
-    fun testGetAllUsers(){
+    fun testGetAllUsers() {
         RestAssured.given()
                 .get()
                 .then()
                 .statusCode(200)
                 .body("data.list.size()", equalTo(3))
     }
+
     @Test
-    fun testDeleteNotExistingUser(){
+    fun testDeleteNotExistingUser() {
         RestAssured.given()
                 .delete("/19232180921382380921@gmail.notfound.com")
                 .then()
                 .statusCode(404)
     }
-    @Test
-    fun testPagination(){
 
-        val pageDto =  given()
+    @Test
+    fun testPagination() {
+
+        val pageDto = given()
                 .get("/?withHistory=false&offset=0&limit=1").then()
                 .statusCode(200)
                 .extract().body()
@@ -79,18 +83,30 @@ class UserDetailsApiTest: LocalApplicationTestRunner(){
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
-                .getObject("data",PageDto::class.java)
+                .getObject("data", PageDto::class.java)
 
-        val prevPage =   given()
+        val prevPage = given()
                 .get(nextPageDto.previous!!.href.substring(7)).then()
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
-                .getObject("data",PageDto::class.java).list[0]
+                .getObject("data", PageDto::class.java).list[0]
         Assert.assertThat(firstUserPage, equalTo(
                 prevPage
         ))
 
 
+    }
+
+    @Test
+    fun testCreateUser() {
+        val id = RestAssured.given().contentType("application/json;charset=UTF-8")
+                .body(UserDetailDto(email = "foo@gmail.com", purchaseHistory = setOf()))
+                .post()
+                .then()
+                .statusCode(201)
+                .extract()
+                .header("location")
+        println(id)
     }
 }

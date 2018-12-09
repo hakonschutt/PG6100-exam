@@ -1,5 +1,9 @@
 /target/
+<<<<<<< HEAD
 target
+=======
+*/target/
+>>>>>>> ff6e9d006a6bca1551cb49c9d58cb1061c859d82
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###

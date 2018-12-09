@@ -24,10 +24,7 @@ import kotlin.test.assertTrue
 class VenuesApiTest : LocalApplicationRunner() {
     @Test
     fun deleteVenue() {
-<<<<<<< HEAD
 
-=======
->>>>>>> 9999505253c99d1c87d42bc2c5e170b08860c67d
         val data = given()
                 .get().then()
                 .statusCode(200)
@@ -326,8 +323,6 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(400)
 
     }
-<<<<<<< HEAD
-=======
 
     @Test
     fun testNotNullPatchId() {
@@ -357,5 +352,4 @@ class VenuesApiTest : LocalApplicationRunner() {
 
     }
 
->>>>>>> 9999505253c99d1c87d42bc2c5e170b08860c67d
 }

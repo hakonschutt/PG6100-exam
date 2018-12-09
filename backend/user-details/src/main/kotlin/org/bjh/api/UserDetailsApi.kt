@@ -84,8 +84,8 @@ class UserDetailsApi {
     fun createUser(@ApiParam("User details data transfer object with atleast email") @RequestBody dto: UserDetailDto): ResponseEntity<WrappedResponse<Unit>> {
 
 
-        if (!dto.email.isNullOrEmpty()) {
-            return ResponseEntity.status(400).build()
+        if (dto.email.isNullOrEmpty()) {
+            return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400, message = "Email is not present").validated())
         }
         val user = userDetailsService.createUser(dto)
 
