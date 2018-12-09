@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty
 
 /**
  * This class is not written by our group, this class is taken from the curriculum that Andrea Arcuri created
+ * @author arcuri82
  */
 open class WrappedResponse<T>(
 

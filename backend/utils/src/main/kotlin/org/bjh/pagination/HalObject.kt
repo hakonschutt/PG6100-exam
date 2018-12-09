@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty
 
 
 /*
-   Taken from Andreas repo
+   Taken from Andrea's repo
  */
 open class HalObject(
 
