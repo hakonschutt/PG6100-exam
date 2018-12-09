@@ -22,6 +22,7 @@
         <module>venues</module>
         <module>user-details</module>
         <!--<module>template</module>-->
+        <module>report</module>
     </modules>
 
     <dependencyManagement>
