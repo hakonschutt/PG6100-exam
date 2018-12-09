@@ -25,11 +25,11 @@
             <artifactId>venues</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.bjh</groupId>
             <artifactId>user-details</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.bjh</groupId>
             <artifactId>booking</artifactId>
