@@ -21,6 +21,7 @@
         <module>movies</module>
         <module>venues</module>
         <module>template</module>
+        <module>report</module>
     </modules>
 
     <dependencyManagement>
