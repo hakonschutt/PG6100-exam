@@ -102,11 +102,6 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(204)
 
-        println("RESPONSE: " + given().get("/$venueDtoId")
-                .then()
-                .statusCode(200)
-                .extract().response().asString())
-
         val venueDtoList = given()
                 .get("/$venueDtoId")
                 .then()
@@ -146,7 +141,9 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .post()
                 .then()
                 .statusCode(201)
-                .extract().asString()
+                .extract()  .jsonPath()
+                .getObject("data",String::class.java)
+
         val data = given()
                 .get("/$id").then()
                 .statusCode(200)
@@ -187,17 +184,16 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .post()
                 .then()
                 .statusCode(201)
-                .extract().asString()
+                .extract().jsonPath()
+                .getObject("data",String::class.java)
 
         val data = given()
-                .get("/${id}?withRooms=true")
+                .get("/$id?withRooms=true")
                 .then()
                 .statusCode(200)
                 .extract()
                 .jsonPath()
                 .getList("data.list", VenueDto::class.java)
-
-        println(data)
 
         val desiredVenue = if (!data.isEmpty()) {
             data[data.size - 1]
@@ -229,7 +225,8 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .post()
                 .then()
                 .statusCode(201)
-                .extract().asString()
+                .extract().jsonPath()
+                .getObject("data",String::class.java)
 
     }
 
@@ -277,7 +274,8 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .post()
                 .then()
                 .statusCode(201)
-                .extract().asString()
+                .extract().jsonPath()
+                .getObject("data",String::class.java)
 
         venueDto.name = "DTO NAME"
         venueDto.id = id
@@ -318,6 +316,26 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .statusCode(400)
 
     }
+    @Test
+    fun testNotNullPatchId(){
+        val venueDtoId = createVenue()
+        val oldName =
+                RestAssured.given()
+                        .get("/$venueDtoId")
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data.list[0].name")
+        val newName = "NEW_NAME"
+        val geo = "new_geo"
+        val jsonBody = "{\"name\":\"$newName \"id\":\"$venueDtoId\",\",\"geo\":\"$geo\"}"
 
+
+        given().contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch("/$venueDtoId")
+                .then()
+                .statusCode(400)
+
+    }
 
 }

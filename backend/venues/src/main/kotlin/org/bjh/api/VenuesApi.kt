@@ -29,6 +29,7 @@ class VenuesApi {
     private lateinit var roomService: RoomService
 
     //todo set up query params for withrooms or nawt
+    @ApiOperation("Fetches lists of venues")
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiResponse(code = 200, message = "Returns a list of venues")
     fun getAllVenues(
@@ -85,7 +86,7 @@ class VenuesApi {
         return result
 
     }
-
+    @ApiOperation("Creates a venue")
     @PostMapping(consumes = [BASE_JSON])
     @ApiResponses(
             //FIXME : Return url instead of id
@@ -96,7 +97,7 @@ class VenuesApi {
             @ApiParam("Text of address, geoloacation, List of room ids. Should not specify id")
             @RequestBody
             dto: VenueDto)
-            : ResponseEntity<Long> {
+            : ResponseEntity<WrappedResponse<Long>> {
         //todo change this response
 
         if (!dto.id.isNullOrEmpty() && dto.rooms.isEmpty() &&
@@ -123,16 +124,16 @@ class VenuesApi {
 
         val venueId = venuesService.createVenue(dto)
 
-        return ResponseEntity.status(201).body(venueId)
+        return ResponseEntity.status(201).body(WrappedResponse(code=201,message = "created", data = venueId).validated())
     }
-
+    @ApiOperation("Deletes a venue with the given id")
     @DeleteMapping(path = ["/{id}"])
     @ApiResponses(
             ApiResponse(code = 200, message = "Deletes the venue with corresponding Id"),
             ApiResponse(code = 404, message = "Resource not found")
     )
     fun deleteVenue(@ApiParam("The unique id of the venue to delete")
-                    @PathVariable("id") idFromPath: String): ResponseEntity<Unit> {
+                    @PathVariable("id") idFromPath: String): ResponseEntity<WrappedResponse<Unit>> {
 
         val id: Long
         try {
@@ -149,7 +150,7 @@ class VenuesApi {
             ResponseEntity.status(404).build()
         }
     }
-
+    @ApiOperation("Patched venue with given id")
     @PatchMapping(path = ["/{id}"], consumes = ["application/merge-patch+json"])
     @ApiResponses(
             ApiResponse(code = 409, message = "Conflict"),
@@ -233,7 +234,7 @@ class VenuesApi {
         }
     }
 
-
+    @ApiOperation("Patches rooms in a venue")
     @PatchMapping(path = ["/{venue_id}/rooms/{room_id}"], consumes = ["application/merge-patch+json"])
     @ApiResponses(
             ApiResponse(code = 409, message = "Conflict"),
@@ -322,7 +323,7 @@ class VenuesApi {
         }
     }
 
-    @ApiOperation("Update a specific venue")
+    @ApiOperation("Update and replace a specific venue with a put request")
     @PutMapping(path = ["/{id}"])
     fun updateById(
             @ApiParam("The id of the venue")
@@ -331,34 +332,34 @@ class VenuesApi {
             @ApiParam("New data for updating the venue")
             @RequestBody
             dto: VenueDto
-    ): ResponseEntity<WrappedResponse<Void>> {
+    ): ResponseEntity<WrappedResponse<Unit>> {
         val id: Long
         try {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
-            return ResponseEntity.status(400).body(WrappedResponse<Void>(code = 400, message = " Invalid id $pathId").validated())
+            return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400, message = " Invalid id $pathId").validated())
         }
         if (dto.id == null) {
-            return ResponseEntity.status(400).body(WrappedResponse<Void>(code = 400, message = " Dto is missing id").validated())
+            return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400, message = " Dto is missing id").validated())
         }
         if (dto.id != pathId) {
-            return ResponseEntity.status(409).body(WrappedResponse<Void>(code = 409, message = " Inconsistent id between URL and JSON payload").validated())
+            return ResponseEntity.status(409).body(WrappedResponse<Unit>(code = 409, message = " Inconsistent id between URL and JSON payload").validated())
         }
 
         val dtoList = venuesService.findAllById(id,true).list
         if(dtoList.isEmpty()){
-            return ResponseEntity.status(404).body(WrappedResponse<Void>(code = 404, message = " Dto is missing id").validated())
+            return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404, message = " Dto is missing id").validated())
         }
         val dtoToSave = dtoList[0]
         dtoToSave.name = dto.name!!
-        dtoToSave.rooms = dto.rooms!!
+        dtoToSave.rooms = dto.rooms
         dtoToSave.address = dto.address!!
         dtoToSave.geoLocation = dto.geoLocation!!
 
 
         venuesService.updateVenue(dtoToSave)
         return ResponseEntity.status(204).body(
-                WrappedResponse<Void>(code = 204).validated())
+                WrappedResponse<Unit>(code = 204).validated())
     }
 
 }
