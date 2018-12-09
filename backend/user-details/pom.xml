@@ -8,7 +8,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>User-Details</name>
+    <name>user-details</name>
     <parent>
         <version>0.0.1-SNAPSHOT</version>
         <groupId>org.bjh</groupId>
