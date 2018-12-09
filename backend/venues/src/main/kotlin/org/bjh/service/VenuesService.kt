@@ -33,7 +33,6 @@ class VenuesService {
             rooms = rooms)
 
         val venueEntity = venuesRepository.save(entity)
-
         return venueEntity.id ?: -1
     }
 
