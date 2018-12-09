@@ -3,7 +3,7 @@ package org.bjh.movies.api
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.bjh.movies.LocalApplicationRunner
-import org.bjh.movies.dto.MovieDto
+import org.bjh.dto.MovieDto
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.Test

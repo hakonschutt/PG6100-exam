@@ -2,7 +2,7 @@ package org.bjh.movies
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
-import org.bjh.movies.dto.MovieDto
+import org.bjh.dto.MovieDto
 import org.bjh.movies.entity.MovieEntity
 import org.bjh.movies.repository.MoviesRepository
 import org.junit.After
