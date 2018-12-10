@@ -1,6 +1,6 @@
 package org.bjh.movies
 
-import org.bjh.movies.dto.MovieDto
+import org.bjh.dto.MovieDto
 import org.bjh.movies.entity.MovieEntity
 import org.bjh.pagination.PageDto
 

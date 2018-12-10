@@ -1,0 +1,47 @@
+footer {
+	display: block;
+	background-color: map-get($base-colors, black);
+	padding: 2.5rem 0;
+
+	.footer-top {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+
+		& > div {
+			width: 30%;
+			color: map-get($base-colors, white);
+
+			h3 {
+				margin-top: 0;
+			}
+
+			ul {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+
+				li {
+					margin-top: 0.5rem;
+				}
+			}
+		}
+
+		.img-wrap {
+			display: block;
+
+			img {
+				height: 70px;
+			}
+		}
+	}
+
+	.footer-bottom {
+		text-align: center;
+		padding: 1rem 0 0 0;
+
+		span {
+			color: map-get($base-colors, white);
+		}
+	}
+}

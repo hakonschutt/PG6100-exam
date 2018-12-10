@@ -19,14 +19,14 @@ class RoomService {
         return roomRepository.save(RoomEntity(id = null, name = roomDto.name!!, rows = roomDto.rows!!, columns = roomDto.columns!!))
 
     }
-
-    fun findAll(): Set<RoomDto> {
-        val rooms = roomRepository.findAll().map { roomEntity ->
-            RoomConverter.transform(roomEntity)
-        }
-
-        return rooms.toSet()
-    }
+//  Todo Might be implemented later
+//    fun findAll(): Set<RoomDto> {
+//        val rooms = roomRepository.findAll().map { roomEntity ->
+//            RoomConverter.transform(roomEntity)
+//        }
+//
+//        return rooms.toSet()
+//    }
 
     fun findById(id: Long): RoomDto {
         val room = roomRepository.findById(id)
@@ -36,18 +36,17 @@ class RoomService {
             else ->
                 return RoomDto(id = null, name = null, rows = null, columns = null)
         }
-    }
-
-    fun saveAll(rooms: Set<RoomDto>): Set<RoomEntity> {
-        val validRooms = !rooms.any { it.name == null || it.rows == null || it.columns == null }
-
-        if (!validRooms) return setOf()
-
-        return roomRepository.saveAll(rooms.map {
-
-            roomDto ->
-            RoomEntity(id = null, name = roomDto.name!!, rows = roomDto.rows!!, columns = roomDto.columns!!)
-        }).toSet()
-
-    }
+    } // Todo Might be implemented later
+//    fun saveAll(rooms: Set<RoomDto>): Set<RoomEntity> {
+//        val validRooms = !rooms.any { it.name == null || it.rows == null || it.columns == null }
+//
+//        if (!validRooms) return setOf()
+//
+//        return roomRepository.saveAll(rooms.map {
+//
+//            roomDto ->
+//            RoomEntity(id = null, name = roomDto.name!!, rows = roomDto.rows!!, columns = roomDto.columns!!)
+//        }).toSet()
+//
+//    }
 }

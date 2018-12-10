@@ -9,6 +9,8 @@
 # production
 /build
 
+src/data/
+
 # misc
 .DS_Store
 .env.local
@@ -19,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# WEB DOCKER
+docker-compose.yml
