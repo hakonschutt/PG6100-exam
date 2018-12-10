@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: events
+  datasource:
+    url: "jdbc:postgresql://events-db:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+  jpa:
+    show-sql: false
+    database: "postgresql"
+    hibernate:
+      ddl-auto: create-drop
+
+server:
+  port: 9090

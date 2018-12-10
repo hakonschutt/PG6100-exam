@@ -1,5 +1,5 @@
 FROM openjdk:8-alpine
 
-ADD target/service.jar .
+ADD target/events.jar .
 
-CMD java -jar service.jar
+CMD java -jar events.jar

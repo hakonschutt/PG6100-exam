@@ -1,17 +1,13 @@
 version: '3'
 services:
-  postgres:
-    image: 'postgres:latest'
-    environment:
-    - POSTGRES_USER=postgres
-    - POSTGRES_PASSWORD=postgres
-    - POSTGRES_DB=springEventsDb
-    ports:
-    - '5432:5432'
+  events-db:
+    image: "postgres:10"
   events:
     restart: always
     build:
       dockerfile: Dockerfile
       context: .
+    ports:
+    - '9090:9090'
     depends_on:
-    - 'postgres'
+    - 'events-db'
