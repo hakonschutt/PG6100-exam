@@ -1,14 +1,10 @@
 type Query {
     version: String,
     allEvents(venue:String,movie:String): [Event!],
-#    allEventsForVenue:[Event],
-#    allEventsForMovies:[Event],
-#    eventById:Event
+    #eventById:Event
 }
 type Mutation {
-    create(
-    event: EventInput!
-): String!
+    create( event: EventInput! ): String!
     #    update(event:EventInput!): Boolean!
 }
 
