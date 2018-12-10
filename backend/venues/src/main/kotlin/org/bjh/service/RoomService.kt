@@ -39,7 +39,7 @@ class RoomService {
         }
     } // Todo Might be implemented later
 
-    fun findAllById(id: String): Set<RoomDto> {
+    fun findAllById(id: Long): Set<RoomDto> {
 
         return roomRepository.findAllByVenueId(id).map {RoomConverter.transform(it) }.toSet()
     }

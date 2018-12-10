@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.lang.NumberFormatException
 import java.net.URI
+import javax.websocket.server.PathParam
 
 const val BASE_JSON = "application/json;charset=UTF-8"
 
@@ -92,17 +93,17 @@ class VenuesApi {
     @GetMapping("/{id}/rooms/")
     @ApiResponses(ApiResponse(code = 200, message = "fetched all rooms"), ApiResponse(code = 400, message = "id is poorly formatted"))
 //            ApiResponse(code = 404, message = "Venue not found")
-    fun getRoomsForVenue(@ApiParam("venue id") @RequestParam id: String): ResponseEntity<WrappedResponse<Set<RoomDto>>> {
+    fun getRoomsForVenue(@ApiParam("venue id") @PathVariable("id") id: String): ResponseEntity<WrappedResponse<Set<RoomDto>>> {
 //     FIXME:   Since its highly unlikely that a venue has more than 20 rooms we are not using pagination
+        var validatedId:Long
         try {
-
+            validatedId = id.toLong()
         } catch (e: NumberFormatException) {
             return ResponseEntity.status(400).body(
                     WrappedResponse(code = 400, message = "Wrong type of id is being sent", data = setOf < RoomDto>()).validated())
         }
 
-        val rooms = roomService.findAllById(id)
-
+        val rooms = venuesService.findAllById(validatedId,withRooms = true).list[0].rooms
         return ResponseEntity.ok().body(WrappedResponse(code = 200, message = "All rooms for venue $id", data = rooms).validated())
     }
 

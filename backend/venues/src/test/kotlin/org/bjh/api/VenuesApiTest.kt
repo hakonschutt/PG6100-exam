@@ -15,6 +15,24 @@ import kotlin.test.assertNotEquals
 
 class VenuesApiTest : LocalApplicationRunner() {
     @Test
+    fun TestGetAllRoomsByVenueId() {
+        val ven = given()
+                .get().then()
+                .statusCode(200)
+                .extract().body()
+                .jsonPath()
+                .getList("data.list", VenueDto::class.java)[0]
+        println()
+        val data = given()
+                .get("${ven.id}/rooms/")
+                .then()
+                .statusCode(200)
+                .extract().body()
+                .jsonPath()
+                .getList("data", RoomDto::class.java)
+    }
+
+    @Test
     fun deleteVenue() {
         val data = given()
                 .get().then()
@@ -35,6 +53,7 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(404)
     }
+
 
     @Test
     fun testPagination() {

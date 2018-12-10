@@ -10,9 +10,10 @@ import org.springframework.stereotype.Repository
 @Repository
 interface RoomRepository : CrudRepository<RoomEntity, Long> {
 
-     @Query("SELECT v.rooms FROM venues v WHERE v.id  = :id", nativeQuery = true)
+     @Query("SELECT r.* FROM rooms r  JOIN venues_rooms as vr" +
+             " WHERE vr.venues_id  = :id ", nativeQuery = true)
      fun findAllByVenueId(
-             @Param("id") id: String
+             @Param("id") id: Long
      ): Set<RoomEntity>
 
 }
