@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
+/** @author  Kleppa && håkonschutt */
 class EventEntity(
         @get:Id @get:GeneratedValue
         var id: Long? = null,

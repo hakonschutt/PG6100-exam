@@ -1,8 +1,9 @@
 type Query {
-    allEvents: [Event!],
-    allEventsForVenue:[Event!],
-    allEventsForMovies:[Event!],
-    eventById:Event
+    version: String,
+    allEvents: [Event],
+    allEventsForVenue:[Event],
+    allEventsForMovies:[Event],
+#       eventById:Event
 }
 type Mutation {
     create(
@@ -10,8 +11,11 @@ type Mutation {
 ): String!
 #    update(event:EventInput!): Boolean!
 }
+
+scalar EventDateTime
+
 input EventInput {
-    data: ZonedDateTime!,
+    data: EventDateTime!,
     movieId: Long,
     venueId: Long,
     roomId: Long,
@@ -21,7 +25,7 @@ input EventInput {
 
 type Event {
     id: Long,
-    date: ZonedDateTime,
+    date: EventDateTime!,
     movieId: Movie,
     venueId: Venue,
     roomId: Room,

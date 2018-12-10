@@ -11,6 +11,9 @@ spring:
     database: "postgresql"
     hibernate:
       ddl-auto: create-drop
+      dialect: org.hibernate.dialect.PostgreSQL9Dialect
+      show_sql: true
+    properties.hibernate.temp.use_jdbc_metadata_defaults: false
 
 server:
   port: 9090

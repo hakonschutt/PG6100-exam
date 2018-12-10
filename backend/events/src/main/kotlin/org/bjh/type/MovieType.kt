@@ -1,5 +1,5 @@
 package org.bjh.type
-
+/** @author  Kleppa && håkonschutt */
 data class MovieType(
         var title: String,
         var poster: String,
