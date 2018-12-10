@@ -14,8 +14,7 @@ import javax.validation.constraints.NotBlank
 @Entity(name="movies")
 class MovieEntity(
 
-        @get:NotBlank
-        var title: String?,
+        var title: String? = null,
         var poster: String? = null,
         var coverArt: String? = null,
         var trailer: String? = null,
