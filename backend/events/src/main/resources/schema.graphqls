@@ -26,9 +26,12 @@ input EventInput {
 type Event {
     id: Long,
     date: EventDateTime!,
-    movie(movieId:String): Movie,
-    venue(venueId:String): Venue,
-    room(roomId:String): Room,
+    movieId:String
+    movie(): Movie,
+    venueId:String,
+    venue(): Venue,
+    roomId:String,
+    room(): Room,
     rows: Int,
     columns: Int
 }
@@ -43,7 +46,7 @@ type Venue{
     id: String,
     geoLocation: String,
     address: String,
-    rooms(venueId:String): [Room],
+    rooms(): [Room],
     name: String
 }
 type Movie {
