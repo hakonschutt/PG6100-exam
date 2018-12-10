@@ -29,6 +29,7 @@
 
     <dependencyManagement>
         <dependencies>
+
             <dependency>
                 <groupId>org.bjh.utils</groupId>
                 <artifactId>utils</artifactId>
