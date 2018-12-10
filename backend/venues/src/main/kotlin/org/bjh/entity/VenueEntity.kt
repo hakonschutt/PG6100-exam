@@ -25,7 +25,7 @@ class VenueEntity(
 
     @get:ElementCollection(fetch = FetchType.EAGER)
     @get:OneToMany(cascade = [CascadeType.ALL])
-    @get:JoinTable(name="venue_room",joinColumns = [JoinColumn(name="room_id",referencedColumnName = "id")])
+    @get:Column(name="rooms")
     var rooms:Set<RoomEntity>
 )
 
