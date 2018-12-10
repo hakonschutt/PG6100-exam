@@ -5,12 +5,9 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.bjh.movies.LocalApplicationRunner
 import org.bjh.dto.MovieDto
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.*
-import org.hamcrest.equalTo
-import org.hamcrest.not
-import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Ignore
 import org.junit.Test
 
 class MoviesApiTest : LocalApplicationRunner() {
@@ -48,6 +45,17 @@ class MoviesApiTest : LocalApplicationRunner() {
     }
 
     @Test
+    fun testGetMovieWithInvalidId() {
+        given().accept(ContentType.JSON)
+                .get("NOT A VALID ID")
+                .then()
+                .statusCode(400)
+                .body("code", equalTo(400))
+                .body("message", not(equalTo(null)))
+    }
+
+
+    @Test
     fun testCreateMovie() {
         val testTitle = "TestMovie"
         val allMovies = getAllMovies()
@@ -76,11 +84,11 @@ class MoviesApiTest : LocalApplicationRunner() {
     }
 
     @Test
-    fun testUpdateExistingMovieWithPut()  {
+    fun testUpdateExistingMovieWithPut() {
         val allMovies = getAllMovies()
         val movie = allMovies!![0]
         val modifiedTitle = "NEW TITLE"
-        val alteredMovieToPut = movie.copy(title=modifiedTitle)
+        val alteredMovieToPut = movie.copy(title = modifiedTitle)
 
         given().contentType(ContentType.JSON)
                 .body(alteredMovieToPut)
@@ -109,6 +117,16 @@ class MoviesApiTest : LocalApplicationRunner() {
                 .then()
                 .statusCode(200)
                 .body("data.list.size()", equalTo(allMovies.size - 1))
+    }
+
+    @Test
+    fun testDeleteMovieWithInvalidId() {
+        given().accept(ContentType.JSON)
+                .delete("NOT A VALID ID")
+                .then()
+                .statusCode(400)
+                .body("code", equalTo(400))
+                .body("message", not(equalTo(null)))
     }
 
     @Test
@@ -206,4 +224,150 @@ class MoviesApiTest : LocalApplicationRunner() {
             assertThat(comparableMovieDto, equalTo(originalMovieDto))
         }
     }
+
+    @Test
+    fun testShouldNotUpdateMovieWithInvalidId() {
+        val invalidId = "NOT A VALID ID"
+        val newTitle = "NewMovieTitle"
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"poster\":null}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch(invalidId)
+                .then()
+                .statusCode(400)
+    }
+
+    @Ignore
+    @Test
+    fun testShouldNotUpdateMovieWithIncorrectId() {
+        val invalidId = "-1"
+        val newTitle = "NewMovieTitle"
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"poster\":null}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch(invalidId)
+                .then()
+                .statusCode(400)
+    }
+
+    @Test
+    fun testUpdateSpecificMovieWithMultipleFields() {
+        val originalTitle = "OldMovieTitle"
+        val originalPosterUrl = "posterURL"
+        val newPosterUrl = "NEW posterURL"
+        val originalCoverArt = "coverArtUrl"
+        val newCoverArt = "NEW coverArtUrl"
+        val originalTrailer = "trailerURL"
+        val newTrailer = "NEW trailerURL"
+        val originalOverview = "Test Overview"
+        val newOverview = "NEW Test Overview"
+        val originalVoteCount = 1
+        val newVoteCount = 2
+        val originalPrice = "120.0"
+        val newPrice = "150.0"
+
+        val patchBody = """
+            {"title":null,
+            "poster":"$newPosterUrl",
+            "coverArt":"$newCoverArt",
+            "trailer":"$newTrailer",
+            "overview":"$newOverview",
+            "voteCount": $newVoteCount,
+            "price": "$newPrice"
+            }""".trimIndent()
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val movieDto = MovieDto(
+                originalTitle,
+                originalPosterUrl,
+                originalCoverArt,
+                originalTrailer,
+                originalOverview,
+                defaultReleaseDate.toString(),
+                setOf("Drama"),
+                originalVoteCount,
+                "5.0",
+                "200.0",
+                originalPrice)
+
+
+        given().contentType(ContentType.JSON)
+                .body(movieDto)
+                .post()
+
+        val movieList = RestAssured.given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)
+
+
+        val id = movieList[5].id
+
+        val originalMovieDto = given().accept(ContentType.JSON)
+                .get("$id")
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0]
+
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(204)
+
+        val patchedMovieDto = given().accept(ContentType.JSON)
+                .get("$id")
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0]
+
+        val comparableMovieDto = patchedMovieDto.copy(title = originalTitle,
+                poster = originalPosterUrl,
+                coverArt = originalCoverArt,
+                trailer = originalTrailer,
+                overview = originalOverview,
+                voteCount = originalVoteCount,
+                price = originalPrice)
+
+        assertThat(patchedMovieDto, not(equalTo(originalMovieDto)))
+        assertThat(patchedMovieDto.title, not(equalTo(originalTitle)))
+        assertThat(patchedMovieDto.title, nullValue())
+        assertThat(patchedMovieDto.poster, not(equalTo(originalPosterUrl)))
+        assertThat(patchedMovieDto.coverArt, not(equalTo(originalCoverArt)))
+        assertThat(patchedMovieDto.trailer, not(equalTo(originalTrailer)))
+        assertThat(patchedMovieDto.overview, not(equalTo(originalOverview)))
+        assertThat(patchedMovieDto.voteCount, not(equalTo(originalVoteCount)))
+        assertThat(patchedMovieDto.price, not(equalTo(originalPrice)))
+        assertThat(comparableMovieDto, equalTo(originalMovieDto))
+    }
+
 }
