@@ -22,7 +22,6 @@ class VenuesApiTest : LocalApplicationRunner() {
                 .extract().body()
                 .jsonPath()
                 .getList("data.list", VenueDto::class.java)[0]
-        println()
         val data = given()
                 .get("${ven.id}/rooms/")
                 .then()
