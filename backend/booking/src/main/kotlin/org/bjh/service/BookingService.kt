@@ -19,7 +19,7 @@ class BookingService {
 
     @Cacheable("bookingCache")
     fun findAll (withTickets : Boolean, offset: Int = 0, limit: Int = 20) : PageDto<BookingDto> {
-        val bookings = bookingRepository.findAll(offset, limit);
+        val bookings = bookingRepository.findAll(offset, limit)
         val page = BookingConverter.transform(bookings, withTickets, offset, limit)
 
         val builder = UriComponentsBuilder
