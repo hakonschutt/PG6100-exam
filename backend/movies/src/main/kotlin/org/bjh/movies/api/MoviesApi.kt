@@ -214,14 +214,17 @@ class MoviesApi {
         }
 
 
-        var movieDto = movieService.getAllById(id).list[0]
+        val results = movieService.getAllById(id).list
 
-        if (movieDto.id == null)
+        if(results.isEmpty())
             return ResponseEntity.status(404).body(
                     WrappedResponse<Unit>(
                             code = 404,
                             message = "There was no movie with id $id")
-                            .validated())
+                            .validated()
+            )
+
+        var movieDto = results[0]
 
         val parser = JsonParser()
         val movieObject: JsonObject
