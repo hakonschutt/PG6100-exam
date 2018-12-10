@@ -9,7 +9,8 @@ import org.bjh.payment.entity.PaymentEntity
  * Adapted by Bjørn Olav Salvesen.
  */
 class PaymentConverter {
-
+    //    FIXME: Remove _IF_ not to be used.
+/*
     companion object {
 
         fun transform(entity: PaymentEntity): PaymentDto {
@@ -17,7 +18,7 @@ class PaymentConverter {
             return PaymentDto(
                     id = entity.id?.toString(),
                     user = entity.user,
-                    price = entity.price.toString()
+                    amount = entity.amount.toString()
             ).apply {
                 id = entity.id?.toString()
             }
@@ -28,5 +29,5 @@ class PaymentConverter {
 
             return PageDto(list = payments, totalSize = payments.size)
         }
-    }
+    }*/
 }

@@ -29,7 +29,7 @@ class PaymentApi {
 
     @ApiOperation("Create a payment")
     @PostMapping(consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
-    fun createPayment(@ApiParam("Information for payment - User, price and authorization token.")
+    fun createPayment(@ApiParam("Information for payment - User, amount and authorization token.")
                     @RequestBody paymentDto: PaymentDto): ResponseEntity<WrappedResponse<Unit>> {
 
         if (paymentDto.paymentAuthorizationToken == null)

@@ -2,15 +2,15 @@ package org.bjh.payment.entity
 
 import javax.persistence.*
 
-@Entity(name="payment")
+@Entity(name="payments")
 class PaymentEntity(
-
-        @get:ElementCollection(fetch = FetchType.EAGER)
-        @get:ManyToOne(cascade = [CascadeType.ALL])
-        @get:JoinTable(name="user_detail",joinColumns = [(JoinColumn(name = "user", referencedColumnName = "email"))])
+//        TODO: Implement this when the user_details table/service has been added
+//        @get:ElementCollection(fetch = FetchType.EAGER)
+//        @get:ManyToOne(cascade = [CascadeType.ALL])
+//        @get:JoinTable(name="user_detail",joinColumns = [(JoinColumn(name = "user", referencedColumnName = "email"))])
         var user: String,
 
-        var price: Double,
+        var amount: Double,
 
         @get:Id
         @get:GeneratedValue

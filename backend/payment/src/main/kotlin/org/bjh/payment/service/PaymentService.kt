@@ -14,7 +14,8 @@ class PaymentService {
 
     @Autowired
     private lateinit var paymentRepository: PaymentRepository
-
+//    FIXME: Remove _IF_ not to be used.
+/*
     fun getById(id: Long): PaymentDto {
         val movie = paymentRepository.findById(id).orElse(null) ?: return PaymentDto(null, "")
         return PaymentConverter.transform(movie)
@@ -31,28 +32,7 @@ class PaymentService {
         return PaymentConverter.transform(movie)
     }
 
-    fun save(payment: PaymentDto): PaymentEntity {
-
-        val entity = PaymentEntity(
-                id = payment.id?.toLong(),
-                user = payment.user,
-                price = payment.price!!.toDouble())
-
-        return paymentRepository.save(entity)
-    }
-
-    fun createPayment(paymentDto: PaymentDto): Long {
-        val paymentEntity = PaymentEntity(
-                paymentDto.user,
-                paymentDto.price!!.toDouble(),
-                paymentDto.id!!.toLong()
-        )
-        paymentRepository.save(paymentEntity)
-
-        return paymentEntity.id ?: -1L
-    }
-
-    fun deleteMovieById(id: Long): Boolean {
+    fun deletePaymentById(id: Long): Boolean {
 
         if (!paymentRepository.existsById(id))
             return false
@@ -60,4 +40,17 @@ class PaymentService {
         paymentRepository.deleteById(id)
         return true
     }
+*/
+
+
+    fun createPayment(paymentDto: PaymentDto): Long {
+        val paymentEntity = PaymentEntity(
+                user = paymentDto.user,
+                amount = paymentDto.amount!!.toDouble()
+        )
+        paymentRepository.save(paymentEntity)
+
+        return paymentEntity.id ?: -1L
+    }
+
 }
