@@ -319,7 +319,6 @@ class MoviesApi {
                 return ResponseEntity.status(400).build()
         }
 
-        //TODO Is this correct for double?
         if (movieObject.has("voteAverage")) {
             val voteAverage = movieObject.get("voteAverage")
             if (voteAverage.isJsonNull)
