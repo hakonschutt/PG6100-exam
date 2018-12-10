@@ -15,31 +15,25 @@ class UserDetailsService {
     @Autowired
     private lateinit var userDetailsRepository: UserDetailsRepository
 
-    fun save(userDetailDto: UserDetailDto): UserDetailEntity {
+    fun save(userDetailDto: UserDetailDto): UserDetailEntity? {
         if (((userDetailDto.email.isNullOrEmpty()))) {
-            return UserDetailEntity(email = null, purchaseHistory = setOf())
+            return null
         }
-        return userDetailsRepository.save(UserDetailEntity(email = userDetailDto.email, purchaseHistory = userDetailDto.purchaseHistory))
+        return userDetailsRepository.save(UserDetailEntity(email = userDetailDto.email!!))
     }
 
-    fun findAll(withHistory: Boolean): List<UserDetailDto> {
-        return userDetailsRepository.findAll().toList().map { UserDetailsConverter.transform(it, withHistory = withHistory) }
+    fun findAll(): List<UserDetailEntity> {
+        return userDetailsRepository.findAll().toList()
     }
 
-    fun findById(id: String): UserDetailEntity? {
-        return userDetailsRepository.findById(id).orElse(null)
 
-
-    }
-
-    fun findAll(withHistory: Boolean, offset: Int = 0, limit: Int = 20): PageDto<UserDetailDto> {
+    fun findAll( offset: Int = 0, limit: Int = 20): PageDto<UserDetailDto> {
         val userList = userDetailsRepository.findAll(offset, limit)
 
-        val page = UserDetailsConverter.transform(userList = userList, withHistory = withHistory, offset = offset, limit = limit)
+        val page = UserDetailsConverter.transform(userList = userList ,offset = offset, limit = limit)
 
-        var builder = UriComponentsBuilder
-                .fromPath("/venues")
-                .queryParam("withHistory", withHistory)
+        val builder = UriComponentsBuilder
+                .fromPath("/users")
                 .queryParam("limit", limit)
 
         page._self = HalLink(builder.cloneBuilder()
@@ -65,14 +59,18 @@ class UserDetailsService {
 
     }
 
-    fun findAllById(id: String, withHistory: Boolean): PageDto<UserDetailDto> {
-        val dto = userDetailsRepository.findAllById(id)
+    fun findById(id: String): UserDetailDto? {
 
-        return UserDetailsConverter.transform(dto, withHistory)
+        val entity = userDetailsRepository.findById(id)
+        if(entity.isPresent){
+            return UserDetailDto(email = entity.get().email)
+        }
+        return null
+
     }
 
     fun createUser(dto: UserDetailDto): UserDetailEntity {
-        val entity = userDetailsRepository.save(UserDetailEntity(email = dto.email, purchaseHistory = dto.purchaseHistory))
+        val entity = userDetailsRepository.save(UserDetailEntity(email = dto.email!!))
         return entity
 
     }

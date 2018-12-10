@@ -1,7 +1,7 @@
 version: '3'
 services:
-  postgres:
-    image: 'postgres:latest'
+  # postgres:
+  #   image: 'postgres:latest'
   nginx:
     restart: always
     build:

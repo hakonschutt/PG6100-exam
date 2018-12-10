@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 interface UserDetailsRepository : PagingAndSortingRepository<UserDetailEntity,String> {
@@ -14,6 +15,8 @@ interface UserDetailsRepository : PagingAndSortingRepository<UserDetailEntity,St
             @Param("offset") offset:Int=0,
             @Param ("limit")limit:Int=20)
             :List<UserDetailEntity>
-    @Query("SELECT b FROM booking b WHERE b.email = :email")
-    fun findAllById( @Param("email")email:String ):List<UserDetailEntity>
+    @Query("SELECT * FROM user_detail WHERE email = :userId", nativeQuery = true)
+    override fun findById(
+            @Param("userId") userId: String
+    ) : Optional<UserDetailEntity>
 }

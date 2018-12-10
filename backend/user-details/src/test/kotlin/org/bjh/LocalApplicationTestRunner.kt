@@ -34,8 +34,7 @@ abstract class LocalApplicationTestRunner {
                 .forEach { data ->
                     venueEntities
                             .add(UserDetailEntity(
-                                    email=data,
-                                    purchaseHistory = setOf()
+                                    email =data
                             ))
                 }
         repository.run {

@@ -6,24 +6,15 @@ import org.bjh.pagination.PageDto
 
 class UserDetailsConverter {
     companion object {
-        fun transform(userList: List<UserDetailEntity>, withHistory: Boolean): PageDto<UserDetailDto> {
-            return PageDto(
-                   list = userList.map{ transform(it,withHistory)} as MutableList<UserDetailDto>,
-                    totalSize = userList.size
-            )
+        fun transform(dto: List<UserDetailEntity>): List<UserDetailDto> {
+            return dto.map{ transform(it)}
         }
-        fun transform(entity: UserDetailEntity, withHistory: Boolean): UserDetailDto {
-
-            return UserDetailDto(
-                    email = entity.email,
-                    purchaseHistory = entity.purchaseHistory!!
-            )
-
+        fun transform(dto:UserDetailEntity):UserDetailDto{
+            return UserDetailDto(email = dto.email)
         }
 
-        fun transform(userList: List<UserDetailEntity>, withHistory: Boolean, offset: Int, limit: Int): PageDto<UserDetailDto> {
-
-            val listOfUserDto = userList.map { transform(it, withHistory) }
+        fun transform(userList: List<UserDetailEntity>, offset: Int, limit: Int): PageDto<UserDetailDto> {
+            val listOfUserDto = userList.map { transform(it) }
 
             return PageDto(
                     list = listOfUserDto as MutableList<UserDetailDto>,
@@ -32,6 +23,7 @@ class UserDetailsConverter {
                     totalSize = listOfUserDto.size
             )
         }
-
     }
+
+
 }

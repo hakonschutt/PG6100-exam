@@ -25,9 +25,7 @@ class UserDetailsApi {
     @GetMapping()
     @ApiResponse(code = 200, message = "Returns a list of all the user details")
     fun getAllUserDetails(
-            @ApiParam("Loading with purchase history, or not, default is without")
-            @RequestParam("withHistory", required = false, defaultValue = "false")
-            withHistory: Boolean,
+
 
             @ApiParam("Offset param to determine what part of the  result table you want back")
             @RequestParam("offset", required = false, defaultValue = "0")
@@ -44,7 +42,7 @@ class UserDetailsApi {
         if (limit < 1) {
             validatedLimit = 0
         }
-        val list = userDetailsService.findAll(withHistory, validatedOffset, validatedLimit)
+        val list = userDetailsService.findAll(validatedOffset, validatedLimit)
 
         val wrappedResponse = UserDetailWrapper(code = 200, data = list, message = "List of user details").validated()
 
@@ -58,13 +56,13 @@ class UserDetailsApi {
                 @ApiParam("loading with history, or not, default is with")
                 @RequestParam("withHistory", required = false)
                 withHistory: Boolean = true
-    ): ResponseEntity<WrappedResponse<PageDto<UserDetailDto>>> {
-        val result: ResponseEntity<WrappedResponse<PageDto<UserDetailDto>>>
+    ): ResponseEntity<WrappedResponse<UserDetailDto>> {
+        val result: ResponseEntity<WrappedResponse<UserDetailDto>>
 
-        val userpg = userDetailsService.findAllById(idFromPath, withHistory = withHistory)
-        result = if (userpg.list.size > 0) {
+        val userpg = userDetailsService.findById(idFromPath)
+        result = if (userpg!= null) {
             ResponseEntity.status(200)
-                    .body(UserDetailWrapper(
+                    .body(WrappedResponse(
                             code = 200,
                             data = userpg,
                             message = "The single user - details that was requested")

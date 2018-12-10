@@ -7,8 +7,8 @@ import Root from './global/Root';
 import Routes from './global/Routes';
 
 ReactDOM.render(
-  <Root>
-    <Routes />
-  </Root>
-  , document.getElementById('root')
+	<Root>
+		<Routes />
+	</Root>,
+	document.getElementById('root')
 );

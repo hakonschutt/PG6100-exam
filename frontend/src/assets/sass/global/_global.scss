@@ -1,104 +1,126 @@
 /********************GLOBAL********************/
 
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 
-  &:after,
-  &:before {
-    box-sizing: border-box;
-  }
+	&:after,
+	&:before {
+		box-sizing: border-box;
+	}
 }
 
 html,
 body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	font-family: $default-font;
+	// background-color: map-get($base-colors, black);
 }
 
 main {
-  position: relative;
-  z-index: 20;
-  display: block;
-  min-height: 100%;
-  padding: 0 1rem;
+	position: relative;
+	z-index: 20;
+	display: block;
+	min-height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	font-family: $header-font;
+}
+
+a,
+span,
+p,
+strong,
+li,
+div {
+	font-family: $text-font;
 }
 
 img {
-  height: auto;
-  max-width: 100%;
+	height: auto;
+	max-width: 100%;
+}
+
+main {
+	min-height: calc(100vh - 280px);
 }
 
 .wrap,
 .contain,
 .constrain {
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  word-wrap: break-word;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	word-wrap: break-word;
 }
 
 .wrap {
-  max-width: 1024px;
+	max-width: 1024px;
 }
 
 .content-wrap {
-  max-width: 1024px;
+	max-width: 1024px;
 }
 
 .contain {
-  max-width: 700px;
+	max-width: 700px;
 }
 
 .constrain {
-  max-width: 450px;
+	max-width: 450px;
 }
 
 .hpad {
-  padding-left: 1rem;
-  padding-right: 1rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
 
-  @include wider-than(tablet) {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
+	@include wider-than(tablet) {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
 }
 
 .left {
-  text-align: left;
+	text-align: left;
 }
 
 .center {
-  text-align: center;
+	text-align: center;
 }
 
 .right {
-  text-align: right;
+	text-align: right;
 }
 
 .aligncenter {
-  margin: 1rem auto;
-  clear: both;
+	margin: 1rem auto;
+	clear: both;
 }
 
 .halign {
-  @include halign;
+	@include halign;
 }
 
 .valign {
-  @include valign;
+	@include valign;
 }
 
 .hvalign {
-  @include hvalign;
+	@include hvalign;
 }
 
 .clearfix:before,
 .clearfix:after {
-  content: " ";
-  display: table;
+	content: ' ';
+	display: table;
 }
 
 .clearfix:after {
-  clear: both;
+	clear: both;
 }
