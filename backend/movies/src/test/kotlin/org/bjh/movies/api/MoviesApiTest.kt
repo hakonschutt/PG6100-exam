@@ -33,7 +33,7 @@ class MoviesApiTest : LocalApplicationRunner() {
 
     @Test
     fun testGetMovie() {
-        getAllMovies()?.parallelStream()?.forEach { it ->
+        getAllMovies()?.stream()?.forEach { it ->
             assertThat(RestAssured.given().accept(ContentType.JSON)
                     .get(it.id)
                     .then()
@@ -134,7 +134,7 @@ class MoviesApiTest : LocalApplicationRunner() {
         val allMovies = getAllMovies()
 
         allMovies!!
-                .parallelStream()
+                .stream()
                 .forEach {
                     RestAssured.given().accept(ContentType.JSON)
                             .delete("${it.id}")
