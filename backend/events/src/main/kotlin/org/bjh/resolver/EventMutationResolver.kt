@@ -1,0 +1,13 @@
+package org.bjh.resolver
+
+import com.coxautodev.graphql.tools.GraphQLMutationResolver
+import org.bjh.repository.EventRepository
+import org.bjh.serivce.EventService
+import org.bjh.type.EventInputType
+import org.springframework.stereotype.Component
+
+@Component
+class EventMutationResolver( private val eventService: EventService):GraphQLMutationResolver{
+    fun  create(event: EventInputType): String{return "not workingTy"}
+    fun  update(event: EventInputType): Boolean{return false}
+}
