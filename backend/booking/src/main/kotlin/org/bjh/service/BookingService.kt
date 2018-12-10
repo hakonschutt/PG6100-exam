@@ -8,6 +8,7 @@ import org.bjh.pagination.HalLink
 import org.bjh.pagination.PageDto
 import org.bjh.repository.BookingRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -16,6 +17,7 @@ class BookingService {
     @Autowired
     private lateinit var bookingRepository : BookingRepository
 
+    @Cacheable("bookingCache")
     fun findAll (withTickets : Boolean, offset: Int = 0, limit: Int = 20) : PageDto<BookingDto> {
         val bookings = bookingRepository.findAll(offset, limit);
         val page = BookingConverter.transform(bookings, withTickets, offset, limit)
