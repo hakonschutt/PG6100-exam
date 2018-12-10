@@ -1,23 +1,23 @@
 type Query {
     version: String,
-    allEvents: [Event],
-    allEventsForVenue:[Event],
-    allEventsForMovies:[Event],
-#       eventById:Event
+    allEvents(venue:String,movie:String): [Event!],
+#    allEventsForVenue:[Event],
+#    allEventsForMovies:[Event],
+#    eventById:Event
 }
 type Mutation {
     create(
     event: EventInput!
 ): String!
-#    update(event:EventInput!): Boolean!
+    #    update(event:EventInput!): Boolean!
 }
 
 scalar EventDateTime
 
 input EventInput {
     data: EventDateTime!,
-    movieId: Long,
-    venueId: Long,
+    movieId: String,
+    venueId: String,
     roomId: Long,
     rows: Int,
     columns: Int
@@ -26,9 +26,9 @@ input EventInput {
 type Event {
     id: Long,
     date: EventDateTime!,
-    movieId: Movie,
-    venueId: Venue,
-    roomId: Room,
+    movie(movieId:String): Movie,
+    venue(venueId:String): Venue,
+    room(roomId:String): Room,
     rows: Int,
     columns: Int
 }
@@ -43,7 +43,7 @@ type Venue{
     id: String,
     geoLocation: String,
     address: String,
-    rooms: [Room],
+    rooms(venueId:String): [Room],
     name: String
 }
 type Movie {

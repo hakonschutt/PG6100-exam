@@ -1,8 +1,7 @@
 package org.bjh.resolver
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
-import org.bjh.repository.EventRepository
-import org.bjh.serivce.EventService
+import org.bjh.service.EventService
 import org.bjh.type.EventInputType
 import org.springframework.stereotype.Component
 /** @author  Kleppa && håkonschutt */

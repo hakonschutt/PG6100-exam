@@ -9,16 +9,17 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-/** @author  Kleppa && håkonschutt */
+/** @author  Kleppa && hakonschutt */
 class EventEntity(
         @get:Id @get:GeneratedValue
         var id: Long? = null,
         var date: ZonedDateTime,
-        var movieId: Long,
-        var venueId: Long,
+        var movieId: String,
+        var venueId: String,
         var roomId: Long,
         @get:Range(min=1,max=80)
         var rows: Int?,
         @get:Range(min=1,max=80)
         var columns: Int?
 )
+
