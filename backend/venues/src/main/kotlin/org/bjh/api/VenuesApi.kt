@@ -92,7 +92,6 @@ class VenuesApi {
     @ApiOperation("fetches all rooms for venue")
     @GetMapping("/{id}/rooms/")
     @ApiResponses(ApiResponse(code = 200, message = "fetched all rooms"), ApiResponse(code = 400, message = "id is poorly formatted"))
-//            ApiResponse(code = 404, message = "Venue not found")
     fun getRoomsForVenue(@ApiParam("venue id") @PathVariable("id") id: String): ResponseEntity<WrappedResponse<Set<RoomDto>>> {
 //     FIXME:   Since its highly unlikely that a venue has more than 20 rooms we are not using pagination
         var validatedId:Long
