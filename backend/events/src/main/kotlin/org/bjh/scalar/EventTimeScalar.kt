@@ -12,7 +12,6 @@ import java.time.format.DateTimeParseException
 
 
 // Taken from Andreas code
-/** @author  Kleppa && håkonschutt */
 @Component
 class EventTimeScalar : GraphQLScalarType("EventDateTime", "DataTime scalar", EventTimeScalarCoercing())
 

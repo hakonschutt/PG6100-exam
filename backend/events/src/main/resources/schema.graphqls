@@ -1,20 +1,19 @@
 type Query {
     version: String,
     allEvents(venue:String,movie:String): [Event!],
-    #eventById:Event
+    eventById(eventId:Long):Event
 }
 type Mutation {
     create( event: EventInput! ): String!
-    #    update(event:EventInput!): Boolean!
 }
 
 scalar EventDateTime
 
 input EventInput {
-    data: EventDateTime!,
+    date: EventDateTime!,
     movieId: String,
     venueId: String,
-    roomId: Long,
+    roomId: String,
     rows: Int,
     columns: Int
 }

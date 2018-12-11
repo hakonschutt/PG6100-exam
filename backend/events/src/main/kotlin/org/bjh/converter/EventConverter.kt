@@ -1,75 +1,73 @@
 package org.bjh.converter
 
+import org.bjh.dto.EventDto
 import org.bjh.dto.MovieDto
-import org.bjh.type.MovieType
+import org.bjh.dto.RoomDto
+import org.bjh.dto.VenueDto
+import org.bjh.entity.EventEntity
+import org.bjh.type.*
 
+/** @author  Kleppa && håkonschutt */
 
 class EventConverter {
 
     companion object {
-//        fun transform(req: List<MovieDto>): List<MovieType>? {
-//            return req.map { transform(it) }
-//        }
-//        fun transform(movieDto: MovieDto):MovieType{
-//            return MovieType(
-//                    title = movieDto.title,
-//                    poster = movieDto.poster,
-//                    voteAverage =movieDto.voteAverage,
-//                    voteCount =movieDto.voteCount,
-//                    coverArt =movieDto.coverArt,
-//                    trailer =movieDto.trailer,
-//                    overview =movieDto.overview,
-//                    releaseDate =movieDto.releaseDate,
-//                    genres =movieDto.genres,
-//                    price =movieDto.price,
-//                    popularity =movieDto.popularity,
-//                    id =movieDto.id
-//            )
-//        }
-//        fun transform(entity:EventEntity):EventType{
-//
-//            return
-//
-//        }
-//        fun transform(listOfEnts:List<EventEntity>):List<EventType>{
-//            return listOfEnts.map { transform(it) }
-//        }
+        // force unwrapping since we are not creating new dtos only fetching from movieservice
+
+        fun transformMovieDtoToType(movieDto: MovieDto): MovieType = MovieType(
+                id = movieDto.id!!,
+                title = movieDto.title!!,
+                poster = movieDto.poster!!,
+                coverArt = movieDto.coverArt!!,
+                trailer = movieDto.trailer!!,
+                overview = movieDto.overview!!,
+                releaseDate = movieDto.releaseDate!!,
+                genres = movieDto.genres!!,
+                voteCount = movieDto.voteCount!!,
+                voteAverage = movieDto.voteAverage!!,
+                popularity = movieDto.popularity!!,
+                price = movieDto.price!!
+        )
+
+
+        fun transformEventEntityToType(eventEntity: EventEntity): EventType = EventType(
+                id = eventEntity.id!!,
+                date = eventEntity.date,
+                venueId = eventEntity.venueId,
+                movieId = eventEntity.movieId,
+                columns = eventEntity.columns!!,
+                rows = eventEntity.rows!!,
+                roomId = eventEntity.roomId.toString()
+        )
+
+
+        fun transformVenueDtoToType(venueDto: VenueDto): VenueType = VenueType(
+                id = venueDto.id!!,
+                geoLocation = venueDto.geoLocation!!,
+                address = venueDto.address!!,
+                rooms = venueDto.rooms.map { transformRoomDtoToType(it) }.toSet(),
+                name = venueDto.name!!
+        )
+
+
+        fun transformRoomDtoToType(roomDto: RoomDto): RoomType = RoomType(
+                id = roomDto.id!!,
+                name = roomDto.name!!,
+                rows = roomDto.rows!!,
+                columns = roomDto.columns!!
+        )
+
+        fun transformEventEntityToType(listEventEnt: List<EventEntity>): List<EventType> = listEventEnt.map { transformEventEntityToType(it) }
+        fun transformEventInputToEntity(eventInputType: EventInputType): EventEntity = EventEntity(
+                id = null,
+                date = eventInputType.date,
+                movieId = eventInputType.movieId,
+                venueId = eventInputType.venueId,
+                roomId = eventInputType.roomId,
+                rows = eventInputType.rows,
+                columns = eventInputType.columns
+
+        )
     }
+
 }
-//EventType(
-//                    id = ,
-//                    date = ,
-//                    movieId = MovieType(
-//                            title = ,
-//                            poster = ,
-//                            voteAverage = ,
-//                            voteCount = ,
-//                            coverArt =  ,
-//                            trailer = ,
-//                            overview = ,
-//                            releaseDate = ,
-//                            genres = ,
-//                            price = ,
-//                            popularity = ,
-//                            id =
-//                    ),
-//                    venueId = VenueType(
-//                            name = ,
-//                            id = ,
-//                            geoLocation = ,
-//                            address = ,
-//                            rooms = setOf(RoomType(
-//                                    id = "test - room",
-//                                    name = "Test",
-//                                    rows = 10,
-//                                    columns = 10
-//                            ))
-//
-//                    ),
-//                    roomId = RoomType( id = "test - room",
-//                            name = "Test",
-//                            rows = 10,
-//                            columns = 10),
-//                    rows = 10,
-//                    columns = 10
-//            )

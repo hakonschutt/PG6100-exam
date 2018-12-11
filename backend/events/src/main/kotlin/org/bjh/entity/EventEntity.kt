@@ -16,7 +16,7 @@ class EventEntity(
         var date: ZonedDateTime,
         var movieId: String,
         var venueId: String,
-        var roomId: Long,
+        var roomId: String,
         @get:Range(min=1,max=80)
         var rows: Int?,
         @get:Range(min=1,max=80)

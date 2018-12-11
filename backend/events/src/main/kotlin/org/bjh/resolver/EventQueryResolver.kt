@@ -14,49 +14,14 @@ class EventQueryResolver : GraphQLQueryResolver {
 
     fun version() = "1.0.0"
 
-    fun allEvents(venue: String?, movie: String?): List<EventType> {
-       return  when {
-            venue.isNullOrEmpty() && !movie.isNullOrEmpty() -> eventService.findAllEventsByMovie(movie)
-            (!venue.isNullOrEmpty() && movie.isNullOrEmpty()) -> eventService.findAllEventsByVenue(venue)
-            else -> eventService.findAll()
-        }
+    fun allEvents(venue: String?, movie: String?): List<EventType> = when {
+        venue.isNullOrEmpty() && !movie.isNullOrEmpty() -> eventService.findAllEventsByMovie(movie!!)
+        (!venue.isNullOrEmpty() && movie.isNullOrEmpty()) -> eventService.findAllEventsByVenue(venue!!)
+        else -> eventService.findAll()
     }
 
+    fun eventById(eventId: String?): EventType? {
+        //todo not
+        return null
+    }
 }
-/*EventType(
-                id = 1,
-                date = ZonedDateTime.now(),
-                movieId = MovieType(
-                        title = "test",
-                        poster = "ok",
-                        voteAverage = "3",
-                        voteCount = 2,
-                        coverArt = "ok" ,
-                        trailer = "nop",
-                        overview = "kk",
-                        releaseDate = "oki",
-                        genres = setOf("test-genre"),
-                        price = "10",
-                        popularity = "ok",
-                        id = "12312"
-                ),
-                venueId = VenueType(
-                        name = "test",
-                        id = "test",
-                        geoLocation = "test",
-                        address = "test",
-                        rooms = setOf(RoomType(
-                                id = "test - room",
-                                name = "Test",
-                                rows = 10,
-                                columns = 10
-                        ))
-
-                ),
-                roomId = RoomType( id = "test - room",
-                        name = "Test",
-                        rows = 10,
-                        columns = 10),
-                rows = 10,
-                columns = 10
-        )*/

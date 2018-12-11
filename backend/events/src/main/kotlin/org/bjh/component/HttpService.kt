@@ -12,6 +12,7 @@ import org.springframework.web.client.getForObject
 import rx.Observable
 import java.net.URI
 import kotlin.reflect.KClass
+/** @author  Kleppa && håkonschutt */
 
 @Component
 class HttpService {
@@ -20,6 +21,5 @@ class HttpService {
         : HystrixCommand<WrappedResponse<*>>(HystrixCommandGroupKey.Factory.asKey("Interactions with $url")) {
         override fun run(): WrappedResponse<*>? = RestTemplate().getForObject(url, WrappedResponse::class.java)
         override fun getFallback(): WrappedResponse<*> = WrappedResponse<Any>(code = 500, message = "server timed out or threw an exception").validated()
-
     }
 }

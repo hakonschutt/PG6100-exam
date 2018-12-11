@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.bjh.converter.EventConverter
 import org.bjh.dto.MovieDto
 import org.bjh.wrappers.WrappedResponse
+/** @author  Kleppa && håkonschutt */
 
 @Component
 class EventResolver : GraphQLResolver<EventType> {
