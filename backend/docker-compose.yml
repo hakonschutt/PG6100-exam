@@ -6,13 +6,9 @@ services:
 
   booking-db:
       image: "postgres:10"
-      ports:
-      - '5432:5432'
 
   payment-db:
       image: "postgres:10"
-      ports:
-      - '5432:5432'
 
   sender:
     build:
@@ -26,13 +22,10 @@ services:
 
   receiver_0:
      build:
-        context: ./service
+        context: ./booking
         dockerfile: Dockerfile
      ports:
         - "9001:8080"
      depends_on:
         - rabbitmq
         - booking-db
-
-  booking:
-      restart: always

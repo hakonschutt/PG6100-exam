@@ -1,6 +1,5 @@
 package org.bjh.payment.api
 
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -64,7 +63,7 @@ class PaymentApi {
         message.addProperty("user", paymentDto.user)
         message.addProperty("success", true)
 
-        rabbitTemplate.convertAndSend(fanout.name, "", message)
+        rabbitTemplate.convertAndSend(fanout.name, "", message.toString())
 
         return ResponseEntity.status(201).body(
                 WrappedResponse<Unit>(
