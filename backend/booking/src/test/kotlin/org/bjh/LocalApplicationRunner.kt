@@ -8,9 +8,8 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.cache.CacheManager
 import org.springframework.test.context.junit4.SpringRunner
-
-
 
 /**
  * @author hakonschutt
@@ -22,6 +21,9 @@ abstract class LocalApplicationRunner {
 
     @Autowired
     protected lateinit var bookingRepository : BookingRepository
+
+    @Autowired
+    protected lateinit var cacheManager: CacheManager
 
     @LocalServerPort
     protected var port = 0
@@ -41,5 +43,9 @@ abstract class LocalApplicationRunner {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
         prepTestData()
+
+        if (cacheManager.getCache("bookingCache") != null) {
+            cacheManager.getCache("bookingCache").clear()
+        }
     }
 }
