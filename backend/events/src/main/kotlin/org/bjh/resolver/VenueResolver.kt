@@ -9,6 +9,7 @@ import org.bjh.type.RoomType
 import org.bjh.type.VenueType
 import org.bjh.wrappers.WrappedResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 /** @author  Kleppa && håkonschutt */
@@ -17,15 +18,21 @@ import org.springframework.stereotype.Component
 class VenueResolver : GraphQLResolver<VenueType> {
     @Autowired
     private lateinit var httpService: HttpService
+    @Value("\${fixerWebAddress}")
+    private lateinit var webAddress: String
 
     fun rooms(venue: VenueType): Set<RoomType>? {
         try {
-            val req = (httpService.getReq("http://localhost:8080/api/venues/${venue.id}/rooms") as WrappedResponse<List<RoomDto>>)
-            val data = req.data
-            if (data != null) {
-                if (data.isNotEmpty()) {
-                    return data.map{ Gson().toJson(it, LinkedHashMap::class.java) }.map{ EventConverter.transformRoomDtoToType(Gson().fromJson(it, RoomDto::class.java))}.toSet()
-                }
+            val req = (httpService.getReq("http://${webAddress.trim()}/api/venues/${venue.id}/rooms") as WrappedResponse<List<RoomDto>>)
+            val data = req.data as ArrayList<LinkedHashMap<String, String>>
+
+            if (data.isNotEmpty()) {
+
+                val jsonTo = data.map { Gson().toJson(it, LinkedHashMap::class.java) }
+
+                val dtos = jsonTo.map { Gson().fromJson(it, RoomDto::class.java) }
+                dtos.forEach{println(dtos)}
+                return dtos.map { EventConverter.transformRoomDtoToType(it) }.toSet()
             }
             return null
         } catch (e: ClassCastException) {

@@ -31,10 +31,6 @@ class EventResolver : GraphQLResolver<EventType> {
             println("########MOVIE###########")
             val req = (httpService.getReq("http://${webAddress.trim()}/api/movies/${event.movieId}")) as WrappedResponse<List<MovieDto>>
 
-            println("###################################")
-            println("This is the wrapped response from movie api ${req.data}, ${req.message}")
-            println("###################################")
-
             val data = req.data
             if (data != null) {
                 if (data.isNotEmpty()) {
@@ -54,8 +50,7 @@ class EventResolver : GraphQLResolver<EventType> {
     fun venue(event: EventType): VenueType? {
         // TODO: Create HTTP request
         try {
-            val req = (httpService.getReq("http://localhost:8080/api/venues/${event.venueId}") as WrappedResponse<List<VenueDto>>)
-            println("This is the wrapped response from venue api ${req}")
+            val req = (httpService.getReq("http://${webAddress.trim()}/api/venues/${event.venueId}") as WrappedResponse<List<VenueDto>>)
             val data = req.data
             if (data != null) {
                 if (data.isNotEmpty()) {
@@ -74,13 +69,15 @@ class EventResolver : GraphQLResolver<EventType> {
 
     fun room(event: EventType): RoomType? {
         try {
-            val req = (httpService.getReq("http://localhost:8080/api/venues/${event.venueId}/rooms") as WrappedResponse<List<RoomDto>>)
-            println("This is the wrapped response from room api ${req}")
-            val data = req.data
+            val req = (httpService.getReq("http://${webAddress.trim()}/api/venues/${event.venueId}/rooms") as WrappedResponse<List<RoomDto>>)
+            val data = req.data as ArrayList<LinkedHashMap<String,String>>
             if (data != null) {
                 if (data.isNotEmpty()) {
-                    val json = Gson().toJson(data, LinkedHashMap::class.java)
-                    return EventConverter.transformRoomDtoToType(Gson().fromJson(json, RoomDto::class.java))
+
+                    var desiredDto = data.filter { it.get("id") == event.roomId}.first()
+                    val jsonTo =   Gson().toJson(desiredDto, LinkedHashMap::class.java)
+                    return  EventConverter.transformRoomDtoToType(Gson().fromJson(jsonTo, RoomDto::class.java))
+
                 }
             }
 

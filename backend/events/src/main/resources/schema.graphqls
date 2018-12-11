@@ -7,8 +7,6 @@ type Mutation {
     create( event: EventInput! ): String!
 }
 
-scalar EventDateTime
-
 input EventInput {
     date: String!,
     movieId: String,

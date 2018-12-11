@@ -44,7 +44,6 @@ class EventConverter {
                 id = venueDto.id!!,
                 geoLocation = venueDto.geoLocation!!,
                 address = venueDto.address!!,
-                rooms = venueDto.rooms.map { transformRoomDtoToType(it) }.toSet(),
                 name = venueDto.name!!
         )
 

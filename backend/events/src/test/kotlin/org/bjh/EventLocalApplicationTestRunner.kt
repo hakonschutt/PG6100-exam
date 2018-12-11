@@ -64,50 +64,10 @@ class EventLocalApplicationTestRunner {
     private fun stubMovie() = """
             { "code": 200, "data": [{ "title": "testTitle", "poster": "p", "coverArt": "cA", "trailer": "t", "overview":"ov", "releaseDate": "date", "genres": ["drama"], "voteCount": 1, "voteAverage": "2.2", "popularity": "pop", "price": "2.20", "id": "1" }], "status": "SUCCESS", "message": "Worked"}""".trimIndent()
 
-    private fun stubVenue() = """{
-            |"code":200,
-            |"data":[
-            |   {
-            |       "id":"1",
-            |       "rooms":[
-            |       {
-            |           "id":"1",
-            |           "name":"sal-1",
-            |           "row":10,
-            |           "columns":10
-            |       }  ,
-            |        {
-            |           "id":"2",
-            |           "name":"sal-2",
-            |           "row":10,
-            |           "columns":10
-            |       }
-            |       ],
-            |       "geoLocation":"Oslo",
-            |       "address":"Nydalen",
-            |       "name":"venue-name"
-            |   }
-            |],
-            |"status":"ok",
-            |"message":"Worked"
-            |}
-            |""".trimMargin()
+    private fun stubVenue() = """{"code":200,"data":[{"id":"1","rooms":[{"id":"1","name":"sal-1","rows":10,"columns":10},{"id":"2","name":"sal-2","rows":10,"columns":10}],"geoLocation":"Oslo","address":"Nydalen","name":"venue-name"}],"status":"SUCCESS","message":"Worked"}""".trimIndent()
 
 
-    private fun stubRooms() = """{ code: 200, data:[{ id:"1", name: "sal-1", row: 10,
-                       "columns:10
-                   }  ,
-                    {
-                       "id":"2",
-                       "name":"sal-2",
-                       "row":10,
-                       "columns":10
-                   }
-            ],
-            "status":"ok",
-            "message":"Worked"
-            }
-        """.trimIndent()
+    private fun stubRooms() = """{ "code": 200, "data":[{ "id":"1", "name": "sal-1", "rows": 10,"columns":10},{"id":"2","name":"sal-2","rows":10,"columns":10}],"status":"SUCCESS","message":"Worked"}""".trimIndent()
 
 
     private fun stubReq(url: String, json: String) {
@@ -276,51 +236,65 @@ class EventLocalApplicationTestRunner {
                 .body("data.allEvents[0].movie.id", equalTo(movieId))
     }
 
+
     @Test
     fun testGetAllWithVenues() {
-        val movieId = "1"
-        createEvent(movieId = movieId, venueId = "123", roomId = "123")
+        val stub = stubVenue()
+        stubReq("/api/venues.*", stub)
+        val venueId = "1"
+        createEvent(movieId = "1", venueId = venueId, roomId = "123")
 
         given().accept(ContentType.JSON)
-                .queryParam("query", "{allEvents(movie: \"$movieId\"){id, movieId}}")
+                .queryParam("query", "{allEvents{id, venueId, venue{ id }}}")
                 .get()
                 .then()
                 .statusCode(200)
                 .body("$", hasKey("data"))
                 .body("$", not(hasKey("errors")))
                 .body("data.allEvents.size()", equalTo(1))
-                .body("data.allEvents[0].movieId", equalTo(movieId))
+                .body("data.allEvents[0].venueId", equalTo(venueId))
+                .body("data.allEvents[0].venue.id", equalTo(venueId))
+
     }
 
     @Test
     fun testGetAllWithRoom() {
-        val movieId = "1"
-        createEvent(movieId = movieId, venueId = "123", roomId = "123")
+        val stub = stubRooms()
+        stubReq("/api/venues/.*/rooms", stub)
+        val roomId = "1"
+        createEvent(movieId = "1", venueId = "1", roomId = roomId)
 
         given().accept(ContentType.JSON)
-                .queryParam("query", "{allEvents(movie: \"$movieId\"){id, movieId}}")
+                .queryParam("query", "{allEvents{id,roomId,room{id} }}")
                 .get()
                 .then()
                 .statusCode(200)
                 .body("$", hasKey("data"))
                 .body("$", not(hasKey("errors")))
                 .body("data.allEvents.size()", equalTo(1))
-                .body("data.allEvents[0].movieId", equalTo(movieId))
+                .body("data.allEvents[0].roomId", equalTo(roomId))
+                .body("data.allEvents[0].room.id", equalTo(roomId))
     }
 
     @Test
     fun testGetAllWithVenueRooms() {
-        val movieId = "1"
-        createEvent(movieId = movieId, venueId = "123", roomId = "123")
+        val stub = stubRooms()
+        val stubVen = stubVenue()
+        stubReq("/api/venues.*", stubVen)
+        stubReq("/api/venues.*/rooms", stub)
+        val venueId = "1"
+
+
+        createEvent(movieId = "123", venueId = venueId, roomId = "123")
 
         given().accept(ContentType.JSON)
-                .queryParam("query", "{allEvents(movie: \"$movieId\"){id, movieId}}")
+                .queryParam("query", "{allEvents{id,venue{rooms{id}}}}")
                 .get()
                 .then()
                 .statusCode(200)
                 .body("$", hasKey("data"))
                 .body("$", not(hasKey("errors")))
                 .body("data.allEvents.size()", equalTo(1))
-                .body("data.allEvents[0].movieId", equalTo(movieId))
+                .body("data.allEvents[0].venue.rooms.size()", equalTo(2))
     }
 }
