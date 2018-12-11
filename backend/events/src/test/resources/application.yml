@@ -1,4 +1,3 @@
-#fixerWebAddress=localhost:8099
 spring:
   logging:
     level:
@@ -7,3 +6,5 @@ spring:
       org.hibernate: info
 server:
   port: 8084
+
+fixerWebAddress: localhost:8099

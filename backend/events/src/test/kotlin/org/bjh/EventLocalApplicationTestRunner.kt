@@ -52,35 +52,14 @@ class EventLocalApplicationTestRunner {
     @Before
     @After
     fun clean() {
-        println("###########DELETEE#####################")
         eventRepository.run {
             deleteAll()
         }
     }
 
     private fun stubMovie() = """
-            |{
-            |"code":200,
-            |"data":[
-            |   {
-            |       "title":"testTitle",
-            |       "poster":"p",
-            |       "coverArt":"cA",
-            |       "trailer":"t",
-            |       "overview":"ov",
-            |       "releaseDate":"date",
-            |       "genre":["drama"],
-            |       "voteCount":1,
-            |       "voteAverage":"2.2",
-            |       "popularity":"pop",
-            |       "price":"2.20",
-            |       "id": "1"
-            |   }
-            |],
-            |"status":"ok",
-            |"message":"Worked"
-            |}
-            |""".trimMargin()
+            { code: 200, data: [{ title: "testTitle", poster: "p", coverArt: "cA", trailer: "t", overview:"ov", releaseDate: "date", genre: ["drama"], voteCount: 1, voteAverage: "2.2", popularity: "pop", price: "2.20", id: "1" }], status: "ok", message: "Worked"}
+    """.trimIndent()
 
     private fun stubVenue() = """
             |{
@@ -113,28 +92,19 @@ class EventLocalApplicationTestRunner {
             |""".trimMargin()
 
 
-    private fun stubRooms() =
-            """
-                |{
-            |"code":200,
-            |"data":[
-            |
-            |       {
-            |           "id":"1",
-            |           "name":"sal-1",
-            |           "row":10,
-            |           "columns":10
-            |       }  ,
-            |        {
-            |           "id":"2",
-            |           "name":"sal-2",
-            |           "row":10,
-            |           "columns":10
-            |       }
-            |],
-            |"status":"ok",
-            |"message":"Worked"
-            |}
+    private fun stubRooms() = """{ code: 200, data:[{ id:"1", name: "sal-1", row: 10,
+                       "columns:10
+                   }  ,
+                    {
+                       "id":"2",
+                       "name":"sal-2",
+                       "row":10,
+                       "columns":10
+                   }
+            ],
+            "status":"ok",
+            "message":"Worked"
+            }
         """.trimIndent()
 
 
@@ -270,6 +240,74 @@ class EventLocalApplicationTestRunner {
 
     @Test
     fun testGetAllByMovieId() {
+        val movieId = "1"
+        createEvent(movieId = movieId, venueId = "123", roomId = "123")
+
+        given().accept(ContentType.JSON)
+                .queryParam("query", "{allEvents(movie: \"$movieId\"){id, movieId}}")
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.allEvents.size()", equalTo(1))
+                .body("data.allEvents[0].movieId", equalTo(movieId))
+    }
+
+    @Test
+    fun testGetAllWithMovies() {
+        val stub = stubMovie()
+        stubReq("/api/movies.*", stub)
+
+        val movieId = "1"
+        createEvent(movieId = movieId, venueId = "123", roomId = "123")
+
+        given().accept(ContentType.JSON)
+                .queryParam("query", "{allEvents{id, movieId, movie{ id }}}")
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.allEvents.size()", equalTo(1))
+                .body("data.allEvents[0].movieId", equalTo(movieId))
+                .body("data.allEvents[0].movie.id", equalTo(movieId))
+    }
+
+    @Test
+    fun testGetAllWithVenues() {
+        val movieId = "1"
+        createEvent(movieId = movieId, venueId = "123", roomId = "123")
+
+        given().accept(ContentType.JSON)
+                .queryParam("query", "{allEvents(movie: \"$movieId\"){id, movieId}}")
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.allEvents.size()", equalTo(1))
+                .body("data.allEvents[0].movieId", equalTo(movieId))
+    }
+
+    @Test
+    fun testGetAllWithRoom() {
+        val movieId = "1"
+        createEvent(movieId = movieId, venueId = "123", roomId = "123")
+
+        given().accept(ContentType.JSON)
+                .queryParam("query", "{allEvents(movie: \"$movieId\"){id, movieId}}")
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.allEvents.size()", equalTo(1))
+                .body("data.allEvents[0].movieId", equalTo(movieId))
+    }
+
+    @Test
+    fun testGetAllWithVenueRooms() {
         val movieId = "1"
         createEvent(movieId = movieId, venueId = "123", roomId = "123")
 
