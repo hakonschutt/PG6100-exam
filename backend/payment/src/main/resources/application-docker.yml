@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: payment
+  datasource:
+    url: "jdbc:postgresql://booking-db:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+  jpa:
+    show-sql: true
+    database: "postgresql"
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 9091

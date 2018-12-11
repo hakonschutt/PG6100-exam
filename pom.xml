@@ -63,6 +63,7 @@
         <version.springcloud>Finchley.RELEASE</version.springcloud>
         <version.springfox>2.9.2</version.springfox>
         <version.jacoco>0.8.2</version.jacoco>
+        <version.testcontainers>1.9.1</version.testcontainers>
         <version.graphql-spring>4.2.0</version.graphql-spring>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <version.jackson>2.8.9</version.jackson>
@@ -210,6 +211,26 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <!-- To use Docker from tests -->
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${version.testcontainers}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>selenium</artifactId>
+            <version>${version.testcontainers}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-remote-driver</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--TODO: Implement when websec is implemented???-->
         <!--<dependency>-->
@@ -401,8 +422,8 @@
                     </executions>
                 </plugin>
 
-                <plugin>
-                    <!-- Need to create self-executable uber/fat jars -->
+               <!-- <plugin>
+                    &lt;!&ndash; Need to create self-executable uber/fat jars &ndash;&gt;
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${version.springboot}</version>
@@ -413,8 +434,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
-
+                </plugin>-->
                 <plugin>
                     <!-- Needed for SOAP clients -->
                     <groupId>org.codehaus.mojo</groupId>
