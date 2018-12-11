@@ -20,7 +20,6 @@ class EventResolver : GraphQLResolver<EventType> {
     private lateinit var httpService: HttpService
 
     fun movie(event:EventType): MovieType? {
-        // TODO: Add circuit breaker
 
         val req = (httpService.getReq("http://localhost:8080/math/divide?x=4&y=2") as WrappedResponse<Any>).data
         println("This is the wrapped response from mathapi ${req}")
@@ -30,11 +29,15 @@ class EventResolver : GraphQLResolver<EventType> {
 
     fun venue(event: EventType): VenueType? {
         // TODO: Create HTTP request
+        val req = (httpService.getReq("http://localhost:8080/math/divide?x=4&y=2") as WrappedResponse<Any>).data
+        println("This is the wrapped response from mathapi ${req}")
         return null
     }
 
     fun room(event: EventType): RoomType? {
         // TODO: Create HTTP request
+        val req = (httpService.getReq("http://localhost:8080/math/divide?x=4&y=2") as WrappedResponse<Any>).data
+        println("This is the wrapped response from mathapi ${req}")
         return null
     }
 }

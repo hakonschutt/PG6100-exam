@@ -36,8 +36,8 @@ class EventsApplicationRunner {
 
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
-                .title("API for bookings")
-                .description("REST API containing all tickets and bookings in house of movies")
+                .title("GRAPHQL API for events")
+                .description("REST API containing all events in house of movies")
                 .version("1.0")
                 .build()
     }

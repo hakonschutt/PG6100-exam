@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository
 @Repository
 interface EventRepository:CrudRepository<EventEntity,Long> {
 
-    @Query("SELECT * FROM events WHERE movieId = :movieId", nativeQuery = true)
+    @Query("SELECT * FROM events WHERE movie_id = :movieId", nativeQuery = true)
     fun findAllEventsByMovie(@Param("movieId") movieId: String): List<EventEntity>
 
-    @Query("SELECT * FROM events WHERE venueId = :venueId", nativeQuery = true)
+    @Query("SELECT * FROM events WHERE venue_id = :venueId", nativeQuery = true)
     fun findAllEventsByVenue(@Param("venueId") venueId: String): List<EventEntity>
 
 

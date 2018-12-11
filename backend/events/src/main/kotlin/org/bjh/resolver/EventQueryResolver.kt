@@ -5,6 +5,7 @@ import org.bjh.service.EventService
 import org.bjh.type.EventType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.lang.NumberFormatException
 
 @Component
 /** @author  Kleppa && håkonschutt */
@@ -20,8 +21,13 @@ class EventQueryResolver : GraphQLQueryResolver {
         else -> eventService.findAll()
     }
 
-    fun eventById(eventId: String?): EventType? {
-        //todo not
-        return null
+    fun eventById(inputId: String?): EventType? {
+        val id: Long
+        try {
+            id = inputId!!.toLong()
+        } catch (e: NumberFormatException) {
+            return null
+        }
+        return eventService.findById(id)
     }
 }

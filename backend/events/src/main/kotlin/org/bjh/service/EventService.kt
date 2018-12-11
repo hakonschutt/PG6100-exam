@@ -2,6 +2,7 @@ package org.bjh.service
 
 import org.bjh.converter.EventConverter
 import org.bjh.repository.EventRepository
+import org.bjh.type.EventInputType
 import org.bjh.type.EventType
 import org.bjh.type.MovieType
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,6 +29,14 @@ class EventService{
     fun findAllEventsByVenue(venue: String): List<EventType> {
         val listOfEventsByVenue = eventRepository.findAllEventsByVenue(venue)
         return EventConverter.transformEventEntityToType(listOfEventsByVenue)
+    }
+
+    fun findById(id: Long): EventType? = EventConverter.transformEventEntityToType(
+            eventRepository.findById(id).orElse(null)
+    )
+
+    fun create(event: EventInputType): String {
+        return eventRepository.save(EventConverter.transformEventInputToEntity(event)).id.toString()
     }
 
 

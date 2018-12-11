@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 /** @author  Kleppa && håkonschutt */
 data class EventType(
         var id: Long,
-        var date: ZonedDateTime,
+        var date: String,
         var movieId: String,
         var venueId: String,
         var roomId: String,

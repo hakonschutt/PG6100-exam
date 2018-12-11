@@ -5,7 +5,7 @@ import java.util.*
 
 data class EventDto(
         var id: Long? = null,
-        var date: ZonedDateTime,
+        var date: String,
         var movieId: Long,
         var venueId: Long,
         var roomId: Long,

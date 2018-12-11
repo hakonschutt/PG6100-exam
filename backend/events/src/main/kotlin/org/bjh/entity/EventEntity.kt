@@ -8,12 +8,12 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
-@Entity
+@Entity(name="events")
 /** @author  Kleppa && hakonschutt */
 class EventEntity(
         @get:Id @get:GeneratedValue
         var id: Long? = null,
-        var date: ZonedDateTime,
+        var date: String,
         var movieId: String,
         var venueId: String,
         var roomId: String,
