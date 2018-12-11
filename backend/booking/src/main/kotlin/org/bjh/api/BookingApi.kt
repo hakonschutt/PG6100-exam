@@ -9,6 +9,7 @@ import org.bjh.pagination.PageDto
 import org.bjh.service.BookingService
 import org.bjh.service.TicketService
 import org.bjh.wrappers.WrappedResponse
+import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -36,6 +37,22 @@ class BookingApi {
     private lateinit var ticketService: TicketService
 
     private val BASE_PATH = "/api/bookings"
+
+    /**
+     * @author arcuri82
+     */
+
+    @RabbitListener(queues = ["#{queue.name}"])
+    fun receiveFromAMQP(message: String) {
+        print(message)
+    }
+
+    private fun doWork(input: String) {
+        //TODO: Implement stuff that it does.
+        input.toCharArray()
+            .filter { it == '.' }
+            .forEach { Thread.sleep(1000) }
+    }
 
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiOperation("Get all the bookings")

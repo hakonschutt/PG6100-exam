@@ -10,4 +10,6 @@ spring:
     database: "postgresql"
     hibernate:
       ddl-auto: "update"
+  rabbitmq:
+    host: rabbitmq
 
