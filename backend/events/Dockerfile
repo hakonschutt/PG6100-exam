@@ -2,4 +2,4 @@ FROM openjdk:8-alpine
 
 ADD target/events.jar .
 
-CMD java -jar events.jar
+CMD java -jar events.jar --spring.profiles.active=docker

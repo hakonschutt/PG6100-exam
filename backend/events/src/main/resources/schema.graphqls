@@ -23,11 +23,11 @@ type Event {
     id: Long,
     date: EventDateTime!,
     movieId:String
-    movie(): Movie,
+    movie: Movie,
     venueId:String,
-    venue(): Venue,
+    venue: Venue,
     roomId:String,
-    room(): Room,
+    room: Room,
     rows: Int,
     columns: Int
 }
@@ -42,7 +42,7 @@ type Venue{
     id: String,
     geoLocation: String,
     address: String,
-    rooms(): [Room],
+    rooms: [Room!],
     name: String
 }
 type Movie {
@@ -52,7 +52,7 @@ type Movie {
     trailer: String,
     overview: String,
     releaseDate: String,
-    genres: [String],
+    genres: [String!],
     voteCount: Int,
     voteAverage: String,
     popularity: String,

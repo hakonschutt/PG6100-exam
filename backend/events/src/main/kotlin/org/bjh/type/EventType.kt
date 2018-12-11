@@ -5,9 +5,9 @@ import java.time.ZonedDateTime
 data class EventType(
         var id: Long,
         var date: ZonedDateTime,
-        var movieId: MovieType,
-        var venueId: VenueType,
-        var roomId: RoomType,
+        var movieId: String,
+        var venueId: String,
+        var roomId: String,
         var rows: Int,
         var columns: Int
 )

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class VenueResolver : GraphQLResolver<VenueType> {
-    fun rooms(venuee : VenueType): RoomType? {
+    fun rooms(venuee : VenueType): Set<RoomType>? {
         // TODO: Create HTTP request
         return null
     }
