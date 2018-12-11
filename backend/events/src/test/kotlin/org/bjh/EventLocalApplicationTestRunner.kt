@@ -1,24 +1,20 @@
 package org.bjh
 
-import io.restassured.RestAssured
-import org.bjh.repository.EventRepository
-import org.bjh.service.EventService
-import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.LocalServerPort
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import org.bjh.repository.EventRepository
 import org.hamcrest.Matchers.*
 import org.junit.*
-import org.springframework.test.context.ActiveProfiles
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
-import kotlin.test.assertEquals
 
 /** @author  Kleppa && håkonschutt */
 @RunWith(SpringRunner::class)
@@ -33,8 +29,6 @@ class EventLocalApplicationTestRunner {
 
         @Autowired
         private lateinit var wiremockServer: WireMockServer
-//        @LocalServerPort
-//        protected var port = 0
 
         @BeforeClass
         @JvmStatic
@@ -52,6 +46,15 @@ class EventLocalApplicationTestRunner {
         @JvmStatic
         fun tearDown() {
             wiremockServer.stop()
+        }
+    }
+
+    @Before
+    @After
+    fun clean() {
+        println("###########DELETEE#####################")
+        eventRepository.run {
+            deleteAll()
         }
     }
 
@@ -145,6 +148,26 @@ class EventLocalApplicationTestRunner {
                                 .withBody(json)))
     }
 
+    private fun createEvent(movieId: String, venueId: String, roomId: String) : String {
+        val eventJson = """{date: \"Wed Oct 24 2018 18:23:19 GMT+0200 (Central European Summer Time)\",movieId: \"$movieId\",venueId: \"$venueId\",roomId: \"$roomId\",rows: 12,columns: 12}""".trimIndent()
+
+        return given().accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(
+                        """
+                    { "query" : "mutation{create(event:$eventJson)}"}
+                """.trimIndent())
+                .post()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .extract()
+                .body()
+                .jsonPath()
+                .getString("data.create")
+    }
+
     @Test
     fun testGetAllWithEmptySet() {
 
@@ -161,42 +184,103 @@ class EventLocalApplicationTestRunner {
 
     @Test
     fun testCreateEvent() {
-        val eventJson = """{date: \"Wed Oct 24 2018 18:23:19 GMT+0200 (Central European Summer Time)\",movieId: \"123\",venueId: \"123\",roomId: \"123\",rows: 12,columns: 12}""".trimIndent()
-        val id = given().accept(ContentType.JSON)
-                .contentType(ContentType.JSON)
-                .body(
-                        """
-                    { "query" : "mutation{create(event:$eventJson)}"}
-                """.trimIndent())
-                .post()
+        val size = given().accept(ContentType.JSON)
+                .queryParam("query", "{allEvents{id}}")
+                .get()
                 .then()
                 .statusCode(200)
                 .body("$", hasKey("data"))
                 .body("$", not(hasKey("errors")))
-                .body("data.create", equalTo("1"))
+                .body("data.allEvents.size()", equalTo(0))
                 .extract()
                 .body()
                 .jsonPath()
-                .getString("data.create")
-        assertEquals("1", id)
+                .getString("data.allEvents.size()")
+
+        val id = createEvent(movieId = "123", venueId = "123", roomId = "123")
+
+        given().accept(ContentType.JSON)
+                .queryParam("query", "{allEvents{id}}")
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.allEvents.size()", equalTo(size.toInt() + 1))
+
+        given().accept(ContentType.JSON)
+                .queryParam("query",
+                """
+                    {eventById(eventId:"$id"){id}}"
+                """.trimIndent())
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.eventById.id", equalTo(id.toInt()))
     }
 
     @Test
     fun testGetAllEvents() {
+        createEvent(movieId = "123", venueId = "123", roomId = "123")
 
+        given().accept(ContentType.JSON)
+                .queryParam("query", "{allEvents{id}}")
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.allEvents.size()", equalTo(1))
     }
 
     @Test
     fun testGetEventById() {
+        val id = createEvent(movieId = "123", venueId = "123", roomId = "123")
 
+        given().accept(ContentType.JSON)
+                .queryParam("query",
+                        """
+                    {eventById(eventId:"$id"){id}}"
+                """.trimIndent())
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.eventById.id", equalTo(id.toInt()))
     }
 
     @Test
     fun testGetAllByVenueId() {
+        val venueId = "1"
+        createEvent(movieId = "123", venueId = venueId, roomId = "123")
 
+        given().accept(ContentType.JSON)
+                .queryParam("query", "{allEvents(venue: \"$venueId\"){id, venueId}}")
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.allEvents.size()", equalTo(1))
+                .body("data.allEvents[0].venueId", equalTo(venueId))
     }
 
     @Test
     fun testGetAllByMovieId() {
+        val movieId = "1"
+        createEvent(movieId = movieId, venueId = "123", roomId = "123")
+
+        given().accept(ContentType.JSON)
+                .queryParam("query", "{allEvents(movie: \"$movieId\"){id, movieId}}")
+                .get()
+                .then()
+                .statusCode(200)
+                .body("$", hasKey("data"))
+                .body("$", not(hasKey("errors")))
+                .body("data.allEvents.size()", equalTo(1))
+                .body("data.allEvents[0].movieId", equalTo(movieId))
     }
 }

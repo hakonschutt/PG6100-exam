@@ -1,6 +1,5 @@
 package org.bjh.converter
 
-import org.bjh.dto.EventDto
 import org.bjh.dto.MovieDto
 import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueDto
