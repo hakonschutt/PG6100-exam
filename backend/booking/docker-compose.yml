@@ -1,0 +1,15 @@
+version: '3'
+services:
+  booking-db:
+    image: "postgres:10"
+    ports:
+    - '5432:5432'
+  booking:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+    - '9091:9091'
+    depends_on:
+    - 'booking-db'
