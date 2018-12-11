@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -35,25 +36,32 @@
             <version>42.1.4</version>
         </dependency>
         <dependency>
-        <groupId>com.graphql-java</groupId>
-        <artifactId>graphql-spring-boot-starter</artifactId>
-        <version>${version.graphql-spring}</version>
-    </dependency>
-    <dependency>
-        <groupId>com.graphql-java</groupId>
-        <artifactId>graphiql-spring-boot-starter</artifactId>
-        <version>${version.graphql-spring}</version>
-    </dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-spring-boot-starter</artifactId>
+            <version>${version.graphql-spring}</version>
+        </dependency>
         <dependency>
-        <groupId>com.graphql-java</groupId>
-        <artifactId>voyager-spring-boot-starter</artifactId>
-        <version>${version.graphql-spring}</version>
-    </dependency>
-    <dependency>
-        <groupId>com.graphql-java</groupId>
-        <artifactId>graphql-java-tools</artifactId>
-        <version>5.1.0</version>
-    </dependency>
+            <!-- to mock web services -->
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>2.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphiql-spring-boot-starter</artifactId>
+            <version>${version.graphql-spring}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>voyager-spring-boot-starter</artifactId>
+            <version>${version.graphql-spring}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-tools</artifactId>
+            <version>5.1.0</version>
+        </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>

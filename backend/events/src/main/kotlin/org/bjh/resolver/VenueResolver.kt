@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component
 class VenueResolver : GraphQLResolver<VenueType> {
     @Autowired
     private lateinit var httpService:HttpService
-    fun rooms(venuee : VenueType): Set<RoomType>? {
+    fun rooms(venue : VenueType): Set<RoomType>? {
         // TODO: Create HTTP request
-        val req = (httpService.getReq("http://localhost:8080/math/divide?x=4&y=2") as WrappedResponse<Any>).data
+        val req = (httpService.getReq("http://localhost:8080/api/venues/${venue.id}/rooms") as WrappedResponse<Any>).data
         println("This is the wrapped response from mathapi ${req}")
         return null
     }

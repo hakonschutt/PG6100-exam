@@ -1,0 +1,9 @@
+#fixerWebAddress=localhost:8099
+spring:
+  logging:
+    level:
+      org.springframework.web: info
+      guru.springframework.controllers: info
+      org.hibernate: info
+server:
+  port: 8084
