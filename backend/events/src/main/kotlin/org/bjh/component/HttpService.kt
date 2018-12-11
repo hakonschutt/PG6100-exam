@@ -10,10 +10,11 @@ import rx.Observable
 
 @Component
 class HttpService {
+//    fun getReq(url:String): WrappedResponse<*> RestTemplate().getForObject(url, WrappedResponse::class.java)
     fun getReq(url: String): WrappedResponse<*> = Observable.just(HystrixCall(url).execute()).toList().toBlocking().first()[0]
     private inner class HystrixCall(private val url: String)
         : HystrixCommand<WrappedResponse<*>>(HystrixCommandGroupKey.Factory.asKey("Interactions with $url")) {
         override fun run(): WrappedResponse<*>? = RestTemplate().getForObject(url, WrappedResponse::class.java)
-        override fun getFallback(): WrappedResponse<*> = WrappedResponse<Any>(code = 500, message = "server timed out or threw an exception").validated()
+        override fun getFallback(): WrappedResponse<*> = WrappedResponse<Any>(code = 500, message = "server at $url timed out or threw an exception").validated()
     }
 }

@@ -15,14 +15,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @EnableSwagger2
 class EventsApplicationRunner {
     //Andrea's code
-    init {
-        ConfigurationManager.getConfigInstance().apply {
-            setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", 500)
-            setProperty("hystrix.command.default.circuitBreaker.requestVolumeThreshold", 2)
-            setProperty("hystrix.command.default.circuitBreaker.errorThresholdPercentage", 50)
-            setProperty("hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds", 5000)
-        }
-    }
+//    init {
+//        ConfigurationManager.getConfigInstance().apply {
+//            setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", 1000)
+//            setProperty("hystrix.command.default.circuitBreaker.requestVolumeThreshold", 20)
+//            setProperty("hystrix.command.default.circuitBreaker.errorThresholdPercentage", 50)
+//            setProperty("hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds", 5000)
+//        }
+//    }
 
 
     @Bean

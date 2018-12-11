@@ -15,12 +15,16 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
+import com.github.tomakehurst.wiremock.junit.WireMockRule
+
+
 
 /** @author  Kleppa && håkonschutt */
 @RunWith(SpringRunner::class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class EventLocalApplicationTestRunner {
+
 
     @Autowired
     protected lateinit var eventRepository: EventRepository
@@ -58,11 +62,9 @@ class EventLocalApplicationTestRunner {
     }
 
     private fun stubMovie() = """
-            { code: 200, data: [{ title: "testTitle", poster: "p", coverArt: "cA", trailer: "t", overview:"ov", releaseDate: "date", genre: ["drama"], voteCount: 1, voteAverage: "2.2", popularity: "pop", price: "2.20", id: "1" }], status: "ok", message: "Worked"}
-    """.trimIndent()
+            { "code": 200, "data": [{ "title": "testTitle", "poster": "p", "coverArt": "cA", "trailer": "t", "overview":"ov", "releaseDate": "date", "genres": ["drama"], "voteCount": 1, "voteAverage": "2.2", "popularity": "pop", "price": "2.20", "id": "1" }], "status": "SUCCESS", "message": "Worked"}""".trimIndent()
 
-    private fun stubVenue() = """
-            |{
+    private fun stubVenue() = """{
             |"code":200,
             |"data":[
             |   {

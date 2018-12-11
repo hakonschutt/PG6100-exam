@@ -1,6 +1,7 @@
 package org.bjh.resolver
 
 import com.coxautodev.graphql.tools.GraphQLResolver
+import com.google.gson.Gson
 import org.bjh.component.HttpService
 import org.bjh.converter.EventConverter
 import org.bjh.dto.MovieDto
@@ -28,16 +29,19 @@ class EventResolver : GraphQLResolver<EventType> {
     fun movie(event: EventType): MovieType? {
         try {
             println("########MOVIE###########")
-            val req = (httpService.getReq("http://${webAddress.trim()}/api/movies/${event.movieId}") as WrappedResponse<List<MovieDto>>).data
+            val req = (httpService.getReq("http://${webAddress.trim()}/api/movies/${event.movieId}")) as WrappedResponse<List<MovieDto>>
 
-            println("This is the wrapped response from movie api ${req}")
+            println("###################################")
+            println("This is the wrapped response from movie api ${req.data}, ${req.message}")
+            println("###################################")
 
-            if (req != null) {
-                if (req.isNotEmpty()) {
-                    return EventConverter.transformMovieDtoToType(req[0])
+            val data = req.data
+            if (data != null) {
+                if (data.isNotEmpty()) {
+                    val json = Gson().toJson(data[0], LinkedHashMap::class.java)
+                    return EventConverter.transformMovieDtoToType(Gson().fromJson(json, MovieDto::class.java))
                 }
             }
-            
             return null
         } catch (e: ClassCastException) {
             return null
@@ -50,11 +54,13 @@ class EventResolver : GraphQLResolver<EventType> {
     fun venue(event: EventType): VenueType? {
         // TODO: Create HTTP request
         try {
-            val req = (httpService.getReq("http://localhost:8080/api/venues/${event.venueId}") as WrappedResponse<List<VenueDto>>).data
+            val req = (httpService.getReq("http://localhost:8080/api/venues/${event.venueId}") as WrappedResponse<List<VenueDto>>)
             println("This is the wrapped response from venue api ${req}")
-            if (req != null) {
-                if (req.isNotEmpty()) {
-                    return EventConverter.transformVenueDtoToType(req[0])
+            val data = req.data
+            if (data != null) {
+                if (data.isNotEmpty()) {
+                    val json = Gson().toJson(data[0], LinkedHashMap::class.java)
+                    return EventConverter.transformVenueDtoToType(Gson().fromJson(json, VenueDto::class.java))
                 }
             }
             return null
@@ -68,14 +74,16 @@ class EventResolver : GraphQLResolver<EventType> {
 
     fun room(event: EventType): RoomType? {
         try {
-            val req = (httpService.getReq("http://localhost:8080/api/venues/${event.venueId}/rooms") as WrappedResponse<List<RoomDto>>).data
+            val req = (httpService.getReq("http://localhost:8080/api/venues/${event.venueId}/rooms") as WrappedResponse<List<RoomDto>>)
             println("This is the wrapped response from room api ${req}")
-            if (req != null) {
-                if (req.isNotEmpty()) {
-                    val roomDto = req.filter { it.id.equals(event.roomId) }[0]
-                    return EventConverter.transformRoomDtoToType(roomDto = roomDto)
+            val data = req.data
+            if (data != null) {
+                if (data.isNotEmpty()) {
+                    val json = Gson().toJson(data, LinkedHashMap::class.java)
+                    return EventConverter.transformRoomDtoToType(Gson().fromJson(json, RoomDto::class.java))
                 }
             }
+
             return null
 
         } catch (e: ClassCastException) {
