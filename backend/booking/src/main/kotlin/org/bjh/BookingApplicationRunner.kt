@@ -2,6 +2,7 @@ package org.bjh
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
 import springfox.documentation.builders.ApiInfoBuilder
 import springfox.documentation.builders.PathSelectors
@@ -15,7 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
  */
 @SpringBootApplication
 @EnableSwagger2
-
+@EnableEurekaClient
 class BookingApplicationRunner {
 
     @Bean
