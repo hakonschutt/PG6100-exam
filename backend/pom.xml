@@ -23,11 +23,13 @@
         <module>movies</module>
         <module>venues</module>
         <module>template</module>
+        <module>events</module>
         <module>report</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
             <dependency>
                 <groupId>org.bjh.utils</groupId>
                 <artifactId>utils</artifactId>

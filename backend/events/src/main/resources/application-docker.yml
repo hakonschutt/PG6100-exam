@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: events
+  datasource:
+    url: "jdbc:postgresql://events-db:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+  jpa:
+    show-sql: false
+    database: "postgresql"
+    hibernate:
+      ddl-auto: create-drop
+      dialect: org.hibernate.dialect.PostgreSQL9Dialect
+      show_sql: true
+    properties.hibernate.temp.use_jdbc_metadata_defaults: false
+
+server:
+  port: 9091
+
+fixerWebAddress: api.fixer.io:80

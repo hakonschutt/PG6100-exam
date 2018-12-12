@@ -64,6 +64,7 @@
         <version.springfox>2.9.2</version.springfox>
         <version.jacoco>0.8.2</version.jacoco>
         <version.graphql-spring>4.2.0</version.graphql-spring>
+        <version.postgres>42.1.4</version.postgres>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <version.jackson>2.8.9</version.jackson>
         <version.spring-cloud-starter-netflix-hystrix>2.0.1.RELEASE</version.spring-cloud-starter-netflix-hystrix>
@@ -210,6 +211,7 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+            <version>${version.postgres}</version>
         </dependency>
         <!--TODO: Implement when websec is implemented???-->
         <!--<dependency>-->
