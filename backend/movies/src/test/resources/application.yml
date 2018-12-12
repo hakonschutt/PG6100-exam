@@ -1,0 +1,8 @@
+
+spring:
+  profiles:
+    active: usage_message
+
+logging:
+  level:
+    org: ERROR

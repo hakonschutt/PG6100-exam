@@ -1,7 +1,7 @@
 package org.bjh.api
 
 import io.restassured.RestAssured.given
-import org.bjh.LocalApplicationRunner
+import org.bjh.TestBase
 import org.bjh.dto.BookingDto
 import org.bjh.dto.TicketDto
 import org.bjh.entity.BookingEntity
@@ -15,7 +15,7 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 
-class BookingApiTest : LocalApplicationRunner() {
+class BookingApiTest : TestBase() {
 
     @Test
     fun testGetAllBookingsByUserIdAndEventIdWithUnprocessableEntities() {

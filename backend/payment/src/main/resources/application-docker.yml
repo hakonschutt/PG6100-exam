@@ -1,18 +1,17 @@
 spring:
   application:
-    name: booking
+    name: payment
   datasource:
-    url: "jdbc:postgresql://booking-db:5432/postgres"
+    url: "jdbc:postgresql://payment-db:5432/postgres"
     username: "postgres"
     password: ""
     driver-class-name: "org.postgresql.Driver"
   jpa:
-    show-sql: false
+    show-sql: true
     database: "postgresql"
     hibernate:
       ddl-auto: update
-      dialect: org.hibernate.dialect.PostgreSQL9Dialect
-    properties.hibernate.temp.use_jdbc_metadata_defaults: false
+   properties.hibernate.temp.use_jdbc_metadata_defaults: false
 
 server:
   port: 9091
