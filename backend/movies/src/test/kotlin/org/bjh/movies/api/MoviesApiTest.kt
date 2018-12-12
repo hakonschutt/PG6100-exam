@@ -245,7 +245,7 @@ class MoviesApiTest : LocalApplicationRunner() {
                 .statusCode(400)
     }
 
-    @Ignore
+
     @Test
     fun testShouldNotUpdateMovieWithIncorrectId() {
         val invalidId = "-1"
@@ -263,7 +263,7 @@ class MoviesApiTest : LocalApplicationRunner() {
                 .body(patchBody)
                 .patch(invalidId)
                 .then()
-                .statusCode(400)
+                .statusCode(404)
     }
 
     @Test
