@@ -63,14 +63,14 @@ class MoviesApi {
             path = ["/{id}"])
     fun getMovieById(@ApiParam("Unique ID of a movie")
                      @PathVariable("id")
-                     movieId: String): ResponseEntity<WrappedResponse<PageDto<MovieDto>>> {
+                     movieId: String): ResponseEntity<WrappedResponse<List<MovieDto>>> {
 
         val id: Long
         try {
             id = movieId.toLong()
         } catch (ne: NumberFormatException) {
             return ResponseEntity.status(400).body(
-                    WrappedResponse<PageDto<MovieDto>>(
+                    WrappedResponse<List<MovieDto>>(
                             code = 400,
                             message = "'$movieId' is not a valid movie id.")
                             .validated())
@@ -80,7 +80,7 @@ class MoviesApi {
         if (requestResult.list.isEmpty() ||
                 (requestResult.list.isNotEmpty() && requestResult.list[0].id == null))
             return ResponseEntity.status(404)
-                    .body(WrappedResponse<PageDto<MovieDto>>(
+                    .body(WrappedResponse<List<MovieDto>>(
                             code = 404,
                             message = "Movie cannot be null")
                             .validated()
@@ -89,7 +89,7 @@ class MoviesApi {
         return ResponseEntity.ok(
                 WrappedResponse(
                         code = 200,
-                        data = requestResult)
+                        data = requestResult.list)
                         .validated()
         )
 
