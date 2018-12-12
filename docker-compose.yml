@@ -28,22 +28,24 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    ports:
+    - "8080:3000"
 
   #### GATEWAY ####
-  gateway:
-    restart: always
-    build:
-      context: ./backend/gateway
-      dockerfile: Dockerfile
-    depends_on:
-    - eureka
+#  gateway:
+#    restart: always
+#    build:
+#      context: ./backend/gateway
+#      dockerfile: Dockerfile
+#    depends_on:
+#    - eureka
 
   #### EUREKA ####
-  eureka:
-    restart: always
-    build:
-      context: ./backend/eureka
-      dockerfile: Dockerfile
+#  eureka:
+#    restart: always
+#    build:
+#      context: ./backend/eureka
+#      dockerfile: Dockerfile
 
   #### MICROSERVICES ####
   #auth:
@@ -54,53 +56,65 @@ services:
   #  - gateway
   #  - auth-db
 
-  #payment:
-  #  build:
-  #    context: ./backend/payment
-  #    dockerfile: Dockerfile
-  #  depends_on:
-  #  - gateway
-  #  - payment-db
-  #  - auth
+  payment:
+    build:
+      context: ./backend/payment
+      dockerfile: Dockerfile
+    ports:
+    - "8084:9091"
+    depends_on:
+#    - gateway
+    - payment-db
+#    - auth
 
   booking:
     build:
       context: ./backend/payment
       dockerfile: Dockerfile
+    ports:
+    - "8083:9091"
     depends_on:
-    - gateway
+#    - gateway
     - booking-db
-  #  - payment
+    - payment
   #  - auth
 
   movies:
     build:
       context: ./backend/movies
       dockerfile: Dockerfile
+    ports:
+    - "8082:9091"
     depends_on:
-    - gateway
+#    - gateway
     - movies-db
 
   venues_0:
     build:
       context: ./backend/venues
       dockerfile: Dockerfile
+    ports:
+    - "8087:9091"
     depends_on:
-    - gateway
+#    - gateway
     - venues-db
 
   venues_1:
     build:
       context: ./backend/venues
       dockerfile: Dockerfile
+    ports:
+      - "8081:9091"
     depends_on:
-    - gateway
+#    - gateway
     - venues-db
 
   events:
     build:
       context: ./backend/events
       dockerfile: Dockerfile
+    ports:
+      - "8085:9091"
     depends_on:
-    - gateway
+#    - gateway
     - events-db
