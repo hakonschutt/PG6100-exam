@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.lang.NumberFormatException
 import java.net.URI
-import javax.websocket.server.PathParam
 
 const val BASE_JSON = "application/json;charset=UTF-8"
 
@@ -71,7 +70,7 @@ class VenuesApi {
         try {
             id = idFromPath.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(WrappedResponse<PageDto<VenueDto>>(code = 400,message = "bad request").validated())
         }
 
         val venuePage = venuesService.findAllById(id, withRooms)
@@ -83,7 +82,7 @@ class VenuesApi {
                             message = "The single venue that was requested")
                             .validated())
         } else {
-            ResponseEntity.status(404).build()
+            ResponseEntity.status(404).body(WrappedResponse<PageDto<VenueDto>>(code = 404,message = "venue not found").validated())
         }
         return result
 
@@ -102,8 +101,15 @@ class VenuesApi {
                     WrappedResponse(code = 400, message = "Wrong type of id is being sent", data = setOf < RoomDto>()).validated())
         }
 
-        val rooms = venuesService.findAllById(validatedId,withRooms = true).list[0].rooms
-        return ResponseEntity.ok().body(WrappedResponse(code = 200, message = "All rooms for venue $id", data = rooms).validated())
+        var rooms = venuesService.findAllById(validatedId,withRooms = true).list
+        var data:VenueDto
+        if(rooms.isNotEmpty()){
+              data = venuesService.findAllById(validatedId,withRooms = true).list[0]
+            return ResponseEntity.ok().body(WrappedResponse(code = 200, message = "All rooms for venue $id", data = data.rooms).validated())
+
+        }
+        return ResponseEntity.status(200)
+                .body(WrappedResponse(code = 200, message = "No Rooms for that venue",data = setOf<RoomDto>()).validated())
     }
 
     @ApiOperation("Creates a venue")
@@ -122,7 +128,7 @@ class VenuesApi {
                 !(dto.address == null || dto.geoLocation == null)) {
             //There should atleast be one room, an address, no id, and a geolocation to make it possible to create a venue
 
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
         }
         val checkIfRoomHasValidFieldValues: (RoomDto) -> Boolean = {
             (!it.id.isNullOrBlank()) ||
@@ -136,7 +142,7 @@ class VenuesApi {
                 .filter(checkIfRoomHasValidFieldValues).toSet()
 
         if (rooms.isEmpty()) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
         }
 
 
@@ -160,15 +166,15 @@ class VenuesApi {
         try {
             id = idFromPath.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404,message = "not found").validated())
         }
         val deletedVenueId = venuesService.delete(id)
         println("deletedVenue ${deletedVenueId}")
 
         return if (deletedVenueId > -1) {
-            ResponseEntity.status(204).build()
+            ResponseEntity.status(204).body(WrappedResponse<Unit>(code = 204,message = "no content").validated())
         } else {
-            ResponseEntity.status(404).build()
+            ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404,message = "file not found").validated())
         }
     }
 
@@ -186,17 +192,17 @@ class VenuesApi {
                         @ApiParam("The partial patch")
                         @RequestBody
                         jsonPatch: String)
-            : ResponseEntity<Unit> {
+            : ResponseEntity<WrappedResponse<Unit>> {
         val id: Long
 
         try {
             id = idFromPath.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
         }
         val dto = venuesService.findAllById(id = id, withRooms = true)
         //returns responseEntity if service did not find an already created entity
-        if (dto.list.isEmpty()) return ResponseEntity.status(404).build()
+        if (dto.list.isEmpty()) return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404,message = "not found").validated())
         val jackson = ObjectMapper()
 
         val jsonNode: JsonNode
@@ -205,9 +211,9 @@ class VenuesApi {
 
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
         } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
         }
-        if (jsonNode.has("id")) return ResponseEntity.status(409).build()
+        if (jsonNode.has("id")) return ResponseEntity.status(409).body(WrappedResponse<Unit>(code = 409,message = "conflict").validated())
 
         var newName = dtoObj.name
         var newAddress = dtoObj.address
@@ -220,7 +226,7 @@ class VenuesApi {
             newName = when {
                 nameNode.isNull -> null
                 nameNode.isTextual -> nameNode.asText()
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
             }
         }
         if (jsonNode.has("address")) {
@@ -230,7 +236,7 @@ class VenuesApi {
             newAddress = when {
                 valueNode.isNull -> null
                 valueNode.isTextual -> valueNode.asText()
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
             }
         }
         if (jsonNode.has("geo")) {
@@ -240,7 +246,7 @@ class VenuesApi {
                 valueNode.isNull -> null
                 valueNode.isTextual -> valueNode.asText()
                 else ->
-                    return ResponseEntity.status(400).build()
+                    return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
             }
         }
         dtoObj.name = newName
@@ -250,9 +256,9 @@ class VenuesApi {
         val response = venuesService.updateVenue(dtoObj)
 
         return if (response < 0) {
-            ResponseEntity.status(500).build()
+            ResponseEntity.status(500).body(WrappedResponse<Unit>(code = 500,message = "server error").validated())
         } else {
-            ResponseEntity.status(204).build()
+            ResponseEntity.status(204).body(WrappedResponse<Unit>(code = 204,message = "no content").validated())
         }
     }
 
@@ -271,38 +277,37 @@ class VenuesApi {
                        @ApiParam("The partial patch")
                        @RequestBody
                        jsonPatch: String)
-            : ResponseEntity<Unit> {
+            : ResponseEntity<WrappedResponse<Unit>> {
         val venueId: Long
         val roomId: Long
         try {
             venueId = venueIdFromPath.toLong()
             roomId = roomIdFromPath.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404,message = "file not found").validated())
         }
         val venueDtoList = venuesService.findAllById(id = venueId, withRooms = true)
-        if (venueDtoList.list.isEmpty()) return ResponseEntity.status(404).build()
+        if (venueDtoList.list.isEmpty()) return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404,message = "file not found").validated())
         val venueDto = venueDtoList.list[0]
         val isRoomInVenue = venueDto.rooms.any { it.id == roomIdFromPath }
 
-        if (!isRoomInVenue) return ResponseEntity.status(404).build()
+        if (!isRoomInVenue) return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404,message = "file not found").validated())
 
         val roomDto = roomService.findById(roomId)
 
-        if ((venueDto.id.isNullOrBlank() || roomDto.id.isNullOrBlank())) return ResponseEntity.status(404).build()
+        if ((venueDto.id.isNullOrBlank() || roomDto.id.isNullOrBlank())) return ResponseEntity.status(404).body(WrappedResponse<Unit>(code = 404,message = "file not found").validated())
 
         val jackson = ObjectMapper()
-        println("JsonPatch content : $jsonPatch")
         val jsonNode: JsonNode
         try {
 
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
         } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
         }
 
         println("JsonNode : $jsonNode")
-        if (jsonNode.has("id")) return ResponseEntity.status(409).build()
+        if (jsonNode.has("id")) return ResponseEntity.status(409).body(WrappedResponse<Unit>(code = 409,message = "conflict").validated())
 
         var name = roomDto.name
         var cols = roomDto.columns
@@ -313,7 +318,7 @@ class VenuesApi {
             name = when {
                 nameNode.isNull -> null
                 nameNode.isTextual -> nameNode.asText()
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
             }
         }
         if (jsonNode.has("columns")) {
@@ -321,7 +326,7 @@ class VenuesApi {
             cols = when {
                 colNode.isNull -> null
                 colNode.isInt -> colNode.intValue()
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
             }
         }
         if (jsonNode.has("rows")) {
@@ -329,7 +334,7 @@ class VenuesApi {
             rows = when {
                 rowsNode.isNull -> null
                 rowsNode.isInt -> rowsNode.intValue()
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(WrappedResponse<Unit>(code = 400,message = "bad request").validated())
             }
         }
         roomDto.name = name
@@ -340,8 +345,8 @@ class VenuesApi {
 
 
         return when {
-            room.id == null -> ResponseEntity.status(500).build()
-            else -> ResponseEntity.status(204).build()
+            room.id == null -> ResponseEntity.status(500).body(WrappedResponse<Unit>(code = 500,message = "server error").validated())
+            else -> ResponseEntity.status(204).body(WrappedResponse<Unit>(code = 204,message = "no content").validated())
         }
     }
 

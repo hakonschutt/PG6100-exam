@@ -24,6 +24,9 @@
         <module>movies</module>
         <module>venues</module>
         <module>template</module>
+        <module>events</module>
         <module>report</module>
+        <module>eureka</module>
+        <module>gateway</module>
     </modules>
 </project>
