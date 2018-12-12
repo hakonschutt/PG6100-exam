@@ -30,8 +30,24 @@
             <artifactId>testcontainers</artifactId>
             <version>${version.testcontainers}</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <finalName>payment</finalName>
+                </configuration>
+            </plugin>
+        </plugins>
+
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -44,13 +60,6 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
                         <argLine>${argLine} -Xms1024m -Xmx4096m</argLine>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <configuration>
-                        <finalName>payment</finalName>
                     </configuration>
                 </plugin>
             </plugins>

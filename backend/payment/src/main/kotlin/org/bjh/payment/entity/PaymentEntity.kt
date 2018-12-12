@@ -8,6 +8,7 @@ class PaymentEntity(
 //        @get:ElementCollection(fetch = FetchType.EAGER)
 //        @get:ManyToOne(cascade = [CascadeType.ALL])
 //        @get:JoinTable(name="user_detail",joinColumns = [(JoinColumn(name = "user", referencedColumnName = "email"))])
+        @get:Column(name="user_id")
         var user: String,
 
         var amount: Double,

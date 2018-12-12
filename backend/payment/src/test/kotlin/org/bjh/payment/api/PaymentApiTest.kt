@@ -3,11 +3,11 @@ package org.bjh.payment.api
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.bjh.dto.PaymentDto
-import org.bjh.payment.LocalApplicationRunner
+import org.bjh.payment.TestBase
 import org.junit.Ignore
 import org.junit.Test
 
-class PaymentApiTest : LocalApplicationRunner() {
+class PaymentApiTest : TestBase() {
 
     @Test
     @Ignore

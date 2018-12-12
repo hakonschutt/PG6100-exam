@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.net.ConnectException
 
 @Api(value = "/api/payments", description = "For completing purchases.")
 @RequestMapping(
@@ -39,7 +40,7 @@ class PaymentApi {
     @ApiOperation("Create a payment")
     @PostMapping(consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
     fun createPayment(@ApiParam("Information for payment - User, amount and authorization token.")
-                    @RequestBody paymentDto: PaymentDto): ResponseEntity<WrappedResponse<Unit>> {
+                      @RequestBody paymentDto: PaymentDto): ResponseEntity<WrappedResponse<Unit>> {
 
         if (paymentDto.paymentAuthorizationToken == null)
             return ResponseEntity.status(400).body(
@@ -63,7 +64,17 @@ class PaymentApi {
         message.addProperty("user", paymentDto.user)
         message.addProperty("success", true)
 
-        rabbitTemplate.convertAndSend(fanout.name, "", message.toString())
+        try {
+            rabbitTemplate.convertAndSend(fanout.name, "", message.toString())
+        } catch (ce: Exception) {
+            return ResponseEntity.status(201).body(
+                    WrappedResponse<Unit>(
+                            code = 201,
+                            message = "Payment was completed, but not sent to Booking." +
+                                    " Call with id: $createdId to manually fix it.")
+                            .validated()
+            )
+        }
 
         return ResponseEntity.status(201).body(
                 WrappedResponse<Unit>(
