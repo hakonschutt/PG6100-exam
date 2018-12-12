@@ -3,6 +3,7 @@ package org.bjh.api
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import org.bjh.LocalApplicationRunner
+import org.bjh.VenueApiTestBase
 import org.bjh.dto.RoomDto
 import org.bjh.dto.VenueDto
 import org.bjh.pagination.PageDto
@@ -13,7 +14,7 @@ import org.junit.Test
 import kotlin.test.assertNotEquals
 
 
-class VenuesApiTest : LocalApplicationRunner() {
+class VenuesApiTest : VenueApiTestBase() {
     @Test
     fun TestGetAllRoomsByVenueId() {
         val ven = given()
