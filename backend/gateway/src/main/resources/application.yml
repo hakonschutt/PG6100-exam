@@ -27,7 +27,6 @@ spring:
         filters:
         - StripPrefix=1
 
-
       - id: events
         uri: http://events
         predicates:
@@ -41,7 +40,6 @@ spring:
         - Path=/api/bookings/**
         filters:
         - StripPrefix=1
-
 
       - id: auth
         uri: http://auth

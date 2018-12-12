@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @SpringBootApplication
 @EnableSwagger2
 @EnableEurekaClient
-@RibbonClient(name = "producer-server")
+@RibbonClient(name = "venues-server")
 class EventsApplicationRunner {
     @LoadBalanced
     @Bean
