@@ -23,12 +23,15 @@ class EventResolver : GraphQLResolver<EventType> {
     @Autowired
     private lateinit var httpService: HttpService
 
-    @Value("\${fixerWebAddress}")
-    private lateinit var webAddress: String
+    @Value("\${fixerMoviesWebAddress}")
+    private lateinit var moviesWebAddress: String
+
+    @Value("\${fixerVenuesWebAddress}")
+    private lateinit var venuesWebAddress: String
 
     fun movie(event: EventType): MovieType? {
         try {
-            val req = (httpService.getReq("http://${webAddress.trim()}/api/movies/${event.movieId}")) as WrappedResponse<List<MovieDto>>
+            val req = (httpService.getReq("http://${moviesWebAddress.trim()}/api/movies/${event.movieId}")) as WrappedResponse<List<MovieDto>>
 
             val data = req.data
             if (data != null) {
@@ -48,7 +51,7 @@ class EventResolver : GraphQLResolver<EventType> {
 
     fun venue(event: EventType): VenueType? {
         try {
-            val req = (httpService.getReq("http://${webAddress.trim()}/api/venues/${event.venueId}") as WrappedResponse<List<VenueDto>>)
+            val req = (httpService.getReq("http://${venuesWebAddress.trim()}/api/venues/${event.venueId}") as WrappedResponse<List<VenueDto>>)
             val data = req.data
             if (data != null) {
                 if (data.isNotEmpty()) {
@@ -67,7 +70,7 @@ class EventResolver : GraphQLResolver<EventType> {
 
     fun room(event: EventType): RoomType? {
         try {
-            val req = (httpService.getReq("http://${webAddress.trim()}/api/venues/${event.venueId}/rooms") as WrappedResponse<List<RoomDto>>)
+            val req = (httpService.getReq("http://${venuesWebAddress.trim()}/api/venues/${event.venueId}/rooms") as WrappedResponse<List<RoomDto>>)
             val data = req.data as ArrayList<LinkedHashMap<String, String>>
 
             if (data.isNotEmpty()) {

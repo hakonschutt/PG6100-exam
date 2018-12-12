@@ -18,12 +18,13 @@ import org.springframework.stereotype.Component
 class VenueResolver : GraphQLResolver<VenueType> {
     @Autowired
     private lateinit var httpService: HttpService
-    @Value("\${fixerWebAddress}")
-    private lateinit var webAddress: String
+
+    @Value("\${fixerVenuesWebAddress}")
+    private lateinit var venuesWebAddress: String
 
     fun rooms(venue: VenueType): Set<RoomType>? {
         try {
-            val req = (httpService.getReq("http://${webAddress.trim()}/api/venues/${venue.id}/rooms") as WrappedResponse<List<RoomDto>>)
+            val req = (httpService.getReq("http://${venuesWebAddress.trim()}/api/venues/${venue.id}/rooms") as WrappedResponse<List<RoomDto>>)
             val data = req.data as ArrayList<LinkedHashMap<String, String>>
 
             if (data.isNotEmpty()) {

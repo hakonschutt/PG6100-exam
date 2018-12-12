@@ -7,4 +7,5 @@ spring:
 server:
   port: 8084
 
-fixerWebAddress: localhost:8099
+fixerMoviesWebAddress: localhost:8099
+fixerVenuesWebAddress: localhost:8099
