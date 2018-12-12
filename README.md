@@ -10,8 +10,12 @@
 
 ## How to run
 
-- How to run the project
-- Any expected tool that should be installed before your application can be run?
+The application relies on docker to start the entire cluster. Make sure to have [java](https://www.java.com/en/download/), [maven](https://maven.apache.org/download.cgi) and [docker](https://www.docker.com/get-started) installed before executing the following commands
+
+```bash
+$ mvn clean install
+$ docker-compose up --build
+```
 
 ## How to test
 
