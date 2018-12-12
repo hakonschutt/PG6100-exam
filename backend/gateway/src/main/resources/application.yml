@@ -1,0 +1,65 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+      routes:
+      - id: movies
+        uri: http://movies
+        predicates:
+        - Path=/api/movies/**
+        filters:
+        - StripPrefix=1
+
+      - id: venues
+        uri: http://venues
+        predicates:
+        - Path=/api/venues/**
+        filters:
+        - StripPrefix=1
+
+      - id: payment
+        uri: http://payment
+        predicates:
+        - Path=/api/payments/**
+        filters:
+        - StripPrefix=1
+
+
+      - id: events
+        uri: http://events
+        predicates:
+        - Path=/graphql
+        filters:
+        - StripPrefix=1
+
+      - id: booking
+        uri: http://booking
+        predicates:
+        - Path=/api/bookings/**
+        filters:
+        - StripPrefix=1
+
+
+      - id: auth
+        uri: http://auth
+        predicates:
+        - Path=/api/auth/**
+        filters:
+        - StripPrefix=1
+
+      - id: frontend
+        uri: http://frontend
+        predicates:
+        - Path=/**
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/

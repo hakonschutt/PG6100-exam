@@ -1,0 +1,59 @@
+type Query {
+    version: String,
+    allEvents(venue:String,movie:String): [Event!],
+    eventById(eventId:String):Event
+}
+type Mutation {
+    create( event: EventInput! ): String!
+}
+
+input EventInput {
+    date: String!,
+    movieId: String,
+    venueId: String,
+    roomId: String,
+    rows: Int,
+    columns: Int
+}
+
+type Event {
+    id: Long,
+    date: String!,
+    movieId:String
+    movie: Movie,
+    venueId:String,
+    venue: Venue,
+    roomId:String,
+    room: Room,
+    rows: Int,
+    columns: Int
+}
+type Room{
+    id: String,
+    name: String,
+    rows: Int,
+    columns: Int
+}
+
+type Venue{
+    id: String,
+    geoLocation: String,
+    address: String,
+    rooms: [Room!],
+    name: String
+}
+type Movie {
+    title: String,
+    poster: String,
+    coverArt: String,
+    trailer: String,
+    overview: String,
+    releaseDate: String,
+    genres: [String!],
+    voteCount: Int,
+    voteAverage: String,
+    popularity: String,
+    price: String,
+    id: String
+}
+

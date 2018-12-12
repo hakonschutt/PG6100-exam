@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 class RoomService {
     @Autowired
     private lateinit var roomRepository: RoomRepository
+
     fun save(roomDto: RoomDto): RoomEntity {
         if ((roomDto.name == null || roomDto.rows == null || roomDto.columns == null)) {
             return RoomEntity(id = null, name = null, rows = null, columns = null)
@@ -37,16 +38,9 @@ class RoomService {
                 return RoomDto(id = null, name = null, rows = null, columns = null)
         }
     } // Todo Might be implemented later
-//    fun saveAll(rooms: Set<RoomDto>): Set<RoomEntity> {
-//        val validRooms = !rooms.any { it.name == null || it.rows == null || it.columns == null }
-//
-//        if (!validRooms) return setOf()
-//
-//        return roomRepository.saveAll(rooms.map {
-//
-//            roomDto ->
-//            RoomEntity(id = null, name = roomDto.name!!, rows = roomDto.rows!!, columns = roomDto.columns!!)
-//        }).toSet()
-//
-//    }
+
+    fun findAllById(id: Long): Set<RoomDto> {
+
+        return roomRepository.findAllByVenueId(id).map {RoomConverter.transform(it) }.toSet()
+    }
 }

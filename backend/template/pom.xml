@@ -211,8 +211,8 @@
                     </executions>
                 </plugin>
 
-                <plugin>
-                    <!-- Need to create self-executable uber/fat jars -->
+                <!--<plugin>
+                    &lt;!&ndash; Need to create self-executable uber/fat jars &ndash;&gt;
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${version.springboot}</version>
@@ -223,7 +223,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
+                </plugin>-->
 
                 <plugin>
                     <!-- For manual handling of generated resources -->
