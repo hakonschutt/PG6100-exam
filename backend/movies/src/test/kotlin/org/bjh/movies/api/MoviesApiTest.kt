@@ -178,7 +178,7 @@ class MoviesApiTest : TestBase() {
                 .body(movieDto)
                 .post()
 
-        val movieList = RestAssured.given().accept(ContentType.JSON)
+        val movieList = given().accept(ContentType.JSON)
                 .get()
                 .then()
                 .statusCode(200)
@@ -370,4 +370,220 @@ class MoviesApiTest : TestBase() {
         assertThat(comparableMovieDto, equalTo(originalMovieDto))
     }
 
+    @Test
+    fun testShouldNotUpdateMovieWithInvalidPoster() {
+        val newTitle = "NewMovieTitle"
+
+        val id = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0].id
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"poster\":123}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(400)
+    }
+
+    @Test
+    fun testShouldNotUpdateMovieWithInvalidCoverArt() {
+        val newTitle = "NewMovieTitle"
+
+        val id = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0].id
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"coverArt\":123}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(400)
+    }
+
+    @Test
+    fun testShouldNotUpdateMovieWithInvalidTrailer() {
+        val newTitle = "NewMovieTitle"
+
+        val id = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0].id
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"trailer\":123}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(400)
+    }
+
+    @Test
+    fun testShouldNotUpdateMovieWithInvalidOverview() {
+        val newTitle = "NewMovieTitle"
+
+        val id = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0].id
+
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"overview\":123}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(400)
+    }
+
+    @Test
+    fun testShouldNotUpdateMovieWithInvalidReleaseDate() {
+        val newTitle = "NewMovieTitle"
+
+        val id = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0].id
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"releaseDate\":123}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(400)
+    }
+
+    @Test
+    fun testShouldNotUpdateMovieWithInvalidVoteAverage() {
+        val newTitle = "NewMovieTitle"
+
+        val id = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0].id
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"voteAverage\":123}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(400)
+    }
+
+    @Test
+    fun testShouldNotUpdateMovieWithInvalidPopularity() {
+        val newTitle = "NewMovieTitle"
+
+        val id = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0].id
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"voteAverage\":123}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(400)
+    }
+
+    @Test
+    fun testShouldNotUpdateMovieWithInvalidPrice() {
+        val newTitle = "NewMovieTitle"
+
+        val id = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("data.list", MovieDto::class.java)[0].id
+
+        given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.size()", equalTo(5))
+
+        val patchBody = "{\"title\":\"$newTitle\", \"price\":123}"
+
+        given().contentType("application/merge-patch+json")
+                .body(patchBody)
+                .patch("$id")
+                .then()
+                .statusCode(400)
+    }
 }
