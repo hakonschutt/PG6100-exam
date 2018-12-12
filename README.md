@@ -16,6 +16,7 @@ The application relies on docker to start the entire cluster. Make sure to have 
 $ mvn clean install
 $ docker-compose up --build
 ```
+if you are on a linux system you will have to use ```sudo``` as prefix for both commands
 
 ## How to test
 
