@@ -7,6 +7,7 @@ spring:
   jpa:
     database: "postgresql"
     hibernate:
-      ddl-auto: "update"
+      ddl-auto: "create-drop"
+
   rabbitmq:
     host: rabbitmq

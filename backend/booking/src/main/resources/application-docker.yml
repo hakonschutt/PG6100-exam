@@ -7,10 +7,12 @@ spring:
     password: ""
     driver-class-name: "org.postgresql.Driver"
   jpa:
-    show-sql: true
+    show-sql: false
     database: "postgresql"
     hibernate:
       ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQL9Dialect
+    properties.hibernate.temp.use_jdbc_metadata_defaults: false
 
 server:
   port: 9091

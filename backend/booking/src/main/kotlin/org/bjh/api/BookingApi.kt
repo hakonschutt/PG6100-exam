@@ -41,7 +41,6 @@ class BookingApi {
     /**
      * @author arcuri82
      */
-
     @RabbitListener(queues = ["#{queue.name}"])
     fun receiveFromAMQP(message: String) {
         print(message)
