@@ -25,9 +25,8 @@
         <module>template</module>
         <module>events</module>
         <module>report</module>
-        <module>gateway</module>
         <module>eureka</module>
-
+        <module>gateway</module>
     </modules>
 
     <dependencyManagement>
