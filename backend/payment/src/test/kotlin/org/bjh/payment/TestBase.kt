@@ -13,12 +13,14 @@ import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 import org.testcontainers.containers.GenericContainer
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = [(PaymentApplication::class)],
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(initializers = [(TestBase.Companion.Initializer::class)])
 abstract class TestBase {
 
     /**
@@ -50,7 +52,6 @@ abstract class TestBase {
     protected lateinit var repository: PaymentRepository
 
     @Before
-    @After
     fun clean() {
 
         RestAssured.baseURI = "http://localhost"

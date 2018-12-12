@@ -42,6 +42,14 @@ class PaymentApi {
     fun createPayment(@ApiParam("Information for payment - User, amount and authorization token.")
                       @RequestBody paymentDto: PaymentDto): ResponseEntity<WrappedResponse<Unit>> {
 
+        if(paymentDto.amount == null || paymentDto.amount!!.toDoubleOrNull() == null)
+            return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(
+                            code = 400,
+                            message = "Invalid amount.")
+                            .validated()
+            )
+
         if (paymentDto.paymentAuthorizationToken == null)
             return ResponseEntity.status(400).body(
                     WrappedResponse<Unit>(
@@ -51,14 +59,6 @@ class PaymentApi {
             )
 
         val createdId = paymentService.createPayment(paymentDto)
-
-        if (createdId == -1L)
-            return ResponseEntity.status(400).body(
-                    WrappedResponse<Unit>(
-                            code = 400,
-                            message = "Unable to create a payment.")
-                            .validated()
-            )
 
         val message = JsonObject()
         message.addProperty("user", paymentDto.user)
