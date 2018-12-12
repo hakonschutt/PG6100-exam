@@ -18,6 +18,8 @@ class CacheConfig {
         //Add your caches here:
         cacheList.add(ConcurrentMapCache("venuesCache"))
         cacheList.add(ConcurrentMapCache("moviesCache"))
+        cacheList.add(ConcurrentMapCache("paymentsCache"))
+        cacheList.add(ConcurrentMapCache("bookingCache"))
         smpCacheManager.setCaches(cacheList)
         return smpCacheManager
     }

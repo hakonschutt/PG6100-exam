@@ -7,8 +7,10 @@ import javax.persistence.*
  */
 @Entity(name = "bookings")
 class BookingEntity(
+        @get:Column(name = "user_id")
         var user: Long? = null,
 
+        @get:Column(name = "event_id")
         var event: Long? = null,
 
         @get:ElementCollection(fetch = FetchType.LAZY)

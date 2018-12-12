@@ -1,13 +1,25 @@
 spring:
-  application:
-    name: service
+  session:
+    store-type: none
   datasource:
-    url: "jdbc:postgresql://postgres:5432/postgres"
-    username: "postgres"
-    password: ""
-    driver-class-name: "org.postgresql.Driver"
+    url: "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
+    driver-class-name: "org.h2.Driver"
   jpa:
-    database: "postgresql"
+    database: "h2"
     hibernate:
-      ddl-auto: "update"
+      ddl-auto: "create-drop"
+    show-sql: true
 
+logging:
+  level:
+    org.springframework.security: debug
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 9091
