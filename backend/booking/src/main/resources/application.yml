@@ -1,15 +1,18 @@
 spring:
-  application:
-    name: booking
+  session:
+    store-type: none
   datasource:
-    url: "jdbc:h2:mem:"
-    driver-class-name: org.h2.Driver
+    url: "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
+    driver-class-name: "org.h2.Driver"
   jpa:
-    database: h2
+    database: "h2"
     hibernate:
-      ddl-auto: create-drop
-  rabbitmq:
-    host: rabbitmq
+      ddl-auto: "create-drop"
+    show-sql: true
+
+logging:
+  level:
+    org.springframework.security: debug
 
 eureka:
   client:
@@ -17,3 +20,6 @@ eureka:
       enabled: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 9091

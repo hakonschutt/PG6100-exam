@@ -3,14 +3,13 @@ package org.bjh.movies.api
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
-import org.bjh.movies.LocalApplicationRunner
+import org.bjh.movies.TestBase
 import org.bjh.dto.MovieDto
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Ignore
 import org.junit.Test
 
-class MoviesApiTest : LocalApplicationRunner() {
+class MoviesApiTest : TestBase() {
 
     @Test
     fun testGetAll() {
@@ -34,13 +33,14 @@ class MoviesApiTest : LocalApplicationRunner() {
     @Test
     fun testGetMovie() {
         getAllMovies()?.stream()?.forEach { it ->
-            assertThat(RestAssured.given().accept(ContentType.JSON)
+           val result = given().accept(ContentType.JSON)
                     .get(it.id)
                     .then()
                     .statusCode(200)
                     .extract()
                     .jsonPath()
-                    .getList("data.list", MovieDto::class.java)[0], equalTo(it))
+                    .getList("data", MovieDto::class.java)[0]
+            assertThat(result, equalTo(it))
         }
     }
 
@@ -73,7 +73,7 @@ class MoviesApiTest : LocalApplicationRunner() {
                 .get(location)
                 .then()
                 .statusCode(200)
-                .body("data.list[0].title", equalTo(testTitle))
+                .body("data[0].title", equalTo(testTitle))
 
         given().accept(ContentType.JSON)
                 .get()
@@ -189,13 +189,13 @@ class MoviesApiTest : LocalApplicationRunner() {
 
         val id = movieList[5].id
 
-        val originalMovieDto = RestAssured.given().accept(ContentType.JSON)
+        val originalMovieDto =given().accept(ContentType.JSON)
                 .get("$id")
                 .then()
                 .statusCode(200)
                 .extract()
                 .jsonPath()
-                .getList("data.list", MovieDto::class.java)[0]
+                .getList("data", MovieDto::class.java)[0]
 
         val patchBody = "{\"title\":\"$newTitle\", \"poster\":null}"
 
@@ -206,13 +206,13 @@ class MoviesApiTest : LocalApplicationRunner() {
                     .then()
                     .statusCode(204)
 
-            val patchedMovieDto = RestAssured.given().accept(ContentType.JSON)
+            val patchedMovieDto = given().accept(ContentType.JSON)
                     .get("$id")
                     .then()
                     .statusCode(200)
                     .extract()
                     .jsonPath()
-                    .getList("data.list", MovieDto::class.java)[0]
+                    .getList("data", MovieDto::class.java)[0]
 
             val comparableMovieDto = patchedMovieDto.copy(title = oldTitle, poster = posterUrl)
 
@@ -316,7 +316,7 @@ class MoviesApiTest : LocalApplicationRunner() {
                 .body(movieDto)
                 .post()
 
-        val movieList = RestAssured.given().accept(ContentType.JSON)
+        val movieList = given().accept(ContentType.JSON)
                 .get()
                 .then()
                 .statusCode(200)
@@ -333,7 +333,7 @@ class MoviesApiTest : LocalApplicationRunner() {
                 .statusCode(200)
                 .extract()
                 .jsonPath()
-                .getList("data.list", MovieDto::class.java)[0]
+                .getList("data", MovieDto::class.java)[0]
 
 
         given().contentType("application/merge-patch+json")
@@ -348,7 +348,7 @@ class MoviesApiTest : LocalApplicationRunner() {
                 .statusCode(200)
                 .extract()
                 .jsonPath()
-                .getList("data.list", MovieDto::class.java)[0]
+                .getList("data", MovieDto::class.java)[0]
 
         val comparableMovieDto = patchedMovieDto.copy(title = originalTitle,
                 poster = originalPosterUrl,
