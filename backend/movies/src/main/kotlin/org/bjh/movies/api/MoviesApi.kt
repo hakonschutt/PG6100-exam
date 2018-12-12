@@ -92,7 +92,6 @@ class MoviesApi {
                         data = requestResult.list)
                         .validated()
         )
-
     }
 
     @ApiOperation("Create a movie")
@@ -231,11 +230,21 @@ class MoviesApi {
         try {
             movieObject = parser.parse(fieldsToPatch).asJsonObject
         } catch (jse: JsonSyntaxException) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                    WrappedResponse<Unit>(
+                            code = 400,
+                            message = "Issue with body.")
+                            .validated()
+            )
         }
 
         if (movieObject.has("id")) {
-            return ResponseEntity.status(409).build()
+            return ResponseEntity.status(409).body(
+                    WrappedResponse<Unit>(
+                            code = 409,
+                            message = "You cannot specify an ID.")
+                            .validated()
+            )
         }
 
         val tempDto = movieDto.copy()
@@ -248,7 +257,12 @@ class MoviesApi {
             else if (title.isJsonPrimitive && title.asJsonPrimitive.isString)
                 tempDto.title = title.asString
             else
-                return ResponseEntity.status(400).build()
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "Title is in wrong format.")
+                                .validated()
+                )
         }
 
         if (movieObject.has("poster")) {
@@ -258,7 +272,12 @@ class MoviesApi {
             else if (poster.isJsonPrimitive && poster.asJsonPrimitive.isString)
                 tempDto.poster = poster.asString
             else
-                return ResponseEntity.status(400).build()
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "Poster is in wrong format.")
+                                .validated()
+                )
         }
 
 
@@ -269,7 +288,12 @@ class MoviesApi {
             else if (coverArt.isJsonPrimitive && coverArt.asJsonPrimitive.isString)
                 tempDto.coverArt = coverArt.asString
             else
-                return ResponseEntity.status(400).build()
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "CoverArt is in wrong format.")
+                                .validated()
+                )
         }
 
         if (movieObject.has("trailer")) {
@@ -279,7 +303,12 @@ class MoviesApi {
             else if (trailer.isJsonPrimitive && trailer.asJsonPrimitive.isString)
                 tempDto.trailer = trailer.asString
             else
-                return ResponseEntity.status(400).build()
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "Trailer is in wrong format.")
+                                .validated()
+                )
         }
 
         if (movieObject.has("overview")) {
@@ -289,7 +318,12 @@ class MoviesApi {
             else if (overview.isJsonPrimitive && overview.asJsonPrimitive.isString)
                 tempDto.overview = overview.asString
             else
-                return ResponseEntity.status(400).build()
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "Overview is in wrong format.")
+                                .validated()
+                )
         }
 
         if (movieObject.has("releaseDate")) {
@@ -299,7 +333,12 @@ class MoviesApi {
             else if (releaseDate.isJsonPrimitive && releaseDate.asJsonPrimitive.isString)
                 tempDto.releaseDate = releaseDate.asString
             else
-                return ResponseEntity.status(400).build()
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "Release date is in wrong format.")
+                                .validated()
+                )
         }
 
         if (movieObject.has("genres")) {
@@ -307,7 +346,12 @@ class MoviesApi {
             when {
                 genres.isJsonNull -> tempDto.genres = null
                 genres.isJsonArray -> setOf(genres.asJsonArray)
-                else -> return ResponseEntity.status(400).build()
+                else -> return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "Genres is in wrong format.")
+                                .validated()
+                )
             }
         }
 
@@ -319,8 +363,12 @@ class MoviesApi {
             else if (voteCount.isJsonPrimitive && voteCount.asJsonPrimitive.isNumber)
                 tempDto.voteCount = voteCount.asInt
             else
-                return ResponseEntity.status(400).build()
-        }
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "voteCount is in wrong format.")
+                                .validated()
+                )        }
 
         if (movieObject.has("voteAverage")) {
             val voteAverage = movieObject.get("voteAverage")
@@ -329,8 +377,12 @@ class MoviesApi {
             else if (voteAverage.isJsonPrimitive && voteAverage.asJsonPrimitive.isString)
                 tempDto.voteAverage = voteAverage.asString
             else
-                return ResponseEntity.status(400).build()
-        }
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "Vote Average is in wrong format.")
+                                .validated()
+                )        }
 
         if (movieObject.has("popularity")) {
             val popularity = movieObject.get("popularity")
@@ -339,7 +391,12 @@ class MoviesApi {
             else if (popularity.isJsonPrimitive && popularity.asJsonPrimitive.isString)
                 tempDto.popularity = popularity.asString
             else
-                return ResponseEntity.status(400).build()
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "Popularity is in wrong format.")
+                                .validated()
+                )
         }
 
         if (movieObject.has("price")) {
@@ -349,12 +406,20 @@ class MoviesApi {
             else if (price.isJsonPrimitive && price.asJsonPrimitive.isString)
                 tempDto.price = price.asString
             else
-                return ResponseEntity.status(400).build()
-        }
+                return ResponseEntity.status(400).body(
+                        WrappedResponse<Unit>(
+                                code = 400,
+                                message = "Pricec is in wrong format.")
+                                .validated()
+                )        }
         movieDto = tempDto
         movieService.save(movieDto)
 
-        return ResponseEntity.status(204).build()
-
+        return ResponseEntity.status(204).body(
+                WrappedResponse<Unit>(
+                        code = 204,
+                        message = "Movie updated.")
+                        .validated()
+        )
     }
 }
