@@ -68,7 +68,7 @@ services:
 
   booking:
     build:
-      context: ./backend/payment
+      context: ./backend/booking
       dockerfile: Dockerfile
     depends_on:
     - gateway
