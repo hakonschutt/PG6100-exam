@@ -69,7 +69,7 @@ services:
 
   booking:
     build:
-      context: ./backend/payment
+      context: ./backend/booking
       dockerfile: Dockerfile
     ports:
     - "8083:9091"
