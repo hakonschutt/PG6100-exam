@@ -81,7 +81,15 @@ services:
     - gateway
     - movies-db
 
-  venues:
+  venues_0:
+    build:
+      context: ./backend/venues
+      dockerfile: Dockerfile
+    depends_on:
+    - gateway
+    - venues-db
+
+  venues_1:
     build:
       context: ./backend/venues
       dockerfile: Dockerfile
@@ -96,5 +104,3 @@ services:
     depends_on:
     - gateway
     - events-db
-    - venues
-    - movies
