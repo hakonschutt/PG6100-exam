@@ -28,7 +28,6 @@ class EventResolver : GraphQLResolver<EventType> {
 
     fun movie(event: EventType): MovieType? {
         try {
-            println("########MOVIE###########")
             val req = (httpService.getReq("http://${webAddress.trim()}/api/movies/${event.movieId}")) as WrappedResponse<List<MovieDto>>
 
             val data = req.data
@@ -48,7 +47,6 @@ class EventResolver : GraphQLResolver<EventType> {
     }
 
     fun venue(event: EventType): VenueType? {
-        // TODO: Create HTTP request
         try {
             val req = (httpService.getReq("http://${webAddress.trim()}/api/venues/${event.venueId}") as WrappedResponse<List<VenueDto>>)
             val data = req.data
@@ -70,15 +68,15 @@ class EventResolver : GraphQLResolver<EventType> {
     fun room(event: EventType): RoomType? {
         try {
             val req = (httpService.getReq("http://${webAddress.trim()}/api/venues/${event.venueId}/rooms") as WrappedResponse<List<RoomDto>>)
-            val data = req.data as ArrayList<LinkedHashMap<String,String>>
-            if (data != null) {
-                if (data.isNotEmpty()) {
+            val data = req.data as ArrayList<LinkedHashMap<String, String>>
 
-                    var desiredDto = data.filter { it.get("id") == event.roomId}.first()
-                    val jsonTo =   Gson().toJson(desiredDto, LinkedHashMap::class.java)
-                    return  EventConverter.transformRoomDtoToType(Gson().fromJson(jsonTo, RoomDto::class.java))
+            if (data.isNotEmpty()) {
 
-                }
+                var desiredDto = data.filter { it.get("id") == event.roomId }.first()
+                val jsonTo = Gson().toJson(desiredDto, LinkedHashMap::class.java)
+                return EventConverter.transformRoomDtoToType(Gson().fromJson(jsonTo, RoomDto::class.java))
+
+
             }
 
             return null

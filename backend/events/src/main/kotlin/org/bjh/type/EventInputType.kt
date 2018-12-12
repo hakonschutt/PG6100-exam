@@ -1,6 +1,5 @@
 package org.bjh.type
 
-import java.time.ZonedDateTime
 /** @author  Kleppa && håkonschutt */
 data class EventInputType(
         var date: String,

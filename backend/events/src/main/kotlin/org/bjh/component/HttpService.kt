@@ -10,7 +10,6 @@ import rx.Observable
 
 @Component
 class HttpService {
-//    fun getReq(url:String): WrappedResponse<*> = RestTemplate().getForObject(url, WrappedResponse::class.java)
    fun getReq(url: String): WrappedResponse<*> = (HystrixCall(url).execute())
     private inner class HystrixCall(private val url: String)
         : HystrixCommand<WrappedResponse<*>>(HystrixCommandGroupKey.Factory.asKey("Interactions with $url")) {

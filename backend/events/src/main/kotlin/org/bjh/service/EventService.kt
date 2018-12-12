@@ -4,10 +4,8 @@ import org.bjh.converter.EventConverter
 import org.bjh.repository.EventRepository
 import org.bjh.type.EventInputType
 import org.bjh.type.EventType
-import org.bjh.type.MovieType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.ZonedDateTime
 
 /** @author  Kleppa && håkonschutt */
 

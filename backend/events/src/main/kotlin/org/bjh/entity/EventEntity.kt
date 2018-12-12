@@ -1,9 +1,6 @@
 package org.bjh.entity
 
 import org.hibernate.validator.constraints.Range
-import sun.util.calendar.BaseCalendar
-import java.time.ZonedDateTime
-import java.util.*
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id

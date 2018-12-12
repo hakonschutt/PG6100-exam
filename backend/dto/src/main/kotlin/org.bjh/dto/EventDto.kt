@@ -1,6 +1,5 @@
 package org.bjh.dto
 
-import java.time.ZonedDateTime
 import java.util.*
 
 data class EventDto(

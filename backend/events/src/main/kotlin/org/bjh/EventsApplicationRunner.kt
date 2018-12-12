@@ -14,17 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @SpringBootApplication
 @EnableSwagger2
 class EventsApplicationRunner {
-    //Andrea's code
-//    init {
-//        ConfigurationManager.getConfigInstance().apply {
-//            setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", 1000)
-//            setProperty("hystrix.command.default.circuitBreaker.requestVolumeThreshold", 20)
-//            setProperty("hystrix.command.default.circuitBreaker.errorThresholdPercentage", 50)
-//            setProperty("hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds", 5000)
-//        }
-//    }
-
-
     @Bean
     fun swaggerApi(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
@@ -37,7 +26,8 @@ class EventsApplicationRunner {
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
                 .title("GRAPHQL API for events")
-                .description("REST API containing all events in house of movies")
+                .description("REST API containing all events in house of movies " +
+                        "This api uses the endpoint /graphql")
                 .version("1.0")
                 .build()
     }
