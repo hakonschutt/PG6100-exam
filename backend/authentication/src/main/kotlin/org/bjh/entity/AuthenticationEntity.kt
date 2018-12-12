@@ -1,13 +1,11 @@
 package org.bjh.entity
 
-import org.bjh.dto.BookingDto
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
 @Entity(name = "user_detail")
-class UserDetailEntity(
-
+class AuthenticationEntity(
 
         @get:Id
         @get:NotBlank

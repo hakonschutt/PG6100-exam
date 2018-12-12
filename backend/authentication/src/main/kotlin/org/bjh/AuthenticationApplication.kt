@@ -13,7 +13,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
 @EnableSwagger2
-class UserDetailsRunner {
+class AuthenticationApplication {
 
     @Bean
     fun swaggerApi(): Docket {
@@ -26,13 +26,13 @@ class UserDetailsRunner {
 
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
-                .title("API for venues")
-                .description("REST API containing all user details for the House of Movies")
+                .title("API for authentication")
+                .description("REST API for authentication to House of Movies")
                 .version("1.0")
                 .build()
     }
 }
 
 fun main(args: Array<String>) {
-    runApplication<UserDetailsRunner>(*args)
+    runApplication<AuthenticationApplication>(*args)
 }

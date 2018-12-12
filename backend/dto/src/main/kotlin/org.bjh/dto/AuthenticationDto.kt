@@ -1,5 +1,5 @@
 package org.bjh.dto
 
-class UserDetailDto(
+class AuthenticationDto(
         var email:String? = null
 )

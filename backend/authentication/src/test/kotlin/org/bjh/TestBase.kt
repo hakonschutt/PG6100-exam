@@ -1,8 +1,8 @@
 package org.bjh
 
 import io.restassured.RestAssured
-import org.bjh.entity.UserDetailEntity
-import org.bjh.repository.UserDetailsRepository
+import org.bjh.entity.AuthenticationEntity
+import org.bjh.repository.AuthenticationRepository
 import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -14,13 +14,13 @@ import org.springframework.test.context.junit4.SpringRunner
 
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = [(UserDetailsRunner::class)],
+@SpringBootTest(classes = [(AuthenticationApplication::class)],
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-abstract class LocalApplicationTestRunner {
+abstract class TestBase {
 
-    private val venueEntities = ArrayList<UserDetailEntity>()
+    private val venueEntities = ArrayList<AuthenticationEntity>()
     @Autowired
-    protected lateinit var repository: UserDetailsRepository
+    protected lateinit var repository: AuthenticationRepository
 
 
     @LocalServerPort
@@ -33,7 +33,7 @@ abstract class LocalApplicationTestRunner {
                 .stream()
                 .forEach { data ->
                     venueEntities
-                            .add(UserDetailEntity(
+                            .add(AuthenticationEntity(
                                     email =data
                             ))
                 }

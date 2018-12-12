@@ -19,11 +19,11 @@
     <modules>
         <module>utils</module>
         <module>dto</module>
+        <module>authentication</module>
         <module>payment</module>
         <module>booking</module>
         <module>movies</module>
         <module>venues</module>
-        <module>user-details</module>
         <module>template</module>
         <module>events</module>
         <module>report</module>

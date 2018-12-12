@@ -3,11 +3,11 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>user-details</artifactId>
+    <artifactId>authentication</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>user-details</name>
+    <name>authentication</name>
     <parent>
         <version>0.0.1-SNAPSHOT</version>
         <groupId>org.bjh</groupId>

@@ -1,16 +1,12 @@
 package org.bjh.api
 
 import io.restassured.RestAssured
-import io.restassured.RestAssured.given
-import org.bjh.LocalApplicationTestRunner
-import org.bjh.dto.UserDetailDto
-import org.bjh.pagination.PageDto
+import org.bjh.TestBase
+import org.bjh.dto.AuthenticationDto
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Assert
 import org.junit.Test
-import kotlin.test.assertNotEquals
 
-class UserDetailsApiTest : LocalApplicationTestRunner() {
+class AuthenticationApiTest : TestBase() {
 
     @Test
     fun testDeleteUser() {
@@ -20,7 +16,7 @@ class UserDetailsApiTest : LocalApplicationTestRunner() {
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
-                .getList("data.list", UserDetailDto::class.java)[0]
+                .getList("data.list", AuthenticationDto::class.java)[0]
 
         RestAssured.given()
                 .delete("/${data.email}")
@@ -41,7 +37,7 @@ class UserDetailsApiTest : LocalApplicationTestRunner() {
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
-                .getList("data.list", UserDetailDto::class.java)[0]
+                .getList("data.list", AuthenticationDto::class.java)[0]
 
         RestAssured.given()
                 .delete("/${data.email}")
@@ -101,7 +97,7 @@ class UserDetailsApiTest : LocalApplicationTestRunner() {
     @Test
     fun testCreateUser() {
         val id = RestAssured.given().contentType("application/json;charset=UTF-8")
-                .body(UserDetailDto(email = "foo@gmail.com"))
+                .body(AuthenticationDto(email = "foo@gmail.com"))
                 .post()
                 .then()
                 .statusCode(201)
