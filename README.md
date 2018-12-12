@@ -4,10 +4,9 @@
 
 ## About the application (What it does)
 
-- Short pitch about application
+- Short pitch about applications
 
-_finish with git repo link_ [Repo](https://github.com/hakonschutt/PG6100-exam)
-Link to cloud [some link](http://google.com)
+[Git repo](https://github.com/hakonschutt/PG6100-exam)
 
 ## How to run
 
@@ -26,6 +25,8 @@ Link to cloud [some link](http://google.com)
 The marking will be strongly influenced by the quality and quantity of features you can implement. For each main feature, you MUST have an end-to-end test to show it, and also you need to discuss it in the documentation. A feature without tests and documentation is like a feature that does not exist. For B/A grades, the more features you implement and test in your project, the better.
 
 ## Technologies
+
+Which different technologies you did choose to use
 
 ## Developers
 
