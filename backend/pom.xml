@@ -19,6 +19,7 @@
     <modules>
         <module>utils</module>
         <module>dto</module>
+        <module>payment</module>
         <module>booking</module>
         <module>movies</module>
         <module>venues</module>
@@ -28,15 +29,4 @@
         <module>eureka</module>
         <module>gateway</module>
     </modules>
-
-    <dependencyManagement>
-        <dependencies>
-
-            <dependency>
-                <groupId>org.bjh.utils</groupId>
-                <artifactId>utils</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>
