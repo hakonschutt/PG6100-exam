@@ -6,4 +6,6 @@ spring:
     driver-class-name: "org.h2.Driver"
 server:
   port: 8083
-fixerWebAddress: api.fixer.io:80
+
+fixerMoviesWebAddress: api.fixer.io:80
+fixerVenuesWebAddress: api.fixer.io:80

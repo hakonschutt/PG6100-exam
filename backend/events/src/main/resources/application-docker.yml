@@ -18,4 +18,5 @@ spring:
 server:
   port: 9091
 
-fixerWebAddress: api.fixer.io:80
+fixerMoviesWebAddress: movies
+fixerVenuesWebAddress: venues
