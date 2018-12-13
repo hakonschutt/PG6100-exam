@@ -1,5 +1,21 @@
-server:
-  port: 8080
+# Configuring here to use an actual database, whose IP address depends
+# on where Docker Compose starts it
+
+spring:
+  application:
+    name: service
+  datasource:
+    url: "jdbc:postgresql://postgres:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+  jpa:
+    database: "postgresql"
+    hibernate:
+      # We should rather use Flyway. But for simplicity, here rely
+      # on Hibernate to handle the schema (which is usually not a good idea).
+      ddl-auto: "update"
+
 
 eureka:
   instance:
@@ -10,21 +26,3 @@ eureka:
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
 
-spring:
-  application:
-    name: booking
-
-  datasource:
-    url: "jdbc:postgresql://booking-db:5432/postgres"
-    username: "postgres"
-    password: ""
-    driver-class-name: org.postgresql.Driver
-  rabbitmq:
-    host: rabbitmq
-  jpa:
-    show-sql: true
-    database: postgresql
-    hibernate:
-      ddl-auto: create-drop
-      dialect: org.hibernate.dialect.PostgreSQL9Dialect
-    properties.hibernate.temp.use_jdbc_metadata_defaults: false

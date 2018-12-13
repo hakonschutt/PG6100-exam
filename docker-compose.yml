@@ -1,5 +1,25 @@
 version: '3.3'
+
 services:
+
+  ### GATEWAY ###
+  gateway:
+    build:
+      context: ./backend/gateway
+      dockerfile: Dockerfile
+    ports:
+      - "80:8080"
+    depends_on:
+        - eureka
+
+  ### EUREKA ####
+  eureka:
+    build:
+      context: ./backend/eureka
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+
 #  #### DATABASE ####
 #  auth-db:
 #    image: 'postgres:latest'
@@ -7,8 +27,8 @@ services:
 #    image: 'postgres:latest'
 #  movies-db:
 #    image: 'postgres:latest'
-  venues-db:
-    image: 'postgres:latest'
+#  venues-db:
+#    image: 'postgres:latest'
   booking-db:
     image: 'postgres:latest'
 #  events-db:
@@ -29,27 +49,7 @@ services:
 #      context: ./frontend
 #      dockerfile: Dockerfile
 #
-  ### GATEWAY ####
-  gateway:
-    restart: always
-    build:
-      context: ./backend/gateway
-      dockerfile: Dockerfile
-    ports:
-    - "8080:8080"
-    depends_on:
-    - venues
 
-  ### EUREKA ####
-  eureka:
-    restart: always
-    ports:
-      - "8761:8761"
-    build:
-      context: ./backend/eureka
-      dockerfile: Dockerfile
-    depends_on:
-      - rabbitmq
 
   #### MICROSERVICES ####
   #auth:
@@ -70,18 +70,14 @@ services:
 #    - rabbitmq
 #    - auth
 
-#  booking:
-#    build:
-#      context: ./backend/booking
-#      dockerfile: Dockerfile
-##    ports:
-##    - "8080:8080"
-#    depends_on:
-#    - gateway
-#    - booking-db
-##    - payment
-#    - rabbitmq
-##   - auth
+  booking:
+    build:
+      context: ./backend/booking
+      dockerfile: Dockerfile
+    depends_on:
+    - gateway
+    - booking-db
+    - rabbitmq
 #
 #  movies:
 #    build:
@@ -91,14 +87,13 @@ services:
 #    - gateway
 #    - movies-db
 #
-
-  venues:
-    build:
-      context: ./backend/venues
-      dockerfile: Dockerfile
-    depends_on:
-    - eureka
-    - venues-db
+#  venues:
+#    build:
+#      context: ./backend/venues
+#      dockerfile: Dockerfile
+#    depends_on:
+#    - gateway
+#    - venues-db
 #
 #  venues_1:
 #    build:

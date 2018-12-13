@@ -1,71 +1,27 @@
+# Here is where we set the routing, based on pattern matching on "Path".
+# Note: Spring Cloud Gateway is aware of Eureka, and for routing we just need
+# to specify the application name (ie the "spring.application.name"
+# registered on Eureka, which is "service" from the service module
+# in this case), and so would do automatically load balancing.
+# However, the application "frontend" is not registered on Eureka,
+# so need to provide an explicit URL for it.
+
 spring:
-
-  application:
-    name: gateway
-  session:
-    store-type: none
-  redis:
-    host: redis
-    port: 6379
-
   cloud:
     gateway:
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods:
-            - GET
       discovery:
         locator:
           enabled: true
-
       routes:
-#      - id: movies
-#        uri: lb://movies
-#        predicates:
-#        - Path=/api/movies/**
-#        filters:
-#        - StripPrefix=1
-#
-
-      - id: venues
-        uri: http://venues:8080
+      - id: service
+        # "lb" stands for Load-Balance, which is done with Ribbon
+        uri: lb://service
         predicates:
-        - Path=/api/venues/**
+        - Path=/service/**
         filters:
-        - StripPrefix=1
-
-#      - id: payment
-#        uri: lb://payment
-#        predicates:
-#        - Path=/api/payments/**
-#        filters:
-#        - StripPrefix=1
-#
-#      - id: events
-#        uri: lb://events
-#        predicates:
-#        - Path=/graphql
-#        filters:
-#        - StripPrefix=1
-
-#      - id: booking
-#        uri: lb://booking
-#        predicates:
-#        - Path=/api/bookings/**
-#        filters:
-#        - StripPrefix=1
-
-#      - id: auth
-#        uri: lb://auth
-#        predicates:
-#        - Path=/api/auth/**
-#        filters:
-#        - StripPrefix=1
-
+         - StripPrefix=1
 #      - id: frontend
-#        uri: http://frontend:3000
+#        uri: http://frontend
 #        predicates:
 #        - Path=/**
 
@@ -77,5 +33,3 @@ eureka:
       enabled: true
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
-
-
