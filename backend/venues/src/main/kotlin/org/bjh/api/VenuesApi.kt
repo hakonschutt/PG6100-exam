@@ -11,7 +11,7 @@ import org.bjh.pagination.PageDto
 import org.bjh.service.RoomService
 import org.bjh.wrappers.WrappedResponse
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient
+//import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -23,7 +23,7 @@ const val BASE_JSON = "application/json;charset=UTF-8"
 @RestController
 @RequestMapping("/api/venues")
 @Api("Api for venues")
-@EnableEurekaClient
+//@EnableEurekaClient
 class VenuesApi {
     @Autowired
     private lateinit var venuesService: VenuesService

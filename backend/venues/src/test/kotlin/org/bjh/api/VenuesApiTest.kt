@@ -10,8 +10,9 @@ import org.bjh.pagination.PageDto
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
-import kotlin.test.assertNotEquals
+
 
 
 class VenuesApiTest : VenueApiTestBase() {

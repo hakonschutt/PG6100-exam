@@ -14,9 +14,9 @@ services:
 #  events-db:
 #    image: 'postgres:latest'
 #
-#  #### RABBITMQ ####
-#  rabbitmq:
-#    image: "rabbitmq:3"
+  #### RABBITMQ ####
+  rabbitmq:
+    image: "rabbitmq:3"
 #
 #  #### REDIS ####
 #  redis:
@@ -48,6 +48,8 @@ services:
     build:
       context: ./backend/eureka
       dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
 
   #### MICROSERVICES ####
   #auth:
@@ -91,9 +93,12 @@ services:
     build:
       context: ./backend/venues
       dockerfile: Dockerfile
+    ports:
+      - "9090:8080"
     depends_on:
     - gateway
     - venues-db
+
 #
 #  venues_1:
 #    build:

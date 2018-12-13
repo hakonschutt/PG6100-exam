@@ -1,11 +1,12 @@
 package org.bjh
 
+import junit.framework.Assert.assertTrue
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+
 
 class HelloTest {
 
     @Test
-    fun test() = assertTrue { true }
+    fun test() {
+        assertTrue(true)}
 }

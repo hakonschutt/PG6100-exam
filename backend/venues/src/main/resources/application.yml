@@ -14,6 +14,9 @@ spring:
     hibernate:
       ddl-auto: "create-drop"
     show-sql: true
+
 logging:
   level:
     org: ERROR
+server:
+  port: 8888

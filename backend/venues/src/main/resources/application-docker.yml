@@ -23,5 +23,6 @@ eureka:
       enabled: true
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
+
 server:
   port: 8080

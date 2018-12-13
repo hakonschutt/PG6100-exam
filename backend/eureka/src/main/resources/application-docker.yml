@@ -1,11 +1,18 @@
-#server:
-#  port: 8761
-#
-#eureka:
-#  instance:
-#    hostname: eureka
-#  client:
-#    registerWithEureka: false
-#    fetchRegistry: false
-#    serviceUrl:
-#      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+server:
+  port: 8761
+  datasource:
+    url: "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
+    driver-class-name: "org.h2.Driver"
+  jpa:
+    database: "h2"
+    hibernate:
+      ddl-auto: "create-drop"
+    show-sql: true
+eureka:
+  instance:
+    hostname: eureka
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
