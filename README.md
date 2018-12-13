@@ -5,7 +5,7 @@
 ## About the application (What it does)
 
 - Short pitch about applications
-
+We have created a system for cinemas.
 [Git repo](https://github.com/hakonschutt/PG6100-exam)
 
 ## How to run
