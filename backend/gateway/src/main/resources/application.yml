@@ -1,26 +1,26 @@
 spring:
-#
-#  session:
-#    # during testing for this service in isolation,
-#    # do not use Redis. Disabling SpringSession will fall-back to
-#    # default sessions in the servlet
-#    store-type: none
-#  datasource:
-#    url: "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
-#    driver-class-name: "org.h2.Driver"
-#  jpa:
-#    database: "h2"
-#    hibernate:
-#      ddl-auto: "create-drop"
-#    show-sql: true
+  application:
+    name: gateway
+  session:
+    store-type: none
+  redis:
+    host: redis
+    port: 6379
 
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+            - GET
       discovery:
         locator:
           enabled: true
 
       routes:
+<<<<<<< HEAD
       - id: movies
         uri: lb://movies
         predicates:
@@ -31,6 +31,54 @@ spring:
         uri: http://frontend:3000
         predicates:
         - Path=/**
+=======
+#      - id: movies
+#        uri: lb://movies
+#        predicates:
+#        - Path=/api/movies/**
+#        filters:
+#        - StripPrefix=1
+#
+#      - id: venues
+#        uri: http://venues:8080
+#        predicates:
+#        - Path=/api/venues/**
+#        filters:
+#        - StripPrefix=1
+#
+#      - id: payment
+#        uri: lb://payment
+#        predicates:
+#        - Path=/api/payments/**
+#        filters:
+#        - StripPrefix=1
+#
+#      - id: events
+#        uri: lb://events
+#        predicates:
+#        - Path=/graphql
+#        filters:
+#        - StripPrefix=1
+
+      - id: booking
+        uri: lb://booking
+        predicates:
+        - Path=/booking-service/**
+        filters:
+        - StripPrefix=1
+
+#      - id: auth
+#        uri: lb://auth
+#        predicates:
+#        - Path=/api/auth/**
+#        filters:
+#        - StripPrefix=1
+
+#      - id: frontend
+#        uri: http://frontend:3000
+#        predicates:
+#        - Path=/**
+>>>>>>> 9ef48d48059027e7ed4467b0a6ff940fb00d0dd9
 
 eureka:
   instance:

@@ -8,5 +8,11 @@ eureka:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
 
+logging:
+  level:
+    com:
+      netflix:
+        loadbalancer: debug
+
 
 
