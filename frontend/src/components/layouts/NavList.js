@@ -12,6 +12,14 @@ const NavList = ({ auth }) => {
 		</li>
 	);
 
+	navigation.push(
+		<li key="coming" className="nav-item">
+			<Link className="nav-link text-white" to="/coming">
+				Coming
+			</Link>
+		</li>
+	);
+
 	if (auth && 'isEnabled' in auth && auth.isEnabled) {
 		navigation.push(
 			<li key="profile" className="nav-item">

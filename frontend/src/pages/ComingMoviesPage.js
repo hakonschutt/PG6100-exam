@@ -1,11 +1,11 @@
 import React from 'react';
 import MoviesView from '../components/layouts/MoviesView';
 
-const MoviesPage = () => {
+const ComingMoviesPage = () => {
 	return (
 		<div>
 			<div className="container">
-				<h1 className="d-block mt-3">Movies Page</h1>
+				<h1 className="d-block mt-3">Movies Coming Soon</h1>
 				<hr />
 				<MoviesView />
 			</div>
@@ -13,4 +13,4 @@ const MoviesPage = () => {
 	);
 };
 
-export default MoviesPage;
+export default ComingMoviesPage;

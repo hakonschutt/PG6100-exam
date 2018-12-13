@@ -1,5 +1,6 @@
 import React from 'react';
 import Loadable from 'react-loadable';
+import PageLoader from '../components/helpers/PageLoader';
 
 export default [
 	{
@@ -9,7 +10,18 @@ export default [
 		component: Loadable({
 			loader: () => import('../pages/HomePage'),
 			loading: () => {
-				return <div>Loading...</div>;
+				return <PageLoader />;
+			},
+		}),
+	},
+	{
+		key: 'coming',
+		path: '/coming',
+		exact: true,
+		component: Loadable({
+			loader: () => import('../pages/ComingMoviesPage'),
+			loading: () => {
+				return <PageLoader />;
 			},
 		}),
 	},
@@ -20,7 +32,18 @@ export default [
 		component: Loadable({
 			loader: () => import('../pages/MoviesPage'),
 			loading: () => {
-				return <div>Loading...</div>;
+				return <PageLoader />;
+			},
+		}),
+	},
+	{
+		key: 'single-movie',
+		path: '/movies/:id',
+		exact: true,
+		component: Loadable({
+			loader: () => import('../pages/MoviePage'),
+			loading: () => {
+				return <PageLoader />;
 			},
 		}),
 	},
@@ -31,7 +54,7 @@ export default [
 		component: Loadable({
 			loader: () => import('../pages/LoginPage'),
 			loading: () => {
-				return <div>Loading...</div>;
+				return <PageLoader />;
 			},
 		}),
 	},
@@ -42,7 +65,7 @@ export default [
 		component: Loadable({
 			loader: () => import('../pages/SignupPage'),
 			loading: () => {
-				return <div>Loading...</div>;
+				return <PageLoader />;
 			},
 		}),
 	},
@@ -53,7 +76,7 @@ export default [
 		component: Loadable({
 			loader: () => import('../pages/ProfilePage'),
 			loading: () => {
-				return <div>Loading...</div>;
+				return <PageLoader />;
 			},
 		}),
 	},

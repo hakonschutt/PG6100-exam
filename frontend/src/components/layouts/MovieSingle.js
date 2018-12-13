@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SingleMovie = ({ poster, title, itemSize = 200 }) => {
+const MovieSingle = ({ poster, title, itemSize = 200 }) => {
 	return (
 		<li className="single-movie">
 			<a onClick={console.log} href="#0">
@@ -13,4 +13,4 @@ const SingleMovie = ({ poster, title, itemSize = 200 }) => {
 	);
 };
 
-export default SingleMovie;
+export default MovieSingle;
