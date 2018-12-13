@@ -35,7 +35,7 @@ const Footer = () => {
 				</div>
 			</div>
 			<div className="footer-copyright text-center py-3 bg-secondary">
-				<div className="container">
+				<div className="container text-white">
 					©{new Date().getFullYear()} Copyright: House of movies
 				</div>
 			</div>

@@ -12,7 +12,7 @@ const NavList = ({ user }) => {
 		</li>
 	);
 
-	if (user && 'enabled' in user && user.enabled) {
+	if (user && 'isEnabled' in user && user.isEnabled) {
 		navigation.push(
 			<li key="profile" className="nav-item">
 				<Link className="nav-link text-white" to="/profile">
@@ -33,22 +33,6 @@ const NavList = ({ user }) => {
 			<li key="signup" className="nav-item">
 				<Link className="nav-link text-white" to="/signup">
 					Sign up
-				</Link>
-			</li>
-		);
-	}
-
-	if (
-		user &&
-		'enabled' in user &&
-		user.enabled &&
-		'role' in user &&
-		user.role === 3
-	) {
-		navigation.push(
-			<li key="dashboard" className="nav-item">
-				<Link className="nav-link text-white" to="/dashboard">
-					Dashboard
 				</Link>
 			</li>
 		);

@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import FormBuilder from '../components/forms/FormBuilder';
 import requireUnauth from '../hocs/requireUnauth';
 import { formValidation } from '../utils/forms';
+import { loginUser } from '../actions';
 
 const formFields = [
 	{
@@ -35,37 +36,18 @@ class LoginPage extends Component {
 		this.onSubmit = this.onSubmit.bind(this);
 	}
 
-	onSubmit() {
-		// TODO: Make action call to make auth.
+	onSubmit(fields) {
+		const { loginUser, history } = this.props;
+
+		loginUser(fields, (gotError, msg) => {
+			if (gotError) {
+				this.setState({ error: msg });
+			} else {
+				history.push('/profile');
+			}
+		});
 	}
 
-	// login = user => {
-	// 	axios
-	// 		.post('http://localhost:8080/auth-service/login', {
-	// 			username: user.username,
-	// 			password: user.password,
-	// 		})
-	// 		.then(function(response) {
-	// 			console.log(response);
-	// 		})
-	// 		.catch(function(error) {
-	// 			console.log(error);
-	// 		});
-	// };
-	//
-	// signUp = user => {
-	// 	axios
-	// 		.post('http://localhost:8080/auth-service/signUp', {
-	// 			username: user.username,
-	// 			password: user.password,
-	// 		})
-	// 		.then(function(response) {
-	// 			console.log(response);
-	// 		})
-	// 		.catch(function(error) {
-	// 			console.log(error);
-	// 		});
-	// };
 	render() {
 		const { handleSubmit } = this.props;
 
@@ -93,6 +75,6 @@ export default reduxForm({
 })(
 	connect(
 		null,
-		null
+		{ loginUser }
 	)(withRouter(requireUnauth(LoginPage)))
 );

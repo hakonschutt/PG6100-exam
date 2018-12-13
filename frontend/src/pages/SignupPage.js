@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import FormBuilder from '../components/forms/FormBuilder';
 import requireUnauth from '../hocs/requireUnauth';
 import { formValidation } from '../utils/forms';
+import { signupUser } from '../actions';
 
 const formFields = [
 	{
@@ -42,8 +43,16 @@ class SignupPage extends Component {
 		this.onSubmit = this.onSubmit.bind(this);
 	}
 
-	onSubmit() {
-		// TODO: Make action call to make auth.
+	onSubmit(fields) {
+		const { signupUser, history } = this.props;
+
+		signupUser(fields, (gotError, msg) => {
+			if (gotError) {
+				this.setState({ error: msg });
+			} else {
+				history.push('/profile?new=true');
+			}
+		});
 	}
 
 	render() {
@@ -79,6 +88,6 @@ export default reduxForm({
 })(
 	connect(
 		null,
-		null
+		{ signupUser }
 	)(withRouter(requireUnauth(SignupPage)))
 );

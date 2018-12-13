@@ -27,7 +27,7 @@ export const movieList = [
 		coverArt: '/840rbblaLc4SVxm8gF3DNdJ0YAE.jpg',
 		adult: false,
 		overview:
-			"Seasoned musician Jackson Maine discovers—and falls in love with—struggling artist Ally. She has just about given up on her dream to make it big as a singer—until Jack coaxes her into the spotlight. But even as Ally's career takes off, the personal side of their relationship is breaking down, as Jack fights an ongoing battle with his own internal demons.",
+			'Seasoned musician Jackson Maine discovers—and falls in love with—struggling artist Ally. She has just about given up on her dream to make it big as a singer—until Jack coaxes her into the spotlight. But even as Ally\'s career takes off, the personal side of their relationship is breaking down, as Jack fights an ongoing battle with his own internal demons.',
 		releaseDate: '2018-10-03',
 	},
 	{
@@ -146,7 +146,7 @@ export const movieList = [
 		coverArt: '/7t88SoT3Dd8DhGnQuVoSbMNUl3W.jpg',
 		adult: false,
 		overview:
-			"A bright young yeti finds something he thought didn't exist—a human. News of this “smallfoot” throws the simple yeti community into an uproar over what else might be out there in the big world beyond their snowy village.",
+			'A bright young yeti finds something he thought didn\'t exist—a human. News of this “smallfoot” throws the simple yeti community into an uproar over what else might be out there in the big world beyond their snowy village.',
 		releaseDate: '2018-09-20',
 	},
 	{
@@ -180,7 +180,7 @@ export const movieList = [
 		coverArt: '/oMKFQmoVgB69fyXfSMu0lGlHJP2.jpg',
 		adult: false,
 		overview:
-			"Framed and on the run, a former FBI agent must save his family from a blazing fire in the world's tallest building.",
+			'Framed and on the run, a former FBI agent must save his family from a blazing fire in the world\'s tallest building.',
 		releaseDate: '2018-07-11',
 	},
 	{
@@ -214,7 +214,7 @@ export const movieList = [
 		coverArt: '/gb3TVVZNNxVGNfS1NxGaiWZfwnW.jpg',
 		adult: false,
 		overview:
-			"Seven strangers, each with a secret to bury, meet at Lake Tahoe's El Royale, a rundown hotel with a dark past in 1969. Over the course of one fateful night, everyone will have a last shot at redemption.",
+			'Seven strangers, each with a secret to bury, meet at Lake Tahoe\'s El Royale, a rundown hotel with a dark past in 1969. Over the course of one fateful night, everyone will have a last shot at redemption.',
 		releaseDate: '2018-10-04',
 	},
 	{

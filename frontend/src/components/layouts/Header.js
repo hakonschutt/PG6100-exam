@@ -1,13 +1,32 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
+import { signoutUser } from '../../actions';
 import Logo from '../../assets/imgs/logo_white.svg';
 import NavList from './NavList';
 
 class Header extends Component {
+	constructor(props) {
+		super(props);
+
+		this.logout = this.logout.bind(this);
+	}
+
+	logout() {
+		const { signoutUser, history } = this.props;
+
+		signoutUser((gotError, msg) => {
+			if (!gotError) {
+				history.push('/');
+			}
+		});
+	}
+
 	render() {
+		const { user } = this.props;
+
 		return (
 			<nav className="navbar navbar-expand-lg navbar-light bg-dark">
 				<div className="container">
@@ -23,6 +42,16 @@ class Header extends Component {
 						<ul className="navbar-nav mr-auto float-right">
 							<NavList user={this.props.user} />
 						</ul>
+						{user &&
+							user.isEnabled && (
+							<a
+								onClick={this.logout}
+								href="#0"
+								className="btn btn-light my-2 my-sm-0"
+							>
+									Logout
+							</a>
+						)}
 					</div>
 				</div>
 			</nav>
@@ -30,15 +59,11 @@ class Header extends Component {
 	}
 }
 
-Header.propTypes = {
-	user: PropTypes.object,
-};
-
-function mapStateToProps({ user }) {
-	return { user };
+function mapStateToProps({ auth }) {
+	return { user: auth };
 }
 
 export default connect(
-	null,
-	mapStateToProps
-)(Header);
+	mapStateToProps,
+	{ signoutUser }
+)(withRouter(Header));
