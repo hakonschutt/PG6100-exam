@@ -36,6 +36,17 @@ export default [
 		}),
 	},
 	{
+		key: 'signup',
+		path: '/signup',
+		exact: true,
+		component: Loadable({
+			loader: () => import('../pages/SignupPage'),
+			loading: () => {
+				return <div>Loading...</div>;
+			},
+		}),
+	},
+	{
 		key: 'profile',
 		path: '/profile',
 		exact: true,

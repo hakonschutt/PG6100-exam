@@ -1,13 +1,27 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-import requireAuth from '../hocs/requireAuth';
+import Jumbotron from '../components/layouts/Jumbotron';
 
-const ProfilePage = () => {
+//import requireAuth from '../hocs/requireAuth';
+
+const ProfilePage = ({ auth: { username } }) => {
+	console.log(username);
 	return (
 		<div>
-			<h1>Profile Page</h1>
+			<Jumbotron>
+				<h1 className="display-4">Hei, {username || 'you'}!</h1>
+			</Jumbotron>
+			<div className="container">
+				<h2>Purchease history</h2>
+				<span>Some list...</span>
+			</div>
 		</div>
 	);
 };
 
-export default requireAuth(ProfilePage);
+function mapStateToProps({ auth }) {
+	return { auth };
+}
+
+export default connect(mapStateToProps)(ProfilePage);

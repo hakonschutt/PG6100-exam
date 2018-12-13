@@ -6,7 +6,7 @@ const NavList = ({ user }) => {
 
 	navigation.push(
 		<li key="movies" className="nav-item">
-			<Link className="nav-link text-white" to="/">
+			<Link className="nav-link text-white" to="/movies">
 				Movies
 			</Link>
 		</li>
@@ -25,6 +25,14 @@ const NavList = ({ user }) => {
 			<li key="login" className="nav-item">
 				<Link className="nav-link text-white" to="/login">
 					Login
+				</Link>
+			</li>
+		);
+
+		navigation.push(
+			<li key="signup" className="nav-item">
+				<Link className="nav-link text-white" to="/signup">
+					Sign up
 				</Link>
 			</li>
 		);

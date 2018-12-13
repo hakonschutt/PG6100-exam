@@ -22,9 +22,16 @@ const formFields = [
 		name: 'password',
 		error: 'Need to include a password',
 	},
+	{
+		label: 'Repeat password',
+		type: 'password',
+		input: 'text',
+		name: 'repeat_password',
+		error: 'You need to write password twice',
+	},
 ];
 
-class LoginPage extends Component {
+class SignupPage extends Component {
 	constructor(props) {
 		super(props);
 
@@ -39,39 +46,12 @@ class LoginPage extends Component {
 		// TODO: Make action call to make auth.
 	}
 
-	// login = user => {
-	// 	axios
-	// 		.post('http://localhost:8080/auth-service/login', {
-	// 			username: user.username,
-	// 			password: user.password,
-	// 		})
-	// 		.then(function(response) {
-	// 			console.log(response);
-	// 		})
-	// 		.catch(function(error) {
-	// 			console.log(error);
-	// 		});
-	// };
-	//
-	// signUp = user => {
-	// 	axios
-	// 		.post('http://localhost:8080/auth-service/signUp', {
-	// 			username: user.username,
-	// 			password: user.password,
-	// 		})
-	// 		.then(function(response) {
-	// 			console.log(response);
-	// 		})
-	// 		.catch(function(error) {
-	// 			console.log(error);
-	// 		});
-	// };
 	render() {
 		const { handleSubmit } = this.props;
 
 		return (
 			<section className="container py-5">
-				<h1>Login</h1>
+				<h1>Sign up</h1>
 				<hr />
 				<FormBuilder
 					onSubmit={handleSubmit(this.onSubmit)}
@@ -84,15 +64,21 @@ class LoginPage extends Component {
 }
 
 function validate(values) {
-	return formValidation(values, formFields);
+	const errors = formValidation(values, formFields);
+
+	if (values.password !== values.repeat_password) {
+		errors.password = 'You need to write the same password';
+	}
+
+	return errors;
 }
 
 export default reduxForm({
 	validate,
-	form: 'loginForm',
+	form: 'signupForm',
 })(
 	connect(
 		null,
 		null
-	)(withRouter(requireUnauth(LoginPage)))
+	)(withRouter(requireUnauth(SignupPage)))
 );
