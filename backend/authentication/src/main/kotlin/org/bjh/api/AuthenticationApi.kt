@@ -93,7 +93,7 @@ class AuthenticationApi {
     fun createUser(@ApiParam("User details data transfer object with atleast username") @RequestBody dto: UserDto): ResponseEntity<WrappedResponse<Unit>> {
 
 
-        if (dto.username.isNullOrEmpty()) {
+        if (dto.username.isEmpty()) {
             return ResponseEntity.status(400)
                     .body(WrappedResponse<Unit>(
                             code = 400,
@@ -101,10 +101,17 @@ class AuthenticationApi {
                             .validated())
         }
 
-        val user = authenticationService.createUser(dto)
+        val created = authenticationService.createUser(dto)
+        
+        if (created)
+            return ResponseEntity.created(URI.create(basePath + "/" + dto.username)).body(
+                    WrappedResponse<Unit>(code = 201, message = "User was created").validated())
 
-        return ResponseEntity.created(URI.create(basePath + "/" + user.email)).body(
-                WrappedResponse<Unit>(code = 201, message = "User was created").validated())
+        return ResponseEntity.status(400)
+                .body(WrappedResponse<Unit>(
+                        code = 400,
+                        message = "Could not create user")
+                        .validated())
 
     }
 
