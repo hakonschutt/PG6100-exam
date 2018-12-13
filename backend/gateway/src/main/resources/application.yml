@@ -1,6 +1,21 @@
 spring:
+
+  application:
+    name: gateway
+  session:
+    store-type: none
+  redis:
+    host: redis
+    port: 6379
+
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+            - GET
       discovery:
         locator:
           enabled: true
@@ -14,13 +29,13 @@ spring:
 #        - StripPrefix=1
 #
 
-#      - id: venues
-#        uri: http://venues:8080
-#        predicates:
-#        - Path=/api/venues/**
-#        filters:
-#        - StripPrefix=1
-#
+      - id: venues
+        uri: http://venues:8080
+        predicates:
+        - Path=/api/venues/**
+        filters:
+        - StripPrefix=1
+
 #      - id: payment
 #        uri: lb://payment
 #        predicates:
@@ -35,12 +50,12 @@ spring:
 #        filters:
 #        - StripPrefix=1
 
-      - id: booking
-        uri: lb://booking
-        predicates:
-        - Path=/api/bookings/**
-        filters:
-        - StripPrefix=1
+#      - id: booking
+#        uri: lb://booking
+#        predicates:
+#        - Path=/api/bookings/**
+#        filters:
+#        - StripPrefix=1
 
 #      - id: auth
 #        uri: lb://auth
