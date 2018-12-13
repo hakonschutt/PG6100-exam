@@ -13,13 +13,13 @@ import java.net.URI
 
 @RestController
 @Api("Api for User Details")
-@RequestMapping("/api/users")
+@RequestMapping("/api/authentication")
 class AuthenticationApi {
 
     @Autowired
     private lateinit var authenticationService: AuthenticationService
 
-    private val basePath = "/api/users"
+    private val basePath = "/api/authentication"
 
     @ApiOperation("Fetch all users")
     @GetMapping()
