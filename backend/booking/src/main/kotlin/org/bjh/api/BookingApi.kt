@@ -24,6 +24,7 @@ const val MERGE_PATCH = "application/merge-patch+json"
  */
 @RestController
 @RequestMapping(
+    path = ["/bookings"],
     produces = [(MediaType.APPLICATION_JSON_VALUE)]
 )
 @Api(value = "/bookings", description = "REST endpoints for bookings")
@@ -81,6 +82,10 @@ class BookingApi {
     ): ResponseEntity<WrappedResponse<PageDto<BookingDto>>> {
         var userId : Long = -1L
         var eventId : Long = -1L
+
+        println("##########################")
+        println("LOOK FOR ME")
+        println("##########################")
 
         try {
             if (!pathEventId.isNullOrBlank()) { eventId = pathEventId!!.toLong() }

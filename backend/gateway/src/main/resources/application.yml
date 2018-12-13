@@ -1,21 +1,20 @@
 spring:
-#
-#  session:
-#    # during testing for this service in isolation,
-#    # do not use Redis. Disabling SpringSession will fall-back to
-#    # default sessions in the servlet
-#    store-type: none
-#  datasource:
-#    url: "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
-#    driver-class-name: "org.h2.Driver"
-#  jpa:
-#    database: "h2"
-#    hibernate:
-#      ddl-auto: "create-drop"
-#    show-sql: true
+  application:
+    name: gateway
+  session:
+    store-type: none
+  redis:
+    host: redis
+    port: 6379
 
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+            - GET
       discovery:
         locator:
           enabled: true
@@ -50,9 +49,9 @@ spring:
 #        - StripPrefix=1
 
       - id: booking
-        uri: lb://booking:8080
+        uri: lb://booking
         predicates:
-        - Path=/bookings/**
+        - Path=/booking-service/**
         filters:
         - StripPrefix=1
 
