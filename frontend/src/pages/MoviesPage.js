@@ -1,6 +1,7 @@
 import React from 'react';
 
-const MoviePage = () => {
+const MoviePage = ( movie ) => {
+
 	return (
 		<div>
 			<h1>Movie Page</h1>

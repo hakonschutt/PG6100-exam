@@ -7,7 +7,9 @@ import SelectField from '../forms/SelectField';
 import { formatMovieListToOptions } from '../../utils';
 
 class MoviesFilter extends Component {
-	onSubmit(fields) {}
+	onSubmit(fields) {
+
+    }
 
 	render() {
 		const movieOption = formatMovieListToOptions(this.props.movies.list);
@@ -39,7 +41,7 @@ class MoviesFilter extends Component {
 							placeholder="Venue"
 							options={venueOption || []}
 						/>
-						<button className="form-button" type="submit">
+						<button  className="form-button" type="submit">
 							Filter
 						</button>
 					</form>
