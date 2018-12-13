@@ -1,4 +1,4 @@
-export const formValidation = (values, formFields) => {
+export function formValidation(values, formFields) {
 	const errors = {};
 
 	formFields.forEach(field => {
@@ -8,4 +8,4 @@ export const formValidation = (values, formFields) => {
 	});
 
 	return errors;
-};
+}

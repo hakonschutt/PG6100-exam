@@ -1,92 +1,97 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { reduxForm } from 'redux-form';
+import { withRouter } from 'react-router-dom';
 
+import FormBuilder from '../components/forms/FormBuilder';
 import requireUnauth from '../hocs/requireUnauth';
+import { formValidation } from '../utils/forms';
+
+const formFields = [
+	{
+		label: 'Username',
+		type: 'text',
+		input: 'text',
+		name: 'username',
+		error: 'Need write a username',
+	},
+	{
+		label: 'Password',
+		type: 'password',
+		input: 'text',
+		name: 'password',
+		error: 'Need to include a password',
+	},
+];
 
 class LoginPage extends Component {
-	constructor() {
-		super();
-		this.state = {};
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			error: '',
+		};
+
+		this.onSubmit = this.onSubmit.bind(this);
 	}
-	onHandleChange = event => {
-		this.setState({ [event.target.name]: event.target.value });
-	};
 
-	login = user => {
-		axios
-			.post('http://localhost:8080/auth-service/login', {
-				username: user.username,
-				password: user.password,
-			})
-			.then(function(response) {
-				console.log(response);
-			})
-			.catch(function(error) {
-				console.log(error);
-			});
-	};
+	onSubmit() {
+		// TODO: Make action call to make auth.
+	}
 
-	signUp = user => {
-		axios
-			.post('http://localhost:8080/auth-service/signUp', {
-				username: user.username,
-				password: user.password,
-			})
-			.then(function(response) {
-				console.log(response);
-			})
-			.catch(function(error) {
-				console.log(error);
-			});
-	};
+	// login = user => {
+	// 	axios
+	// 		.post('http://localhost:8080/auth-service/login', {
+	// 			username: user.username,
+	// 			password: user.password,
+	// 		})
+	// 		.then(function(response) {
+	// 			console.log(response);
+	// 		})
+	// 		.catch(function(error) {
+	// 			console.log(error);
+	// 		});
+	// };
+	//
+	// signUp = user => {
+	// 	axios
+	// 		.post('http://localhost:8080/auth-service/signUp', {
+	// 			username: user.username,
+	// 			password: user.password,
+	// 		})
+	// 		.then(function(response) {
+	// 			console.log(response);
+	// 		})
+	// 		.catch(function(error) {
+	// 			console.log(error);
+	// 		});
+	// };
 	render() {
-		return (
-			<div>
-				<h1>Login page</h1>
-				<div>
-					<input
-						name="username"
-						type="text"
-						placeholder="Username"
-						onChange={this.onHandleChange}
-						value={this.state.username}
-					/>
-					<br />
-					<input
-						name="password"
-						type="password"
-						placeholder="Password"
-						onChange={this.onHandleChange}
-						value={this.state.password}
-					/>
-					<br />
+		const { handleSubmit } = this.props;
 
-					<button
-						style={{ backgroundColor: 'orange' }}
-						onClick={() =>
-							this.signUp({
-								username: this.state.username,
-								password: this.state.password,
-							})
-						}
-					>
-						Sign up
-					</button>
-					<button
-						style={{ backgroundColor: '#98fb98' }}
-						onClick={() =>
-							this.login({
-								username: this.state.username,
-								password: this.state.password,
-							})
-						}
-					>
-						Sign in
-					</button>
-				</div>
-			</div>
+		return (
+			<section className="container py-5">
+				<FormBuilder
+					onSubmit={handleSubmit(this.onSubmit)}
+					error={this.state.error}
+					formFields={formFields}
+				/>
+			</section>
 		);
 	}
 }
 
-export default requireUnauth(LoginPage);
+function validate(values) {
+	return formValidation(values, formFields);
+}
+
+export default reduxForm({
+	validate,
+	form: 'loginForm',
+})(
+	connect(
+		null,
+		null
+	)(withRouter(requireUnauth(LoginPage)))
+);
