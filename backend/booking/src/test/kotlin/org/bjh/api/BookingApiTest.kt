@@ -1,6 +1,8 @@
 package org.bjh.api
 
 import io.restassured.RestAssured.given
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import org.bjh.TestBase
 import org.bjh.dto.BookingDto
 import org.bjh.dto.TicketDto
@@ -9,10 +11,9 @@ import org.bjh.entity.TicketEntity
 import org.bjh.pagination.PageDto
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertTrue
+
 
 
 class BookingApiTest : TestBase() {

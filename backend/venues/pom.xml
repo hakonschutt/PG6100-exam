@@ -14,11 +14,6 @@
         <artifactId>backend</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.2.71</kotlin.version>
-        <junit.version>4.12</junit.version>
-    </properties>
 
     <dependencies>
         <dependency>

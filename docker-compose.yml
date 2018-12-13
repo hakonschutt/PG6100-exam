@@ -20,55 +20,13 @@ services:
     ports:
       - "8761:8761"
 
-#  #### DATABASE ####
-#  auth-db:
-#    image: 'postgres:latest'
-#  payment-db:
-#    image: 'postgres:latest'
-#  movies-db:
-#    image: 'postgres:latest'
-#  venues-db:
-#    image: 'postgres:latest'
   booking-db:
     image: 'postgres:latest'
-#  events-db:
-#    image: 'postgres:latest'
-#
+
   #### RABBITMQ ####
   rabbitmq:
     image: "rabbitmq:3"
-#
-#  #### REDIS ####
-#  redis:
-#    image: 'redis:latest'
 
-#  ## FRONTEND ####
-#  frontend:
-#    restart: always
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile
-#
-
-
-  #### MICROSERVICES ####
-  #auth:
-  #  build:
-  #    context: ./backend/user-details
-  #    dockerfile: Dockerfile
-  #  depends_on:
-  #  - gateway
-  #  - auth-db
-
-#  payment:
-#    build:
-#      context: ./backend/payment
-#      dockerfile: Dockerfile
-#    depends_on:
-#    - gateway
-#    - payment-db
-#    - rabbitmq
-#    - auth
 
   booking:
     build:
@@ -78,35 +36,4 @@ services:
     - gateway
     - booking-db
     - rabbitmq
-#
-#  movies:
-#    build:
-#      context: ./backend/movies
-#      dockerfile: Dockerfile
-#    depends_on:
-#    - gateway
-#    - movies-db
-#
-#  venues:
-#    build:
-#      context: ./backend/venues
-#      dockerfile: Dockerfile
-#    depends_on:
-#    - gateway
-#    - venues-db
-#
-#  venues_1:
-#    build:
-#      context: ./backend/venues
-#      dockerfile: Dockerfile
-#    depends_on:
-#    - gateway
-#    - venues-db
-#
-#  events:
-#    build:
-#      context: ./backend/events
-#      dockerfile: Dockerfile
-#    depends_on:
-#    - gateway
-#    - events-db
+
