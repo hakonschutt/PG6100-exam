@@ -25,7 +25,7 @@ class Header extends Component {
 	}
 
 	render() {
-		const { user } = this.props;
+		const { auth } = this.props;
 
 		return (
 			<nav className="navbar navbar-expand-lg navbar-light bg-dark">
@@ -40,10 +40,10 @@ class Header extends Component {
 					</Link>
 					<div className="collapse navbar-collapse">
 						<ul className="navbar-nav mr-auto float-right">
-							<NavList user={this.props.user} />
+							<NavList auth={auth} />
 						</ul>
-						{user &&
-							user.isEnabled && (
+						{auth &&
+							auth.isEnabled && (
 							<a
 								onClick={this.logout}
 								href="#0"
@@ -60,7 +60,7 @@ class Header extends Component {
 }
 
 function mapStateToProps({ auth }) {
-	return { user: auth };
+	return { auth };
 }
 
 export default connect(

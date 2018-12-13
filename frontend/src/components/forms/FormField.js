@@ -13,7 +13,7 @@ const FormField = ({
 		<div className="form-group">
 			<label>{label}</label>
 			<input
-				type="text"
+				type={type}
 				className={`form-control ${isFaulty ? 'is-invalid' : ''}`}
 				placeholder={placeholder}
 				{...input}

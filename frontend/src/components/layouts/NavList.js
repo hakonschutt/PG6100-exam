@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const NavList = ({ user }) => {
+const NavList = ({ auth }) => {
 	const navigation = [];
 
 	navigation.push(
@@ -12,7 +12,7 @@ const NavList = ({ user }) => {
 		</li>
 	);
 
-	if (user && 'isEnabled' in user && user.isEnabled) {
+	if (auth && 'isEnabled' in auth && auth.isEnabled) {
 		navigation.push(
 			<li key="profile" className="nav-item">
 				<Link className="nav-link text-white" to="/profile">
