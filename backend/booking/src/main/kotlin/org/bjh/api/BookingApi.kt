@@ -24,10 +24,9 @@ const val MERGE_PATCH = "application/merge-patch+json"
  */
 @RestController
 @RequestMapping(
-    path = ["/api/bookings"],
     produces = [(MediaType.APPLICATION_JSON_VALUE)]
 )
-@Api(value = "/api/bookings", description = "REST endpoints for bookings")
+@Api(value = "/bookings", description = "REST endpoints for bookings")
 class BookingApi {
 
     @Autowired
@@ -36,7 +35,7 @@ class BookingApi {
     @Autowired
     private lateinit var ticketService: TicketService
 
-    private val BASE_PATH = "/api/bookings"
+    private val BASE_PATH = "/bookings"
 
     /**
      * @author arcuri82

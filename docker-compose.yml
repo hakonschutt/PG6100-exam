@@ -7,10 +7,10 @@ services:
 #    image: 'postgres:latest'
 #  movies-db:
 #    image: 'postgres:latest'
-  venues-db:
-    image: 'postgres:latest'
-#  booking-db:
+#  venues-db:
 #    image: 'postgres:latest'
+  booking-db:
+    image: 'postgres:latest'
 #  events-db:
 #    image: 'postgres:latest'
 #
@@ -22,13 +22,13 @@ services:
 #  redis:
 #    image: 'redis:latest'
 
-  ## FRONTEND ####
-  frontend:
-    restart: always
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-
+#  ## FRONTEND ####
+#  frontend:
+#    restart: always
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
+#
   ### GATEWAY ####
   gateway:
     restart: always
@@ -70,16 +70,18 @@ services:
 #    - rabbitmq
 #    - auth
 
-#  booking:
-#    build:
-#      context: ./backend/booking
-#      dockerfile: Dockerfile
-#    depends_on:
-#    - gateway
-#    - booking-db
+  booking:
+    build:
+      context: ./backend/booking
+      dockerfile: Dockerfile
+#    ports:
+#    - "8080:8080"
+    depends_on:
+    - gateway
+    - booking-db
 #    - payment
-#    - rabbitmq
-#  #  - auth
+    - rabbitmq
+#   - auth
 #
 #  movies:
 #    build:
@@ -89,16 +91,14 @@ services:
 #    - gateway
 #    - movies-db
 #
-  venues:
-    build:
-      context: ./backend/venues
-      dockerfile: Dockerfile
-    ports:
-      - "9090:8080"
-    depends_on:
-    - gateway
-    - venues-db
 
+#  venues:
+#    build:
+#      context: ./backend/venues
+#      dockerfile: Dockerfile
+#    depends_on:
+#    - gateway
+#    - venues-db
 #
 #  venues_1:
 #    build:
