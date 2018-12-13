@@ -20,7 +20,6 @@ spring:
           enabled: true
 
       routes:
-<<<<<<< HEAD
       - id: movies
         uri: lb://movies
         predicates:
@@ -31,7 +30,6 @@ spring:
         uri: http://frontend:3000
         predicates:
         - Path=/**
-=======
 #      - id: movies
 #        uri: lb://movies
 #        predicates:
@@ -78,7 +76,6 @@ spring:
 #        uri: http://frontend:3000
 #        predicates:
 #        - Path=/**
->>>>>>> 9ef48d48059027e7ed4467b0a6ff940fb00d0dd9
 
 eureka:
   instance:
