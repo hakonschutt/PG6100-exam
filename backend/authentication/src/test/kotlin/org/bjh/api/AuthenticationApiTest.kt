@@ -2,7 +2,7 @@ package org.bjh.api
 
 import io.restassured.RestAssured
 import org.bjh.TestBase
-import org.bjh.dto.AuthenticationDto
+import org.bjh.dto.UserDto
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Test
 
@@ -16,16 +16,16 @@ class AuthenticationApiTest : TestBase() {
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
-                .getList("data.list", AuthenticationDto::class.java)[0]
+                .getList("data.list", UserDto::class.java)[0]
 
         RestAssured.given()
-                .delete("/${data.email}")
+                .delete("/${data.username}")
                 .then()
                 .statusCode(204)
 
 
         RestAssured.given()
-                .get("/${data.email}")
+                .get("/${data.username}")
                 .then()
                 .statusCode(404)
     }
@@ -37,10 +37,10 @@ class AuthenticationApiTest : TestBase() {
                 .statusCode(200)
                 .extract().body()
                 .jsonPath()
-                .getList("data.list", AuthenticationDto::class.java)[0]
+                .getList("data.list", UserDto::class.java)[0]
 
         RestAssured.given()
-                .delete("/${data.email}")
+                .delete("/${data.username}")
                 .then()
                 .statusCode(204)
     }
@@ -97,7 +97,7 @@ class AuthenticationApiTest : TestBase() {
     @Test
     fun testCreateUser() {
         val id = RestAssured.given().contentType("application/json;charset=UTF-8")
-                .body(AuthenticationDto(email = "foo@gmail.com"))
+                .body(UserDto(username = "foo@gmail.com"))
                 .post()
                 .then()
                 .statusCode(201)

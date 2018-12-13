@@ -1,7 +1,7 @@
 package org.bjh
 
 import io.restassured.RestAssured
-import org.bjh.entity.AuthenticationEntity
+import org.bjh.entity.UserEntity
 import org.bjh.repository.AuthenticationRepository
 import org.junit.After
 import org.junit.Before
@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class TestBase {
 
-    private val venueEntities = ArrayList<AuthenticationEntity>()
+    private val venueEntities = ArrayList<UserEntity>()
     @Autowired
     protected lateinit var repository: AuthenticationRepository
 
@@ -33,7 +33,7 @@ abstract class TestBase {
                 .stream()
                 .forEach { data ->
                     venueEntities
-                            .add(AuthenticationEntity(
+                            .add(UserEntity(
                                     email =data
                             ))
                 }

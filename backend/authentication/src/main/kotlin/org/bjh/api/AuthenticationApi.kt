@@ -1,7 +1,7 @@
 package org.bjh.api
 
 import io.swagger.annotations.*
-import org.bjh.dto.AuthenticationDto
+import org.bjh.dto.UserDto
 import org.bjh.pagination.PageDto
 import org.bjh.service.AuthenticationService
 import org.bjh.wrappers.WrappedResponse
@@ -33,7 +33,7 @@ class AuthenticationApi {
             @ApiParam("Limit param to determine what size of the result table you want back")
             @RequestParam("limit", required = false, defaultValue = "20")
             limit: Int
-    ): ResponseEntity<WrappedResponse<PageDto<AuthenticationDto>>> {
+    ): ResponseEntity<WrappedResponse<PageDto<UserDto>>> {
 
         var validatedOffset = offset
         var validatedLimit = limit
@@ -55,7 +55,7 @@ class AuthenticationApi {
                         .validated())
     }
 
-    @ApiOperation("Fetch a user based on email")
+    @ApiOperation("Fetch a user based on username")
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun getUser(@ApiParam("The unique id of the User")
                 @PathVariable("id") idFromPath: String,
@@ -63,8 +63,8 @@ class AuthenticationApi {
                 @ApiParam("loading with history, or not, default is with")
                 @RequestParam("withHistory", required = false)
                 withHistory: Boolean = true
-    ): ResponseEntity<WrappedResponse<AuthenticationDto>> {
-        val result: ResponseEntity<WrappedResponse<AuthenticationDto>>
+    ): ResponseEntity<WrappedResponse<UserDto>> {
+        val result: ResponseEntity<WrappedResponse<UserDto>>
 
         val userpg = authenticationService.findById(idFromPath)
         result = if (userpg != null) {
@@ -76,7 +76,7 @@ class AuthenticationApi {
                             .validated())
         } else {
             ResponseEntity.status(404)
-                    .body(WrappedResponse<AuthenticationDto>(
+                    .body(WrappedResponse<UserDto>(
                             code = 404,
                             message = "Unable to find the user with the id $idFromPath")
                             .validated())
@@ -90,10 +90,10 @@ class AuthenticationApi {
             ApiResponse(code = 201, message = "The url of newly created user"),
             ApiResponse(code = 400, message = "Bad request")
     )
-    fun createUser(@ApiParam("User details data transfer object with atleast email") @RequestBody dto: AuthenticationDto): ResponseEntity<WrappedResponse<Unit>> {
+    fun createUser(@ApiParam("User details data transfer object with atleast username") @RequestBody dto: UserDto): ResponseEntity<WrappedResponse<Unit>> {
 
 
-        if (dto.email.isNullOrEmpty()) {
+        if (dto.username.isNullOrEmpty()) {
             return ResponseEntity.status(400)
                     .body(WrappedResponse<Unit>(
                             code = 400,
@@ -111,7 +111,7 @@ class AuthenticationApi {
     @ApiOperation("Delete a user by id")
     @DeleteMapping(path = ["/{id}"])
     fun deleteById(
-            @ApiParam("The email of the user")
+            @ApiParam("The username of the user")
             @PathVariable("id")
             email: String
     ): ResponseEntity<WrappedResponse<Unit>> {

@@ -7,7 +7,7 @@ class PaymentEntity(
 //        TODO: Implement this when the user_details table/service has been added
 //        @get:ElementCollection(fetch = FetchType.EAGER)
 //        @get:ManyToOne(cascade = [CascadeType.ALL])
-//        @get:JoinTable(name="user_detail",joinColumns = [(JoinColumn(name = "user", referencedColumnName = "email"))])
+//        @get:JoinTable(name="user_detail",joinColumns = [(JoinColumn(name = "user", referencedColumnName = "username"))])
         @get:Column(name="user_id")
         var user: String,
 
