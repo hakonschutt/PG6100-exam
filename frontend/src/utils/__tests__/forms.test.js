@@ -19,8 +19,3 @@ it('should not return error if value is set', () => {
 	// Empty object
 	expect(errors).toMatchObject({});
 });
-
-it('should not return', () => {
-	// Empty object
-	expect({}).toMatchObject({});
-});

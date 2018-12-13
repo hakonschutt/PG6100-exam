@@ -1,5 +1,5 @@
 import { FETCH_MOVIES } from './types';
-import { movieList } from '../json';
+import { movieList } from './movies';
 
 export const fetchMovies = () => dispatch => {
 	dispatch({

@@ -4,7 +4,7 @@ import { reduxForm, Field } from 'redux-form';
 
 import SingleDayField from '../forms/SingleDayField';
 import SelectField from '../forms/SelectField';
-import { formatMovieListToOptions } from '../../utils';
+import { formatMovieListToOptions } from '../../utils/format';
 
 class MoviesFilter extends Component {
 	onSubmit(fields) {

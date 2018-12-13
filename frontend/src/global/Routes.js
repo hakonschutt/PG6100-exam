@@ -8,12 +8,10 @@ import {
 import { connect } from 'react-redux';
 
 import { fetchUser } from '../actions';
+import genRoutes from './genRoutes';
+
 import AppWrapper from './AppWrapper';
 import NotFoundPage from '../pages/NotFoundPage';
-import DashboardRoutes from './DashboardRoutes';
-import genRoutes from './genRoutes';
-import requireAdmin from '../hocs/requireAdmin';
-import LoginPage from "../pages/LoginPage";
 
 class Routes extends Component {
 	componentDidMount() {
@@ -33,12 +31,6 @@ class Routes extends Component {
 								component={route.component}
 							/>
 						))}
-						<Route
-							path="/dashboard"
-							component={requireAdmin(DashboardRoutes)}
-						/>
-						<Route path="/login" component={LoginPage} />
-						<Route path="/not" component={NotFoundPage} />
 						<Route path="/404" component={NotFoundPage} />
 						<Redirect to="/404" />
 					</Switch>
