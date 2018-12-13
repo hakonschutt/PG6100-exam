@@ -4,10 +4,8 @@ import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.bjh.dto.UserDto
-import org.bjh.entity.UserEntity
 import org.bjh.repository.AuthenticationRepository
 import org.hamcrest.CoreMatchers
-import org.junit.After
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.runner.RunWith

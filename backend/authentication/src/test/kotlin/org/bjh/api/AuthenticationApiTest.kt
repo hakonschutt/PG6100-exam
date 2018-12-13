@@ -10,7 +10,6 @@ import org.junit.Test
 
 class AuthenticationApiTest : TestBase() {
 
-
     @Test
     fun testUnauthorizedAccess() {
         given().get()

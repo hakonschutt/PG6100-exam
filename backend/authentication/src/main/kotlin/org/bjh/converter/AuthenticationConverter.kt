@@ -5,7 +5,8 @@ import org.bjh.entity.UserEntity
 import org.bjh.pagination.PageDto
 
 class AuthenticationConverter {
-    companion object {
+    //TODO: Currently not in use.
+   /* companion object {
         fun transform(dto: List<UserEntity>): List<UserDto> {
             return dto.map{ transform(it)}
         }
@@ -26,7 +27,7 @@ class AuthenticationConverter {
                     totalSize = listOfAuthenticationDto.size
             )
         }
-    }
+    }*/
 
 
 }
