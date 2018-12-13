@@ -28,12 +28,12 @@ spring:
 #        filters:
 #        - StripPrefix=1
 #
-      - id: venues
-        uri: http://venues:8080
-        predicates:
-        - Path=/api/venues/**
-        filters:
-        - StripPrefix=1
+#      - id: venues
+#        uri: http://venues:8080
+#        predicates:
+#        - Path=/api/venues/**
+#        filters:
+#        - StripPrefix=1
 #
 #      - id: payment
 #        uri: lb://payment
@@ -48,13 +48,13 @@ spring:
 #        - Path=/graphql
 #        filters:
 #        - StripPrefix=1
-#
-#      - id: booking
-#        uri: lb://booking
-#        predicates:
-#        - Path=/api/bookings/**
-#        filters:
-#        - StripPrefix=1
+
+      - id: booking
+        uri: lb://booking:8080
+        predicates:
+        - Path=/bookings/**
+        filters:
+        - StripPrefix=1
 
 #      - id: auth
 #        uri: lb://auth
@@ -63,10 +63,10 @@ spring:
 #        filters:
 #        - StripPrefix=1
 
-      - id: frontend
-        uri: http://frontend:3000
-        predicates:
-        - Path=/**
+#      - id: frontend
+#        uri: http://frontend:3000
+#        predicates:
+#        - Path=/**
 
 eureka:
   instance:
