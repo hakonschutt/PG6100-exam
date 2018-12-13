@@ -9,20 +9,23 @@ import NavList from './NavList';
 class Header extends Component {
 	render() {
 		return (
-			<header>
-				<div className="wrap clearfix">
-					<div className="logo-wrap">
-						<Link to="/">
-							<img src={Logo} alt="house of movies logo with popcorn icon" />
-						</Link>
-					</div>
-					<nav role="navigation">
-						<ul>
+			<nav className="navbar navbar-expand-lg navbar-light bg-dark">
+				<div className="container">
+					<Link to="/" className="navbar-brand" href="#">
+						<img
+							src={Logo}
+							className="d-inline-block align-top"
+							alt="house of movies logo with popcorn icon"
+							style={{ height: '30px' }}
+						/>
+					</Link>
+					<div className="collapse navbar-collapse">
+						<ul className="navbar-nav mr-auto float-right">
 							<NavList user={this.props.user} />
 						</ul>
-					</nav>
+					</div>
 				</div>
-			</header>
+			</nav>
 		);
 	}
 }

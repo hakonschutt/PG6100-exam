@@ -16,9 +16,8 @@ const AppWrapper = ({ children }) => {
 	return (
 		<div>
 			<Header />
-			<main>{children}</main>
+			<main style={{ minHeight: 'calc(100vh - 200px)' }}>{children}</main>
 			<Footer />
-			<LoadableChat />
 		</div>
 	);
 };

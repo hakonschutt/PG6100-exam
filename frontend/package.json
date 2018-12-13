@@ -15,11 +15,16 @@
 		"not op_mini all"
 	],
 	"dependencies": {
+		"apollo-client": "^2.4.7",
 		"axios": "^0.18.0",
+		"bootstrap": "^4.1.3",
+		"graphql": "^14.0.2",
+		"graphql-tag": "^2.10.0",
 		"prop-types": "^15.6.2",
 		"query-string": "^6.1.0",
 		"react": "^16.5.2",
 		"react-animate-height": "^2.0.6",
+		"react-apollo": "^2.3.2",
 		"react-dates": "^18.1.1",
 		"react-dom": "^16.5.2",
 		"react-infinite-scroller": "^1.2.2",

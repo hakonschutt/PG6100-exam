@@ -5,21 +5,27 @@ const NavList = ({ user }) => {
 	const navigation = [];
 
 	navigation.push(
-		<li key="movies">
-			<Link to="/">Movies</Link>
+		<li key="movies" className="nav-item">
+			<Link className="nav-link text-white" to="/">
+				Movies
+			</Link>
 		</li>
 	);
 
 	if (user && 'enabled' in user && user.enabled) {
 		navigation.push(
-			<li key="profile">
-				<Link to="/profile">Profile</Link>
+			<li key="profile" className="nav-item">
+				<Link className="nav-link text-white" to="/profile">
+					Profile
+				</Link>
 			</li>
 		);
 	} else {
 		navigation.push(
-			<li key="login">
-				<Link to="/login">Login</Link>
+			<li key="login" className="nav-item">
+				<Link className="nav-link text-white" to="/login">
+					Login
+				</Link>
 			</li>
 		);
 	}
@@ -32,8 +38,10 @@ const NavList = ({ user }) => {
 		user.role === 3
 	) {
 		navigation.push(
-			<li key="dashboard">
-				<Link to="/dashboard">Dashboard</Link>
+			<li key="dashboard" className="nav-item">
+				<Link className="nav-link text-white" to="/dashboard">
+					Dashboard
+				</Link>
 			</li>
 		);
 	}
