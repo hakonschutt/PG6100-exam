@@ -15,13 +15,6 @@
         <module>backend</module>
     </modules>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.6.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
     <developers>
         <developer>
             <id>hakonschutt</id>
@@ -56,7 +49,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.java>1.8</version.java>
         <junit.version>4.12</junit.version>
+        <kotlin.version>1.2.50</kotlin.version>
         <version.kotlin>1.2.50</version.kotlin>
+        <version.spring>2.0.6.RELEASE</version.spring>
         <version.resteasy>3.1.3.Final</version.resteasy>
         <version.springboot>2.0.6.RELEASE</version.springboot>
         <version.springcloud>Finchley.SR1</version.springcloud>
@@ -67,173 +62,158 @@
         <version.postgres>42.1.4</version.postgres>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <version.jackson>2.8.9</version.jackson>
-        <version.spring-cloud-starter-netflix-hystrix>2.0.1.RELEASE</version.spring-cloud-starter-netflix-hystrix>
-
+        <version.spring-cloud-starter-netflix-hystrix>2.0.2.RELEASE</version.spring-cloud-starter-netflix-hystrix>
+        <version.springcloud.eureka.client>2.0.2.RELEASE</version.springcloud.eureka.client>
+        <version.springcloud.eureka.server>2.0.2.RELEASE</version.springcloud.eureka.server>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
 
-        <!-- Kotlin dependencies -->
+    <dependencies>
+        <!--
+               The Java API comes with the JDK itself.
+               On the other hand, the Kotlin API is treated like any other
+               third-party library, and we need to include it here as a dependency.
+
+               Unfortunately, the name of the supported JDK is in the id of
+               the artifact itself.
+               Why a problem? The day a new JDK version is used, would need to update
+               every single module :(
+               So, we add it by default to all submodules.
+          -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
-            <version>${version.kotlin}</version>
         </dependency>
+        <!--
+            Looks like kotlin-reflect is now a requirement in Spring Boot 2.
+            So, as we use Kotlin in all modules, we add it here by default.
+        -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
-            <version>${version.kotlin}</version>
         </dependency>
 
-
-        <!-- SpringBoot and Cloud BOMs -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-parent</artifactId>
-            <version>${version.springboot}</version>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>${version.springcloud}</version>
-            <type>pom</type>
-        </dependency>
-
-
-        <!-- SpringFox for Swagger -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${version.springfox}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${version.springfox}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-spring-web</artifactId>
-            <version>${version.springfox}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${version.jackson}</version>
-        </dependency>
-
-
-
-        <!-- test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>${version.resteasy}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <!--TODO Check dependencies-->
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-hateoas</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-            <version>${version.spring-cloud-starter-netflix-hystrix}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-            <version>${version.postgres}</version>
-        </dependency>
-
-        <dependency>
-            <!-- To use Docker from tests -->
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers</artifactId>
-            <version>${version.testcontainers}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>selenium</artifactId>
-            <version>${version.testcontainers}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>selenium-remote-driver</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!--TODO: Implement when websec is implemented???-->
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.security</groupId>-->
-        <!--<artifactId>spring-security-test</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
+            <!--
+                Own modules used in other modules
+            -->
+            <dependency>
+                <groupId>org.tsdes.advanced</groupId>
+                <artifactId>data-format</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tsdes.advanced</groupId>
+                <artifactId>example-news</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tsdes.advanced.rest</groupId>
+                <artifactId>rest-dto</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tsdes.advanced.rest</groupId>
+                <artifactId>rest-exception</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tsdes.advanced.graphql</groupId>
+                <artifactId>graphql-dto</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Kotlin dependencies -->
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-jdk8</artifactId>
+                <version>${version.kotlin}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
+                <version>${version.kotlin}</version>
+            </dependency>
+
+
+            <!-- SpringBoot and Cloud BOMs -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>${version.springboot}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${version.springcloud}</version>
-                <type>pom</type>
                 <scope>import</scope>
+                <type>pom</type>
             </dependency>
+
+            <!-- SpringFox for Swagger -->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${version.springfox}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${version.springfox}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-spring-web</artifactId>
+                <version>${version.springfox}</version>
+            </dependency>
+
+
+            <!--  GraphQL -->
+            <dependency>
+                <groupId>com.graphql-java</groupId>
+                <artifactId>graphql-spring-boot-starter</artifactId>
+                <version>${version.graphql-spring}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.graphql-java</groupId>
+                <artifactId>graphiql-spring-boot-starter</artifactId>
+                <version>${version.graphql-spring}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.graphql-java</groupId>
+                <artifactId>voyager-spring-boot-starter</artifactId>
+                <version>${version.graphql-spring}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.graphql-java</groupId>
+                <artifactId>graphql-java-tools</artifactId>
+                <version>5.1.0</version>
+            </dependency>
+
+
+            <!-- Misc -->
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-core</artifactId>
+                <version>1.5.12</version>
+            </dependency>
+            <dependency>
+                <groupId>io.reactivex</groupId>
+                <artifactId>rxjava</artifactId>
+                <version>1.2.2</version>
+            </dependency>
+
+
         </dependencies>
     </dependencyManagement>
-    <build>
-        <!--<sourceDirectory>src/main/kotlin</sourceDirectory>-->
-        <!--<testSourceDirectory>src/test/kotlin</testSourceDirectory>-->
 
+
+    <build>
         <plugins>
             <!--
                 If you have modules with both Kotlin and Java code, the documentation states
@@ -252,17 +232,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
             </plugin>
 
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
+
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.1</version>
             </plugin>
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -273,51 +257,14 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${version.jacoco}</version>
-                    <executions>
-                        <execution>
-                            <id>default-prepare-agent</id>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>default-report</id>
-                            <phase>prepare-package</phase>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>default-prepare-agent-integration</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>prepare-agent-integration</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>default-report-integration</id>
-                            <goals>
-                                <goal>report-integration</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-
-                <plugin>
                     <!-- see https://kotlinlang.org/docs/reference/using-maven.html -->
                     <artifactId>kotlin-maven-plugin</artifactId>
                     <groupId>org.jetbrains.kotlin</groupId>
                     <version>${version.kotlin}</version>
                     <!--
-
                         Kotlin has a major "limitation" that all classes are final by default.
                         Someone call it a "feature", others (like me) call it a "design flaw".
                         See more at: https://discuss.kotlinlang.org/t/classes-final-by-default/166/77
-
 
                         Why is it a problem? for example, it does not play well with all major frameworks
                         out there like JPA, Spring, mocking, etc, as they require to create proxy
@@ -428,68 +375,45 @@
                     <version>3.0.0</version>
                 </plugin>
 
-                <!--
-                 Used to call NPM and other JS tools directly from Maven.
-               -->
                 <plugin>
-                    <groupId>com.github.eirslett</groupId>
-                    <artifactId>frontend-maven-plugin</artifactId>
-                    <version>1.6</version>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${version.jacoco}</version>
                     <executions>
-                        <!--
-                            Make sure that NPM/Node get installed
-                        -->
                         <execution>
-                            <id>install node and npm</id>
+                            <id>default-prepare-agent</id>
                             <goals>
-                                <goal>install-node-and-npm</goal>
+                                <goal>prepare-agent</goal>
                             </goals>
                         </execution>
-                        <!--
-                            Make sure to call following:
-                            npm install
-                            npm run build
-                        -->
                         <execution>
-                            <id>npm install</id>
+                            <id>default-report</id>
+                            <phase>prepare-package</phase>
                             <goals>
-                                <goal>npm</goal>
+                                <goal>report</goal>
                             </goals>
-                            <configuration>
-                                <arguments>install</arguments>
-                            </configuration>
-                            <phase>generate-resources</phase>
                         </execution>
                         <execution>
-                            <id>npm run build</id>
+                            <id>default-prepare-agent-integration</id>
+                            <phase>package</phase>
                             <goals>
-                                <goal>npm</goal>
+                                <goal>prepare-agent-integration</goal>
                             </goals>
-                            <configuration>
-                                <arguments>run build</arguments>
-                            </configuration>
-                            <phase>generate-resources</phase>
                         </execution>
-                        <!--
-                            when running "mvn test", make sure to
-                            also call "npm test"
-                        -->
                         <execution>
-                            <id>npm test</id>
+                            <id>default-report-integration</id>
                             <goals>
-                                <goal>npm</goal>
+                                <goal>report-integration</goal>
                             </goals>
-                            <configuration>
-                                <arguments>test</arguments>
-                            </configuration>
-                            <phase>test</phase>
                         </execution>
                     </executions>
-                    <configuration>
-                        <nodeVersion>v6.9.5</nodeVersion>
-                    </configuration>
                 </plugin>
+
             </plugins>
+
         </pluginManagement>
     </build>
+
+
+
 </project>

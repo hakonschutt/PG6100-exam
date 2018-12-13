@@ -1,5 +1,5 @@
 FROM openjdk:8-alpine
 
-ADD target/eureka.jar .
+ADD target/eureka-service.jar .
 
-CMD java -jar eureka.jar
+CMD java -jar eureka-service.jar

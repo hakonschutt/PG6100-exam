@@ -21,48 +21,12 @@ spring:
           enabled: true
 
       routes:
-#      - id: movies
-#        uri: lb://movies
-#        predicates:
-#        - Path=/api/movies/**
-#        filters:
-#        - StripPrefix=1
-#
-      - id: venues
-        uri: http://venues:8080
+      - id: movies
+        uri: lb://movies
         predicates:
-        - Path=/api/venues/**
+        - Path=/movies/**
         filters:
         - StripPrefix=1
-#
-#      - id: payment
-#        uri: lb://payment
-#        predicates:
-#        - Path=/api/payments/**
-#        filters:
-#        - StripPrefix=1
-#
-#      - id: events
-#        uri: lb://events
-#        predicates:
-#        - Path=/graphql
-#        filters:
-#        - StripPrefix=1
-#
-#      - id: booking
-#        uri: lb://booking
-#        predicates:
-#        - Path=/api/bookings/**
-#        filters:
-#        - StripPrefix=1
-
-#      - id: auth
-#        uri: lb://auth
-#        predicates:
-#        - Path=/api/auth/**
-#        filters:
-#        - StripPrefix=1
-
       - id: frontend
         uri: http://frontend:3000
         predicates:

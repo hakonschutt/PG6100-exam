@@ -11,6 +11,7 @@ import org.bjh.movies.service.MovieService
 import org.bjh.pagination.PageDto
 import org.bjh.wrappers.WrappedResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -20,12 +21,13 @@ import java.net.URI
 /**
  * @author bjornosal
  */
+@RestController
+@EnableEurekaClient
 @Api(value = "/api/movies", description = "Retrieves movies.")
 @RequestMapping(
         path = ["/api/movies"],
         produces = [(MediaType.APPLICATION_JSON_VALUE)]
 )
-@RestController
 class MoviesApi {
 
 

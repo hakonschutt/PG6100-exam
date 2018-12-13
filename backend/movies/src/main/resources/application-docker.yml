@@ -17,11 +17,13 @@ spring:
 server:
   port: 9091
 
-#eureka:
-#  instance:
-#    preferIpAddress: true
-#  client:
-#    healthcheck:
-#      enabled: true
-#    serviceUrl:
-#      defaultZone: http://eureka:8761/eureka/
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
