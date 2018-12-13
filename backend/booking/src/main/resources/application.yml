@@ -12,6 +12,8 @@ spring:
   jpa:
     database: "postgresql"
     hibernate:
+      # We should rather use Flyway. But for simplicity, here rely
+      # on Hibernate to handle the schema (which is usually not a good idea).
       ddl-auto: "update"
 
 
