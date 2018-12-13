@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank
 
 class UserDto(
         @get:NotBlank
-        var username : String,
+        var username : String ? = null,
 
         @get:NotBlank
         var password: String? = null

@@ -9,7 +9,7 @@ import java.util.*
 
 @Repository
 interface AuthenticationRepository : CrudRepository<UserEntity, String> {
-
+/*
     @Query("SELECT * FROM authentication OFFSET :offset LIMIT :limit", nativeQuery = true)
     fun findAll(
             @Param("offset") offset:Int=0,
@@ -18,5 +18,5 @@ interface AuthenticationRepository : CrudRepository<UserEntity, String> {
     @Query("SELECT * FROM authentication WHERE username = :userId", nativeQuery = true)
     override fun findById(
             @Param("userId") userId: String
-    ) : Optional<UserEntity>
+    ) : Optional<UserEntity>*/
 }

@@ -20,50 +20,6 @@ class AuthenticationService {
     @Autowired
     private lateinit var authenticationRepository: AuthenticationRepository
 
-   /* fun save(authenticationDto: UserDto): UserEntity? {
-        if (((authenticationDto.username.isNullOrEmpty()))) {
-            return null
-        }
-        return authenticationRepository.save(UserEntity(username = authenticationDto.username!!, password = ""))
-    }
-*/
-    fun findAll(): List<UserEntity> {
-        return authenticationRepository.findAll().toList()
-    }
-
-
-    fun findAll( offset: Int = 0, limit: Int = 20): PageDto<UserDto> {
-        val userList = authenticationRepository.findAll(offset, limit)
-
-        val page = AuthenticationConverter.transform(userList = userList ,offset = offset, limit = limit)
-
-        val builder = UriComponentsBuilder
-                .fromPath("/users")
-                .queryParam("limit", limit)
-
-        page._self = HalLink(builder.cloneBuilder()
-                .queryParam("offset", offset)
-                .build().toString()
-        )
-        //Hal link part is modified from Andreas code
-        if (!userList.isEmpty() && offset > 0) {
-            page.previous = HalLink(builder.cloneBuilder()
-                    .queryParam("offset", Math.max(offset - limit, 0))
-                    .build().toString()
-            )
-        }
-
-        if (offset + limit < authenticationRepository.count()) {
-            page.next = HalLink(builder.cloneBuilder()
-                    .queryParam("offset", offset + limit)
-                    .build().toString()
-            )
-        }
-        return page
-
-
-    }
-
     fun findById(id: String): UserDto? {
 
         val entity = authenticationRepository.findById(id)
@@ -75,15 +31,15 @@ class AuthenticationService {
     }
 
 
-    fun createUser(dto: UserDto): Boolean {
+    fun createUser(username: String, password: String, roles: Set<String> = setOf()): Boolean {
         try {
-            val hash = passwordEncoder.encode(dto.password)
+            val hash = passwordEncoder.encode(password)
 
-            if (authenticationRepository.existsById(dto.username)) {
+            if (authenticationRepository.existsById(username)) {
                 return false
             }
 
-            val user = UserEntity(dto.username, hash)
+            val user = UserEntity(username, hash, roles.map{"ROLE_$it"}.toSet())
 
             authenticationRepository.save(user)
 

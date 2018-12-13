@@ -2,16 +2,26 @@ package org.bjh.entity
 
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
-@Entity(name = "users")
+/**
+ * Created by arcuri82 on 08-Nov-17.
+ */
+@Entity
+@Table(name="USERS")
 class UserEntity(
-//Taken from Andrea's repository
+
         @get:Id
         @get:NotBlank
-        var username: String,
+        var username: String?,
 
         @get:NotBlank
-        var password: String?
+        var password: String?,
 
+        @get:ElementCollection
+        @get:NotNull
+        var roles: Set<String>? = setOf(),
+
+        @get:NotNull
+        var enabled: Boolean? = true
 )
-

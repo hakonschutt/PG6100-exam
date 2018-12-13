@@ -9,8 +9,11 @@ class AuthenticationConverter {
         fun transform(dto: List<UserEntity>): List<UserDto> {
             return dto.map{ transform(it)}
         }
-        fun transform(dto: UserEntity): UserDto {
-            return UserDto(username = dto.username, password = dto.password)
+        fun transform(entity: UserEntity): UserDto {
+            return UserDto(
+                    username = entity.username,
+                    password = entity.password
+            )
         }
 
         fun transform(userList: List<UserEntity>, offset: Int, limit: Int): PageDto<UserDto> {

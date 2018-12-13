@@ -1,108 +1,117 @@
 package org.bjh.api
 
-import io.restassured.RestAssured
+import io.restassured.RestAssured.given
+import io.restassured.http.ContentType
 import org.bjh.TestBase
 import org.bjh.dto.UserDto
 import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Assert
 import org.junit.Test
 
 class AuthenticationApiTest : TestBase() {
 
+
     @Test
-    fun testDeleteUser() {
+    fun testUnauthorizedAccess() {
+        given().get()
+                .then()
+                .statusCode(401)
+    }
 
-        val data = RestAssured.given()
-                .get().then()
+    @Test
+    fun testLogin() {
+
+        val name = "foo"
+        val password = "bar"
+
+        checkAuthenticatedCookie("invalid cookie", 401)
+
+        val cookie = registerUser(name, password)
+
+        given().get()
+                .then()
+                .statusCode(401)
+
+        given().cookie("SESSION", cookie)
+                .get("/user")
+                .then()
                 .statusCode(200)
-                .extract().body()
-                .jsonPath()
-                .getList("data.list", UserDto::class.java)[0]
+                .body("name", equalTo(name))
 
-        RestAssured.given()
-                .delete("/${data.username}")
+        val basic = given().auth().basic(name, password)
+                .get("/user")
+                .then()
+                .statusCode(200)
+                .cookie("SESSION") // new SESSION cookie
+                .body("name", equalTo(name))
+                .extract().cookie("SESSION")
+
+        Assert.assertNotEquals(basic, cookie)
+        checkAuthenticatedCookie(basic, 200)
+
+        val login = given().contentType(ContentType.JSON)
+                .body(UserDto(name, password))
+                .post("/login")
+                .then()
+                .statusCode(204)
+                .cookie("SESSION") // new SESSION cookie
+                .extract().cookie("SESSION")
+
+        Assert.assertNotEquals(login, cookie)
+        Assert.assertNotEquals(login, basic)
+        checkAuthenticatedCookie(login, 200)
+    }
+
+    @Test
+    fun testLogout() {
+        val cookie = registerUser("foo", "bar")
+
+        //now, logout will invalidate the cookie
+        given().cookie("SESSION", cookie)
+                .post("/logout")
                 .then()
                 .statusCode(204)
 
-
-        RestAssured.given()
-                .get("/${data.username}")
+        given().cookie("SESSION", cookie)
+                .get("/user")
                 .then()
-                .statusCode(404)
+                .statusCode(401)
     }
 
     @Test
-    fun testGetUser() {
-        val data = RestAssured.given()
-                .get().then()
-                .statusCode(200)
-                .extract().body()
-                .jsonPath()
-                .getList("data.list", UserDto::class.java)[0]
+    fun testWrongLogin() {
 
-        RestAssured.given()
-                .delete("/${data.username}")
+        val name = "foo"
+        val password = "bar"
+
+        val noAuth = given().contentType(ContentType.JSON)
+                .body(UserDto(name, password))
+                .post("/login")
+                .then()
+                .statusCode(400)
+                .extract().cookie("SESSION")
+
+        checkAuthenticatedCookie(noAuth, 401)
+
+        registerUser(name, password)
+
+        val auth = given().contentType(ContentType.JSON)
+                .body(UserDto(name, password))
+                .post("/login")
                 .then()
                 .statusCode(204)
+                .extract().cookie("SESSION")
+
+        checkAuthenticatedCookie(auth, 200)
     }
 
     @Test
-    fun testGetAllUsers() {
-        RestAssured.given()
-                .get()
-                .then()
-                .statusCode(200)
-                .body("data.list.size()", equalTo(3))
-    }
+    fun testRegisterUserWithInvalidUsername() {
 
-    @Test
-    fun testDeleteNotExistingUser() {
-        RestAssured.given()
-                .delete("/19232180921382380921@gmail.notfound.com")
+         given().contentType(ContentType.JSON)
+                .body(UserDto(password = "password"))
+                .post("/signUp")
                 .then()
-                .statusCode(404)
-    }
-
-//    @Test
-//    fun testPagination() {
-//
-//        val pageDto = given()
-//                .get("/?offset=0&limit=1").then()
-//                .statusCode(200)
-//                .extract().body()
-//                .jsonPath()
-//                .getObject("data", PageDto::class.java)
-//        println("\n ${pageDto._links["next"]} ${pageDto.list} \n")
-//
-//        val firstUserPage = pageDto.list[0]
-//        val nextPageDto = given()
-//                .get(pageDto._links["next"]!!.href.substring(7)).then()
-//                .statusCode(200)
-//                .extract().body()
-//                .jsonPath()
-//                .getObject("data", PageDto::class.java)
-//
-//        val prevPage = given()
-//                .get(nextPageDto.previous!!.href.substring(7)).then()
-//                .statusCode(200)
-//                .extract().body()
-//                .jsonPath()
-//                .getObject("data", PageDto::class.java).list[0]
-//        Assert.assertThat(firstUserPage, equalTo(
-//                prevPage
-//        ))
-//
-//
-//    }
-
-    @Test
-    fun testCreateUser() {
-        val id = RestAssured.given().contentType("application/json;charset=UTF-8")
-                .body(UserDto(username = "foo@gmail.com"))
-                .post()
-                .then()
-                .statusCode(201)
-                .extract()
-                .header("location")
-        println(id)
+                .statusCode(400)
     }
 }
