@@ -36,9 +36,9 @@ spring:
 #        - StripPrefix=1
 
       - id: booking
-        uri: lb://booking:8080
+        uri: lb://booking
         predicates:
-        - Path=/bookings/**
+        - Path=/api/bookings/**
         filters:
         - StripPrefix=1
 

@@ -47,18 +47,13 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
         <dependency>
-<<<<<<< HEAD
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
+
         <!--<dependency>-->
             <!--<groupId>org.springframework.cloud</groupId>-->
             <!--<artifactId>spring-cloud-netflix-eureka-client</artifactId>-->
             <!--<version>2.0.2.RELEASE</version>-->
         <!--</dependency>-->
-=======
+
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
@@ -70,7 +65,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
->>>>>>> c7581c0536dfa11c0a59eb74b649c0a91e75df8b
     </dependencies>
 
     <build>
