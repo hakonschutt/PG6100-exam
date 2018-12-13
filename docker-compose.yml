@@ -7,8 +7,8 @@ services:
 #    image: 'postgres:latest'
 #  movies-db:
 #    image: 'postgres:latest'
-#  venues-db:
-#    image: 'postgres:latest'
+  venues-db:
+    image: 'postgres:latest'
   booking-db:
     image: 'postgres:latest'
 #  events-db:
@@ -38,7 +38,7 @@ services:
     ports:
     - "8080:8080"
     depends_on:
-    - eureka
+    - venues
 
   ### EUREKA ####
   eureka:
@@ -70,18 +70,18 @@ services:
 #    - rabbitmq
 #    - auth
 
-  booking:
-    build:
-      context: ./backend/booking
-      dockerfile: Dockerfile
-#    ports:
-#    - "8080:8080"
-    depends_on:
-    - gateway
-    - booking-db
-#    - payment
-    - rabbitmq
-#   - auth
+#  booking:
+#    build:
+#      context: ./backend/booking
+#      dockerfile: Dockerfile
+##    ports:
+##    - "8080:8080"
+#    depends_on:
+#    - gateway
+#    - booking-db
+##    - payment
+#    - rabbitmq
+##   - auth
 #
 #  movies:
 #    build:
@@ -92,13 +92,13 @@ services:
 #    - movies-db
 #
 
-#  venues:
-#    build:
-#      context: ./backend/venues
-#      dockerfile: Dockerfile
-#    depends_on:
-#    - gateway
-#    - venues-db
+  venues:
+    build:
+      context: ./backend/venues
+      dockerfile: Dockerfile
+    depends_on:
+    - eureka
+    - venues-db
 #
 #  venues_1:
 #    build:
