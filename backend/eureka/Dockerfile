@@ -2,4 +2,4 @@ FROM openjdk:8-alpine
 
 ADD target/eureka.jar .
 
-CMD java -jar eureka.jar   --spring.profiles.active=docker
+CMD java -jar eureka.jar

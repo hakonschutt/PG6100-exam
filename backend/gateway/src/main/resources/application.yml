@@ -1,4 +1,19 @@
 spring:
+#
+#  session:
+#    # during testing for this service in isolation,
+#    # do not use Redis. Disabling SpringSession will fall-back to
+#    # default sessions in the servlet
+#    store-type: none
+#  datasource:
+#    url: "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
+#    driver-class-name: "org.h2.Driver"
+#  jpa:
+#    database: "h2"
+#    hibernate:
+#      ddl-auto: "create-drop"
+#    show-sql: true
+
   cloud:
     gateway:
       discovery:
@@ -6,50 +21,50 @@ spring:
           enabled: true
 
       routes:
-      - id: movies
-        uri: http://movies
-        predicates:
-        - Path=/api/movies/**
-        filters:
-        - StripPrefix=1
-
+#      - id: movies
+#        uri: lb://movies
+#        predicates:
+#        - Path=/api/movies/**
+#        filters:
+#        - StripPrefix=1
+#
       - id: venues
-        uri: http://venues
+        uri: http://venues:8080
         predicates:
         - Path=/api/venues/**
         filters:
         - StripPrefix=1
+#
+#      - id: payment
+#        uri: lb://payment
+#        predicates:
+#        - Path=/api/payments/**
+#        filters:
+#        - StripPrefix=1
+#
+#      - id: events
+#        uri: lb://events
+#        predicates:
+#        - Path=/graphql
+#        filters:
+#        - StripPrefix=1
+#
+#      - id: booking
+#        uri: lb://booking
+#        predicates:
+#        - Path=/api/bookings/**
+#        filters:
+#        - StripPrefix=1
 
-      - id: payment
-        uri: http://payment
-        predicates:
-        - Path=/api/payments/**
-        filters:
-        - StripPrefix=1
-
-      - id: events
-        uri: http://events
-        predicates:
-        - Path=/graphql
-        filters:
-        - StripPrefix=1
-
-      - id: booking
-        uri: http://booking
-        predicates:
-        - Path=/api/bookings/**
-        filters:
-        - StripPrefix=1
-
-      - id: auth
-        uri: http://auth
-        predicates:
-        - Path=/api/auth/**
-        filters:
-        - StripPrefix=1
+#      - id: auth
+#        uri: lb://auth
+#        predicates:
+#        - Path=/api/auth/**
+#        filters:
+#        - StripPrefix=1
 
       - id: frontend
-        uri: http://frontend
+        uri: http://frontend:3000
         predicates:
         - Path=/**
 
@@ -61,3 +76,5 @@ eureka:
       enabled: true
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
+
+

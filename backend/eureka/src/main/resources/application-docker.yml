@@ -1,13 +1,11 @@
-server:
-  port: 8761
-
-# when running from Docker Compose, need to change from "localhost" to "eureka" host name
-
-eureka:
-  instance:
-    hostname: eureka
-  client:
-    registerWithEureka: false
-    fetchRegistry: false
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+#server:
+#  port: 8761
+#
+#eureka:
+#  instance:
+#    hostname: eureka
+#  client:
+#    registerWithEureka: false
+#    fetchRegistry: false
+#    serviceUrl:
+#      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
