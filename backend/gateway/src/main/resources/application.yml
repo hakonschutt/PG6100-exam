@@ -5,10 +5,10 @@ spring:
         locator:
           enabled: true
       routes:
-      - id: service
-        uri: lb://service
+      - id: bookings
+        uri: lb://bookings
         predicates:
-        - Path=/service/**
+        - Path=/booking-service/**
         filters:
         - StripPrefix=1
       - id: movies
@@ -17,12 +17,19 @@ spring:
         - Path=/movies-service/**
         filters:
         - StripPrefix=1
-      - id: venues
-        uri: lb://venues
+      - id: venues-server
+        uri: lb://venues-server
         predicates:
         - Path=/venues-service/**
         filters:
         - StripPrefix=1
+      - id: events
+        uri: lb://events
+        predicates:
+        - Path=/events-service/**
+        filters:
+        - StripPrefix=1
+
 
 eureka:
   instance:

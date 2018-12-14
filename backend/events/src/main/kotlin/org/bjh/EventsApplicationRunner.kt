@@ -20,6 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @EnableEurekaClient
 @RibbonClient(name = "venues-server")
 class EventsApplicationRunner {
+
     @LoadBalanced
     @Bean
     fun restTemplate(): RestTemplate {

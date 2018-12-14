@@ -22,7 +22,7 @@ services:
 #      context: ./frontend
 #      dockerfile: Dockerfile
 
-  postgres:
+  bookings-postgres:
     image: "postgres:10"
 
   movies-postgres:
@@ -31,15 +31,26 @@ services:
   venues-postgres:
     image: "postgres:10"
 
-  service:
+  events-postgres:
+    image: "postgres:10"
+
+  bookings:
     build:
       context: ./backend/booking
       dockerfile: Dockerfile
     depends_on:
     - scg
-    - postgres
+    - bookings-postgres
 
-  venues:
+  venues_0:
+    build:
+      context: ./backend/venues
+      dockerfile: Dockerfile
+    depends_on:
+    - scg
+    - venues-postgres
+
+  venues_1:
     build:
       context: ./backend/venues
       dockerfile: Dockerfile
@@ -54,3 +65,11 @@ services:
     depends_on:
     - scg
     - movies-postgres
+
+  events:
+    build:
+      context: ./backend/events
+      dockerfile: Dockerfile
+    depends_on:
+    - scg
+    - events-postgres
