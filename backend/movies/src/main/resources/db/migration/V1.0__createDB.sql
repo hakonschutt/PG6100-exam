@@ -2,7 +2,7 @@ create sequence hibernate_sequence start with 1 increment by 1;
 
 create table if not exists movies (id bigint not null, cover_art varchar(255), overview varchar(255), popularity decimal, poster varchar(255), price decimal, release_date date, title varchar(255), trailer varchar(255), vote_average decimal, vote_count integer, primary key (id));
 create table if not exists movies_genres (movies_id bigint not null, genres varchar(255));
-alter table movies_genres add constraint FK1i7fpiqqicbfvd33fh0ullmdn foreign key (movies_id) references movies;
+alter table movies_genres add constraint FK1i7fpiqqicb22fvd33fh0ullmdn foreign key (movies_id) references movies;
 
  insert into movies (id, cover_art, overview,popularity,poster,price,release_date,title, trailer,vote_average,vote_count) values (1, '/VuukZLgaCrho2Ar8Scl9HtV3yD.jpg','When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego “Venom” to save his life.',283.853, '/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg',222,'2018-10-03','Venom', 6.6,1367, 11);
  insert into movies (id, cover_art, overview,popularity,poster,price,release_date,title, trailer,vote_average,vote_count) values (2, '/VuukZLgaCrho2Ar8Scl9HtV3yD.jpg','When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego “Venom” to save his life.',283.853, '/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg',222,'2018-10-03','Venom', 6.6,1367, 11);
