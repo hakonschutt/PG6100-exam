@@ -11,10 +11,13 @@ spring:
     jpa:
       database: "postgresql"
       hibernate:
-        ddl-auto: "create-drop"
+        ddl-auto: "update"
 
-server:
-  port: 9091
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+    corsEnabled: false
 
 eureka:
   instance:
