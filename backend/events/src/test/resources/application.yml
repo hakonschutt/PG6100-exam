@@ -4,6 +4,8 @@ spring:
       org.springframework.web: info
       guru.springframework.controllers: info
       org.hibernate: info
+  jpa:
+    show-sql: true
 server:
   port: 8084
 
