@@ -49,7 +49,7 @@ abstract class SeleniumTestBase {
                     .pollInterval(4, TimeUnit.SECONDS)
                     .ignoreExceptions()
                     .until {
-                        given().get("http://localhost:3000/").then().statusCode(200)
+                        given().get("http://localhost:80/").then().statusCode(200)
                         true
                     }
         }

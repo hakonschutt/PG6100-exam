@@ -49,7 +49,7 @@ class LocalChromeDockerIT : SeleniumTestBase() {
     }
 
     override fun getServerPort(): Int {
-        return 8080
+        return 80
     }
 
 }
