@@ -3,14 +3,13 @@ import axios from 'axios';
 
 import Alert from '../components/helpers/Alert';
 import MoviesView from '../components/layouts/MoviesView';
-import { movieList } from '../actions/data_movies';
 
 class MoviesPage extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			movies: movieList,
+			movies: [],
 			nextLink: '/movies-service/api/movies',
 			hasMore: false,
 			error: '',
@@ -33,11 +32,6 @@ class MoviesPage extends Component {
 
 			return;
 		}
-
-		this.setState({
-			movies: [...movies, ...movieList],
-			hasMore: true,
-		});
 
 		try {
 			const res = await axios.get(nextLink);

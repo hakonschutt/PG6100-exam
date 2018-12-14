@@ -3,15 +3,14 @@ import axios from 'axios';
 
 import Alert from '../components/helpers/Alert';
 import MoviesView from '../components/layouts/MoviesView';
-import { movieList } from '../actions/data_movies';
 
 class ComingMoviesPage extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			movies: movieList,
-			nextLink: '/movie-service/movies?released=false',
+			movies: [],
+			nextLink: '/movie-service/movies',
 			hasMore: false,
 			error: '',
 		};
@@ -34,29 +33,23 @@ class ComingMoviesPage extends Component {
 			return;
 		}
 
-		this.setState({
-			movies: [...movies, ...movieList],
-			hasMore: true,
-		});
+		try {
+			const res = await axios.get(nextLink);
 
-		return;
+			const hasMore = res.data._links && res.data._links.next ? true : false;
+			const followLink = hasMore ? res.data._links.next : '';
 
-		// try {
-		// 	const res = await axios.get(nextLink);
-		//
-		// 	const followLink = '/movie-service/movies';
-		//
-		// 	this.setState({
-		// 		hasMore: followLink ? true : false,
-		// 		nextLink: followLink,
-		// 		movies: [...movies, ...res.data.list],
-		// 	});
-		// } catch (err) {
-		// 	this.setState({
-		// 		error: 'Could not fetch movies',
-		// 		hasMore: false,
-		// 	});
-		// }
+			this.setState({
+				hasMore,
+				nextLink: followLink,
+				movies: [...movies, ...res.data.list],
+			});
+		} catch (err) {
+			this.setState({
+				error: 'Could not fetch movies',
+				hasMore: false,
+			});
+		}
 	}
 
 	render() {
