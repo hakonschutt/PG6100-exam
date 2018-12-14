@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 /**
  * From andrea's repository
  */
-abstract class SpaRestSeleniumTestBase {
+abstract class SeleniumTestBase {
 
     protected abstract fun getDriver(): WebDriver
 
@@ -31,7 +31,7 @@ abstract class SpaRestSeleniumTestBase {
 
         class KDockerComposeContainer(id: String, path: File) : DockerComposeContainer<KDockerComposeContainer>(id, path)
 
-        private const val composeId = "spa-rest"
+        private const val composeId = "cinema"
 
         @ClassRule
         @JvmField
@@ -44,18 +44,12 @@ abstract class SpaRestSeleniumTestBase {
         @JvmStatic
         fun waitForServer() {
 
-            /*
-                Need to wait for a bit, because servers starting inside Docker might
-                take some seconds before they are initialized and can respond to HTTP requests.
-                Note: here I am using the Awaitility library to do such waits
-             */
 
             await().atMost(40, TimeUnit.SECONDS)
                     .pollInterval(4, TimeUnit.SECONDS)
                     .ignoreExceptions()
                     .until {
-                        given().get("http://localhost:8080/index.html").then().statusCode(200)
-                        given().get("http://localhost:8081/books").then().statusCode(200)
+                        given().get("http://localhost:3000/").then().statusCode(200)
                         true
                     }
         }
@@ -77,16 +71,11 @@ abstract class SpaRestSeleniumTestBase {
     @Test
     fun testHomePage() {
 
-        val displayed = home!!.waitForVisibility(3, By.id("home_create_btn"))
+        val displayed = home!!.waitForVisibility(3, By.id("toMoviesButton"))
 
         assertTrue(displayed)
     }
 
-    /*
-        Here we could have other tests checking the main features of the application.
-        However, starting Docker Compose is quite expensive, and it is more difficult
-        to reset state of the app (e.g., data in databases).
-        Restarting Docker Compose at each test execution is simply not an option.
-     */
+
 
 }

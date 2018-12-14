@@ -13,7 +13,7 @@ import org.tsdes.misc.testutils.selenium.SeleniumDriverHandler
  * From andrea's repository
  */
 @Ignore
-class SpaRestLocalChromeDockerIT : SpaRestSeleniumTestBase() {
+class LocalChromeDockerIT : SeleniumTestBase() {
 
     companion object {
 

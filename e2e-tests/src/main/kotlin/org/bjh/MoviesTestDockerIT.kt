@@ -2,6 +2,7 @@ package org.bjh
 
 import org.junit.Ignore
 import org.junit.Rule
+import org.junit.Test
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.testcontainers.containers.BrowserWebDriverContainer
@@ -12,7 +13,7 @@ import org.testcontainers.containers.BrowserWebDriverContainer
  * From andrea's repository
  */
 @Ignore
-class SpaRestDockerIT : SpaRestSeleniumTestBase(){
+class MoviesTestDockerIT : SeleniumTestBase(){
 
     class KBrowserWebDriverContainer : BrowserWebDriverContainer<KBrowserWebDriverContainer>()
 
@@ -20,7 +21,7 @@ class SpaRestDockerIT : SpaRestSeleniumTestBase(){
     @JvmField
     val browser: KBrowserWebDriverContainer = KBrowserWebDriverContainer()
             .withDesiredCapabilities(DesiredCapabilities.chrome())
-            .withNetworkMode("spa-rest-network")
+            .withNetworkMode("cinema-network")
 
     override fun getDriver(): WebDriver {
         return browser.webDriver
@@ -32,6 +33,11 @@ class SpaRestDockerIT : SpaRestSeleniumTestBase(){
 
     override fun getServerPort(): Int {
         return 8080
+    }
+
+    @Test
+    fun testGoToHomePageAndClickToGoToMoviePage() {
+        is
     }
 
 }

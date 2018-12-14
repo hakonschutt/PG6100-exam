@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver
 import org.tsdes.misc.testutils.selenium.PageObject
 
 
-class HomePO(driver: WebDriver, host: String, port: Int) : PageObject(driver, host, port) {
+class MoviesPO(driver: WebDriver, host: String, port: Int) : PageObject(driver, host, port) {
 
 
     constructor(po: PageObject) : this(po.driver, po.host, po.port)
@@ -17,6 +17,6 @@ class HomePO(driver: WebDriver, host: String, port: Int) : PageObject(driver, ho
     override fun isOnPage(): Boolean {
 
         return waitForPageToLoad()
-                && waitForVisibility(3, By.xpath("toMoviesButton"))
+                && waitForVisibility(3, By.xpath("//h1[text()='Movies Page']"))
     }
 }
