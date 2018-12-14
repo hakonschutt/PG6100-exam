@@ -11,7 +11,7 @@ class MoviesPage extends Component {
 
 		this.state = {
 			movies: movieList,
-			nextLink: '/movie-service/movies?released=true',
+			nextLink: '/movies-service/api/movies',
 			hasMore: false,
 			error: '',
 		};
@@ -39,25 +39,23 @@ class MoviesPage extends Component {
 			hasMore: true,
 		});
 
-		return;
+		try {
+			const res = await axios.get(nextLink);
 
-		// try {
-		// 	const res = await axios.get(nextLink);
-		//
-		//	const hasMore = res.data._links && rs.data._links.next ? true : false
-		// 	const followLink = hasMore ? res.data._links.next : '';
-		//
-		// 	this.setState({
-		// 		hasMore,
-		// 		nextLink: followLink,
-		// 		movies: [...movies, ...res.data.list],
-		// 	});
-		// } catch (err) {
-		// 	this.setState({
-		// 		error: 'Could not fetch movies',
-		// 		hasMore: false,
-		// 	});
-		// }
+			const hasMore = res.data._links && res.data._links.next ? true : false;
+			const followLink = hasMore ? res.data._links.next : '';
+
+			this.setState({
+				hasMore,
+				nextLink: followLink,
+				movies: [...movies, ...res.data.list],
+			});
+		} catch (err) {
+			this.setState({
+				error: 'Could not fetch movies',
+				hasMore: false,
+			});
+		}
 	}
 
 	render() {
