@@ -4,6 +4,8 @@ spring:
   datasource:
     url: "jdbc:h2:mem:"
     driver-class-name: "org.h2.Driver"
+  jpa:
+    show-sql: true
 server:
   port: 8083
 

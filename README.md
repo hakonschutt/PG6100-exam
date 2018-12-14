@@ -11,8 +11,6 @@ We have created a system for cinemas. This system lets users browse different mo
 that is coming the next 7 days. 
 This will also let admins create venues, movies,
 
-
-
 ## How to run
 
 The application relies on docker to start the entire cluster. Make sure to have [java](https://www.java.com/en/download/), [maven](https://maven.apache.org/download.cgi) and [docker](https://www.docker.com/get-started) installed before executing the following commands
@@ -66,14 +64,23 @@ In addition we also used some other libraries for production and testing.
 For production we used Docker, Docker-compose and a lot of the Netflix-stack( Hystrix ,Eureka, Ribbon), in addition to Redis, RabbitMQ,  and Postgres databases.
 
 Features :
- - amqp
+
  - graphql - events directory
+    Fully functional graphql that can query and mutate movies, venues
  - payment - amqp microservice
- - Maybe frontend nginx?
- - React 
+      Was functioning as well. There are evidence of this in branch feature/microservice-payment. But we had to strip this for the
+      final release since we had the issues with gateway and service-discovery
+
  - Redux
- - client side load balancing
- - fanout exchange
+ - client side load balancing:
+ 
+    We have client side load balancing on the graphql microservice.
+ - fanout exchange, the receiver was the Booking service:
+ 
+    we had this working in an earlier edition of our system,
+    but since we were really limited on time and had major issues with gateway and SD (Service Discovery) 
+    we had to strip all the amqp parts from it to make the application runnable in time.
+        
  
  ## Workflow
  
@@ -88,11 +95,11 @@ Features :
  
 
 ## Developers
-- ##### [Bjørn Olav Salvesen](https://github.com/bjornosal)
+- ##### [Bjørn Olav Salvesen - bjornosal](https://github.com/bjornosal)
 solely responsible for Movies api :
 
 The movie api is responsible for providing and creating data about different movies.
- This api allows you to create cinema movies, retrieve movies.
+This api allows you to create cinema movies, retrieve movies.
  
  contributed also to:
  - auth
@@ -101,7 +108,7 @@ The movie api is responsible for providing and creating data about different mov
  - eureka
  - utils
  - movies
-- ##### [Jarand Waage Kleppa](https://github.com/kleppa)
+- ##### [Jarand Waage Kleppa - kleppa](https://github.com/kleppa)
 solely responsible for Venues api:
 
 The venue api is responsible for providing and creating data about different cinemas.
@@ -114,7 +121,7 @@ The venue api is responsible for providing and creating data about different cin
  - eureka
  - utils
  - venues
-- ##### [Håkon Schutt](https://github.com/hakonschutt)
+- ##### [Håkon Schutt - hakonschutt](https://github.com/hakonschutt)
 solely responsible for Booking api:
 
 The booking api is responsible for providing and creating data about different booking.
@@ -142,7 +149,8 @@ sure to specify your Git user-names so examiners can verify what you wrote based
     http 1.1 GET 200 ok thunked response
      
    and nothing from the actuall endpoint we were routing to. Neither the gateway or the service discovery logged out any activity when we did these calls, but we received payloads back
-   This resulted in us having to resolve to rebuild the entire pom structure. After doing this it finally worked.
+   This resulted in us having to resolve to rebuild the entire pom structure. Then even this didnt help solving the issue. So we resulted in rebuilding it once more taking carefull steps following the curriculum to finally get it working.
+   Through this process there were next to no error logs or warnings to give us hint to what was wrong, which made it extremely hard to fix.
     
 ##### git: Devopsuser 
  Devopsuser is hakonschutt. When we had devops exam we had to use anonymous git users and he forgot to switch the profile name and email in his git config on his computer. Thats why there is 6 commits from this user
