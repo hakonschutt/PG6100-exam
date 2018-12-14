@@ -1,35 +1,32 @@
-import React, { Component } from 'react';
+import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-
 import MovieSingle from './MovieSingle';
 
-class MoviesView extends Component {
-	render() {
-		const movies = { list: [] };
-
-		return (
-			<div className="wrap movie-view">
-				<InfiniteScroll
-					pageStart={0}
-					loadMore={() => console.log('Hello')}
-					hasMore={true}
-					loader={
-						<div className="loader" key={0}>
-							Loading ...
-						</div>
-					}
-				>
-					<div className="movie-view-inner">
-						<ul>
-							{movies.list.map((movie, i) => (
-								<MovieSingle key={`${i} - ${movie.id}`} {...movie} />
-							))}
-						</ul>
+const MoviesView = ({ hasMore = true, loadMore, movies }) => {
+	return (
+		<div className="wrap movie-view">
+			<InfiniteScroll
+				pageStart={0}
+				loadMore={loadMore}
+				hasMore={hasMore}
+				loader={
+					<div className="d-block text-center" key={-1}>
+						Loading ...
 					</div>
-				</InfiniteScroll>
-			</div>
-		);
-	}
-}
+				}
+			>
+				<div className="row">
+					{movies.map((movie, i) => (
+						<MovieSingle
+							key={`${i} - ${movie.id}`}
+							{...movie}
+							isReleased={true}
+						/>
+					))}
+				</div>
+			</InfiniteScroll>
+		</div>
+	);
+};
 
 export default MoviesView;
