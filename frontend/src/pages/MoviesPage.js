@@ -44,10 +44,11 @@ class MoviesPage extends Component {
 		// try {
 		// 	const res = await axios.get(nextLink);
 		//
-		// 	const followLink = '/movie-service/movies';
+		//	const hasMore = res.data._links && rs.data._links.next ? true : false
+		// 	const followLink = hasMore ? res.data._links.next : '';
 		//
 		// 	this.setState({
-		// 		hasMore: followLink ? true : false,
+		// 		hasMore,
 		// 		nextLink: followLink,
 		// 		movies: [...movies, ...res.data.list],
 		// 	});
