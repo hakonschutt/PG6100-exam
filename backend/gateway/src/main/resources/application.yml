@@ -13,11 +13,11 @@ spring:
         locator:
           enabled: true
       routes:
-      - id: service
+      - id: booking
         # "lb" stands for Load-Balance, which is done with Ribbon
-        uri: lb://service
+        uri: lb://booking
         predicates:
-        - Path=/service/**
+        - Path=/bookings/**
         filters:
          - StripPrefix=1
 #      - id: frontend

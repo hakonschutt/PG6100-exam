@@ -38,13 +38,13 @@ class BookingApi {
 
     private val BASE_PATH = "/bookings"
 
-    /**
-     * @author arcuri82
-     */
-    @RabbitListener(queues = ["#{queue.name}"])
-    fun receiveFromAMQP(message: String) {
-        print(message)
-    }
+//    /**
+//     * @author arcuri82
+//     */
+//    @RabbitListener(queues = ["#{queue.name}"])
+//    fun receiveFromAMQP(message: String) {
+//        print(message)
+//    }
 
     private fun doWork(input: String) {
         //TODO: Implement stuff that it does.
