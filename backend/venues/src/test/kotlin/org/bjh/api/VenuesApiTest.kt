@@ -1,3 +1,4 @@
+
 package org.bjh.api
 
 import io.restassured.RestAssured
@@ -12,6 +13,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
+
 class VenuesApiTest : VenueApiTestBase() {
     @Test
     fun TestGetAllRoomsByVenueId() {
@@ -359,5 +361,157 @@ class VenuesApiTest : VenueApiTestBase() {
                 .statusCode(400)
 
     }
+
+    @Test
+    fun mergePatcFaultyhVenue() {
+        val venueDtoURL = createVenue()
+        val oldName =
+                RestAssured.given()
+                        .get(venueDtoURL!!.substring(11))
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data.list[0].name")
+        val newName = "NEW_NAME"
+        val geo = 1
+        val jsonBody = "{\"name\":\"$newName\",\"geo\":$geo}"
+
+
+
+        given().contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch(venueDtoURL.substring(11))
+                .then()
+                .statusCode(400)
+
+    }
+
+    @Test
+    fun mergePatcFaultyNameVenue() {
+        val venueDtoURL = createVenue()
+        val oldName =
+                RestAssured.given()
+                        .get(venueDtoURL!!.substring(11))
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data.list[0].name")
+        val newName = 1
+        val geo = 1
+        val jsonBody = "{\"name\":\"$newName\",\"rows\":$geo,\"columns\":}"
+
+
+
+        given().contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch(venueDtoURL.substring(11)+"/rooms/1")
+                .then()
+                .statusCode(404)
+
+    }
+
+    @Test
+    fun mergePatcFaultyAddressVenue() {
+        val venueDtoURL = createVenue()
+        val oldName =
+                RestAssured.given()
+                        .get(venueDtoURL!!.substring(11))
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data.list[0].name")
+        val newName = "1"
+        val geo = "1"
+        val address = 1
+        val jsonBody = "{\"address\":$address,\"geo\":$geo}"
+
+
+
+        given().contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch(venueDtoURL.substring(11))
+                .then()
+                .statusCode(400)
+
+    }
+
+    @Test
+    fun mergePatcFaultyRowVenue() {
+        val venueDtoURL = createVenue()
+        val oldName =
+                RestAssured.given()
+                        .get(venueDtoURL!!.substring(11))
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data.list[0].name")
+
+        val row = Any()
+        val jsonBody = "{\"row\":$row}"
+
+
+
+        given().contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch(venueDtoURL.substring(11))
+                .then()
+                .statusCode(400)
+
+    }
+    @Test
+    fun testGetFaultyName() {
+        val venueDtoURL = createVenue()
+        val oldName =
+                RestAssured.given()
+                        .get(venueDtoURL!!.substring(11))
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data.list[0].name")
+
+        val rows = "a"
+        val jsonBody = "{\"rows\":\"$rows\"}"
+
+
+
+        given().contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch(venueDtoURL.substring(11)+"/nop")
+                .then()
+                .statusCode(404)
+    }
+
+
+    @Test
+    fun mergePatcFaultyColVenue() {
+        val venueDtoURL = createVenue()
+        val oldName =
+                RestAssured.given()
+                        .get(venueDtoURL!!.substring(11))
+                        .then()
+                        .statusCode(200)
+                        .extract().path<String>("data.list[0].name")
+
+        val coloumn = "coloumn"
+        val jsonBody = "{\"columns\":$coloumn}"
+
+
+
+        given().contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch(venueDtoURL.substring(11))
+                .then()
+                .statusCode(400)
+
+    }
+    @Test
+    fun testGetRepositorySize(){
+        val before = repository.findAll().toList().size
+        createVenue()
+        assertTrue(repository.findAll().toList().size>before)
+    }
+    @Test
+    fun testCountRepositorySize(){
+        val before = repository.count()
+        createVenue()
+        assertTrue(repository.count()>before)
+    }
+
+
 
 }
