@@ -13,7 +13,10 @@
 
     <modules>
         <module>backend</module>
+        <module>frontend</module>
+        <module>e2e-tests</module>
     </modules>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
