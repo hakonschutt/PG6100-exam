@@ -1,20 +1,22 @@
 spring:
   application:
     name: venues
-
+  session:
+    store-type: none
   datasource:
-    url: "jdbc:postgresql://venues-db:5432/postgres"
+    url: "jdbc:postgresql://venues-postgres:5432/postgres"
     username: "postgres"
     password: ""
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: "org.postgresql.Driver"
+    jpa:
+      database: "postgresql"
+      hibernate:
+        ddl-auto: "update"
 
-  jpa:
-    show-sql: true
-    database: postgresql
-    hibernate:
-      ddl-auto: create-drop
-      dialect: org.hibernate.dialect.PostgreSQL9Dialect
-    properties.hibernate.temp.use_jdbc_metadata_defaults: false
+logging:
+  level:
+    org: ERROR
+
 eureka:
   instance:
     preferIpAddress: true
@@ -24,5 +26,3 @@ eureka:
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
 
-server:
-  port: 8080

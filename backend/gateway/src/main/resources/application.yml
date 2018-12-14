@@ -11,6 +11,18 @@ spring:
         - Path=/service/**
         filters:
         - StripPrefix=1
+      - id: movies
+        uri: lb://movies
+        predicates:
+        - Path=/movies-service/**
+        filters:
+        - StripPrefix=1
+      - id: venues
+        uri: lb://venues
+        predicates:
+        - Path=/venues-service/**
+        filters:
+        - StripPrefix=1
 
 eureka:
   instance:
