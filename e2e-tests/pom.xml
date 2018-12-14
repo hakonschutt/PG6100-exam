@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>org.bjh</groupId>
-            <artifactId>backend</artifactId>
+            <artifactId>movies</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

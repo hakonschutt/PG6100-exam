@@ -5,6 +5,9 @@ import org.openqa.selenium.WebDriver
 import org.tsdes.misc.testutils.selenium.PageObject
 
 
+/**
+ * From andrea's repository
+ */
 class HomePO(driver: WebDriver, host: String, port: Int) : PageObject(driver, host, port) {
 
     constructor(po: PageObject) : this(po.driver, po.host, po.port)

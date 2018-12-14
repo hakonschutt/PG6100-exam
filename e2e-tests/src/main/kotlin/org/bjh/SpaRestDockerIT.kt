@@ -8,6 +8,9 @@ import org.testcontainers.containers.BrowserWebDriverContainer
 
 
 
+/**
+ * From andrea's repository
+ */
 @Ignore
 class SpaRestDockerIT : SpaRestSeleniumTestBase(){
 

@@ -14,6 +14,9 @@ import org.testcontainers.containers.DockerComposeContainer
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+/**
+ * From andrea's repository
+ */
 abstract class SpaRestSeleniumTestBase {
 
     protected abstract fun getDriver(): WebDriver
@@ -33,7 +36,7 @@ abstract class SpaRestSeleniumTestBase {
         @ClassRule
         @JvmField
         val env: KDockerComposeContainer =
-                KDockerComposeContainer(composeId, File("../docker-compose.yml"))
+                KDockerComposeContainer(composeId, File("../../docker-compose.yml"))
                         .withLocalCompose(true)
 
 

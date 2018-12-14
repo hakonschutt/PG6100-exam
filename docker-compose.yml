@@ -73,3 +73,6 @@ services:
     depends_on:
     - scg
     - events-postgres
+
+networks:
+  cinema-network:

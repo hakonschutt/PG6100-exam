@@ -8,6 +8,10 @@ import org.junit.Ignore
 import org.openqa.selenium.WebDriver
 import org.tsdes.misc.testutils.selenium.SeleniumDriverHandler
 
+
+/**
+ * From andrea's repository
+ */
 @Ignore
 class SpaRestLocalChromeDockerIT : SpaRestSeleniumTestBase() {
 
