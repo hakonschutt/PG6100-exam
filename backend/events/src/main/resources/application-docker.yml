@@ -1,8 +1,6 @@
 spring:
   application:
     name: events
-  session:
-    store-type: none
   datasource:
     url: "jdbc:postgresql://events-postgres:5432/postgres"
     username: "postgres"
@@ -17,7 +15,12 @@ graphql:
   servlet:
     mapping: /graphql
     enabled: true
-    corsEnabled: false
+    corsEnabled: true
+graphiql:
+  mapping: /graphiql
+  endpoint:
+    graphql: /events-service/graphql
+  enabled: true
 
 eureka:
   instance:

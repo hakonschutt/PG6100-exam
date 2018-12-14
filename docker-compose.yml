@@ -34,6 +34,9 @@ services:
   events-postgres:
     image: "postgres:10"
 
+  payment-postgres:
+    image: "postgres:10"
+
   bookings:
     build:
       context: ./backend/booking
@@ -41,6 +44,14 @@ services:
     depends_on:
     - scg
     - bookings-postgres
+
+  payment:
+    build:
+      context: ./backend/payment
+      dockerfile: Dockerfile
+    depends_on:
+    - scg
+    - payment-postgres
 
   venues_0:
     build:

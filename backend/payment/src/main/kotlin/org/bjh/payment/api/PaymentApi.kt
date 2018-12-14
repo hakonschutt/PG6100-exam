@@ -1,5 +1,7 @@
 package org.bjh.payment.api
 
+// import org.springframework.amqp.rabbit.core.RabbitTemplate
+// import org.springframework.amqp.core.FanoutExchange
 import com.google.gson.JsonObject
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -7,8 +9,6 @@ import io.swagger.annotations.ApiParam
 import org.bjh.dto.PaymentDto
 import org.bjh.payment.service.PaymentService
 import org.bjh.wrappers.WrappedResponse
-import org.springframework.amqp.core.FanoutExchange
-import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.net.ConnectException
 
 @Api(value = "/api/payments", description = "For completing purchases.")
 @RequestMapping(
@@ -29,11 +28,11 @@ class PaymentApi {
     @Autowired
     private lateinit var paymentService: PaymentService
 
-    @Autowired
-    private lateinit var rabbitTemplate: RabbitTemplate
+    //@Autowired
+    //private lateinit var rabbitTemplate: RabbitTemplate
 
-    @Autowired
-    private lateinit var fanout: FanoutExchange
+    //@Autowired
+    //private lateinit var fanout: FanoutExchange
 
     private val basePath = "/api/payments"
 
@@ -64,17 +63,17 @@ class PaymentApi {
         message.addProperty("user", paymentDto.user)
         message.addProperty("success", true)
 
-        try {
-            rabbitTemplate.convertAndSend(fanout.name, "", message.toString())
-        } catch (ce: Exception) {
-            return ResponseEntity.status(201).body(
-                    WrappedResponse<Unit>(
-                            code = 201,
-                            message = "Payment was completed, but not sent to Booking." +
-                                    " Call with id: $createdId to manually fix it.")
-                            .validated()
-            )
-        }
+//        try {
+//            rabbitTemplate.convertAndSend(fanout.name, "", message.toString())
+//        } catch (ce: Exception) {
+//            return ResponseEntity.status(201).body(
+//                    WrappedResponse<Unit>(
+//                            code = 201,
+//                            message = "Payment was completed, but not sent to Booking." +
+//                                    " Call with id: $createdId to manually fix it.")
+//                            .validated()
+//            )
+//        }
 
         return ResponseEntity.status(201).body(
                 WrappedResponse<Unit>(
