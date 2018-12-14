@@ -35,7 +35,10 @@ spring:
         - Path=/payment-service/**
         filters:
         - StripPrefix=1
-
+      - id: frontend
+        uri: http://frontend
+        predicates:
+        - Path=/**
 
 eureka:
   instance:

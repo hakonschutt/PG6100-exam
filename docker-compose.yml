@@ -17,10 +17,10 @@ services:
     ports:
     - "8761:8761"
 
-#  frontend:
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
 
   bookings-postgres:
     image: "postgres:10"
