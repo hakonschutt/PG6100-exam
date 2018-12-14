@@ -1,30 +1,29 @@
 spring:
   application:
     name: payment
-
+  session:
+    store-type: none
   datasource:
-    url: "jdbc:postgresql://payment-db:5432/postgres"
+    url: "jdbc:postgresql://payment-postgres:5432/postgres"
     username: "postgres"
     password: ""
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: "org.postgresql.Driver"
+    jpa:
+      database: "postgresql"
+      hibernate:
+        ddl-auto: "update"
+#  rabbitmq:
+#    host: rabbitmq
 
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-      dialect: org.hibernate.dialect.PostgreSQL9Dialect
-      show_sql: true
-    properties.hibernate.temp.use_jdbc_metadata_defaults: false
-  rabbitmq:
-    host: rabbitmq
+logging:
+  level:
+    org: ERROR
 
-server:
-  port: 9091
-#
-#eureka:
-#  instance:
-#    preferIpAddress: true
-#  client:
-#    healthcheck:
-#      enabled: true
-#    serviceUrl:
-#      defaultZone: http://eureka:8761/eureka/
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
