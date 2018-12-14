@@ -5,7 +5,7 @@ const NavList = ({ auth }) => {
 	const navigation = [];
 
 	navigation.push(
-		<li key="movies" id="toMoviesButton" className="nav-item">
+		<li key="movies" className="nav-item">
 			<Link className="nav-link text-white" to="/movies">
 				Movies
 			</Link>
