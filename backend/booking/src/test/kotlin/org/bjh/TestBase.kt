@@ -39,7 +39,7 @@ abstract class TestBase {
     fun clean() {
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
-        RestAssured.basePath = "/api/bookings"
+        RestAssured.basePath = "/bookings"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
         prepTestData()

@@ -1,23 +1,21 @@
 spring:
   application:
-    name: booking
-
+    name: bookings
+  session:
+    store-type: none
   datasource:
-    url: "jdbc:postgresql://booking-db:5432/postgres"
+    url: "jdbc:postgresql://bookings-postgres:5432/postgres"
     username: "postgres"
     password: ""
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: "org.postgresql.Driver"
+    jpa:
+      database: "postgresql"
+      hibernate:
+        ddl-auto: "update"
 
-  jpa:
-    show-sql: true
-    database: postgresql
-    hibernate:
-      ddl-auto: create-drop
-      dialect: org.hibernate.dialect.PostgreSQL9Dialect
-    properties.hibernate.temp.use_jdbc_metadata_defaults: false
-
-server:
-  port: 9091
+logging:
+  level:
+    org: ERROR
 
 eureka:
   instance:
@@ -27,3 +25,4 @@ eureka:
       enabled: true
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
+

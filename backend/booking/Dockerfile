@@ -1,5 +1,5 @@
 FROM openjdk:8-alpine
 
-ADD target/booking.jar .
+ADD target/service.jar .
 
-CMD java -jar booking.jar --spring.profiles.active=docker
+CMD java -jar service.jar --spring.profiles.active=docker

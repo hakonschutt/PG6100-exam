@@ -9,7 +9,7 @@ import org.bjh.pagination.PageDto
 import org.bjh.service.BookingService
 import org.bjh.service.TicketService
 import org.bjh.wrappers.WrappedResponse
-import org.springframework.amqp.rabbit.annotation.RabbitListener
+//import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -24,10 +24,10 @@ const val MERGE_PATCH = "application/merge-patch+json"
  */
 @RestController
 @RequestMapping(
-    path = ["/api/bookings"],
-    produces = [(MediaType.APPLICATION_JSON_VALUE)]
+        path = ["/bookings"],
+        produces = [(MediaType.APPLICATION_JSON_VALUE)]
 )
-@Api(value = "/api/bookings", description = "REST endpoints for bookings")
+@Api(value = "/bookings", description = "REST endpoints for bookings")
 class BookingApi {
 
     @Autowired
@@ -36,59 +36,63 @@ class BookingApi {
     @Autowired
     private lateinit var ticketService: TicketService
 
-    private val BASE_PATH = "/api/bookings"
+    private val BASE_PATH = "/bookings"
 
-    /**
-     * @author arcuri82
-     */
-    @RabbitListener(queues = ["#{queue.name}"])
-    fun receiveFromAMQP(message: String) {
-        print(message)
-    }
+//    /**
+//     * @author arcuri82
+//     */
+//    @RabbitListener(queues = ["#{queue.name}"])
+//    fun receiveFromAMQP(message: String) {
+//        print(message)
+//    }
 
     private fun doWork(input: String) {
         //TODO: Implement stuff that it does.
         input.toCharArray()
-            .filter { it == '.' }
-            .forEach { Thread.sleep(1000) }
+                .filter { it == '.' }
+                .forEach { Thread.sleep(1000) }
     }
 
     @GetMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiOperation("Get all the bookings")
     @ApiResponses(
-        ApiResponse(code = 200, message = "Returns a list of all bookings"),
-        ApiResponse(code = 422, message = "Query parameters are incorrect")
+            ApiResponse(code = 200, message = "Returns a list of all bookings"),
+            ApiResponse(code = 422, message = "Query parameters are incorrect")
     )
     fun getAllBookings(
-        @ApiParam("The user id to query by")
-        @RequestParam("userId", required = false)
-        pathUserId: String?,
+            @ApiParam("The user id to query by")
+            @RequestParam("userId", required = false)
+            pathUserId: String?,
 
-        @ApiParam("The event id to query by")
-        @RequestParam("eventId", required = false)
-        pathEventId: String?,
+            @ApiParam("The event id to query by")
+            @RequestParam("eventId", required = false)
+            pathEventId: String?,
 
-        @ApiParam("Return response with ticket objects")
-        @RequestParam("withTickets", required = false, defaultValue = "false")
-        withTickets: Boolean,
+            @ApiParam("Return response with ticket objects")
+            @RequestParam("withTickets", required = false, defaultValue = "false")
+            withTickets: Boolean,
 
-        @ApiParam("The offset of the response set")
-        @RequestParam("offset", required = false, defaultValue = "0")
-        offset: Int,
+            @ApiParam("The offset of the response set")
+            @RequestParam("offset", required = false, defaultValue = "0")
+            offset: Int,
 
-        @ApiParam("The limit of the response set")
-        @RequestParam("limit", required = false, defaultValue = "20")
-        limit: Int
+            @ApiParam("The limit of the response set")
+            @RequestParam("limit", required = false, defaultValue = "20")
+            limit: Int
     ): ResponseEntity<WrappedResponse<PageDto<BookingDto>>> {
         var userId : Long = -1L
         var eventId : Long = -1L
+
+        println("##########################")
+        println("LOOK FOR ME")
+        println("##########################")
 
         try {
             if (!pathEventId.isNullOrBlank()) { eventId = pathEventId!!.toLong() }
             if (!pathUserId.isNullOrBlank()) { userId = pathUserId!!.toLong() }
         } catch (e: NumberFormatException) {
             return ResponseEntity.status(422).body(
-                WrappedResponse<PageDto<BookingDto>>(code = 422, message = "Unprocessable ids").validated()
+                    WrappedResponse<PageDto<BookingDto>>(code = 422, message = "Unprocessable ids").validated()
             )
         }
 
@@ -110,18 +114,18 @@ class BookingApi {
     @GetMapping(path = ["/{id}"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     @ApiOperation("Get a single booking specified by id")
     @ApiResponses(
-        ApiResponse(code = 200, message = "Returns a single booking"),
-        ApiResponse(code = 400, message = "Booking id was not processable"),
-        ApiResponse(code = 404, message = "Booking with specified id was not found")
+            ApiResponse(code = 200, message = "Returns a single booking"),
+            ApiResponse(code = 400, message = "Booking id was not processable"),
+            ApiResponse(code = 404, message = "Booking with specified id was not found")
     )
     fun getBooking(
-        @ApiParam(ID_PARAM)
-        @PathVariable("id")
-        pathId: String,
+            @ApiParam(ID_PARAM)
+            @PathVariable("id")
+            pathId: String,
 
-        @ApiParam("Return response with ticket objects")
-        @RequestParam("withTickets", required = false, defaultValue = "false")
-        withTickets: Boolean
+            @ApiParam("Return response with ticket objects")
+            @RequestParam("withTickets", required = false, defaultValue = "false")
+            withTickets: Boolean
     ) : ResponseEntity<WrappedResponse<BookingDto>> {
         val result: ResponseEntity<WrappedResponse<BookingDto>>
         val id: Long
@@ -130,7 +134,7 @@ class BookingApi {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
             return ResponseEntity.status(422).body(
-                WrappedResponse<BookingDto>(code = 422, message = "Booking id is of invalid type").validated()
+                    WrappedResponse<BookingDto>(code = 422, message = "Booking id is of invalid type").validated()
             )
         }
 
@@ -138,11 +142,11 @@ class BookingApi {
 
         result = if (booking.id != null) {
             ResponseEntity.status(200).body(
-                WrappedResponse(code = 200, data = booking, message = "booking with id $pathId").validated()
+                    WrappedResponse(code = 200, data = booking, message = "booking with id $pathId").validated()
             )
         } else {
             ResponseEntity.status(404).body(
-                WrappedResponse<BookingDto>(code = 404, message = "Booking was not found").validated()
+                    WrappedResponse<BookingDto>(code = 404, message = "Booking was not found").validated()
             )
         }
 
@@ -152,19 +156,19 @@ class BookingApi {
     @PostMapping(consumes = [BASE_JSON])
     @ApiOperation("Create a new booking")
     @ApiResponses(
-        ApiResponse(code = 201, message = "Booking was created"),
-        ApiResponse(code = 422, message = "Booking was lacking a fillable booking")
+            ApiResponse(code = 201, message = "Booking was created"),
+            ApiResponse(code = 422, message = "Booking was lacking a fillable booking")
     )
     fun createBooking(
-        @ApiParam("User id, event id, and a list of tickets")
-        @RequestBody
-        dto: BookingDto
+            @ApiParam("User id, event id, and a list of tickets")
+            @RequestBody
+            dto: BookingDto
     ) : ResponseEntity<WrappedResponse<Long>> {
         if (dto.tickets.isEmpty() ||
-            dto.event == null ||
-            dto.user == null ) {
+                dto.event == null ||
+                dto.user == null ) {
             return ResponseEntity.status(422).body(
-                WrappedResponse<Long>(code = 422, message = "Unprocessable booking values").validated()
+                    WrappedResponse<Long>(code = 422, message = "Unprocessable booking values").validated()
             )
         }
 
@@ -179,34 +183,34 @@ class BookingApi {
 
         if (tickets.isEmpty()) {
             return ResponseEntity.status(422).body(
-                WrappedResponse<Long>(code = 422, message = "Unprocessable tickets").validated()
+                    WrappedResponse<Long>(code = 422, message = "Unprocessable tickets").validated()
             )
         }
 
         val bookingId : Long = bookingService.createBooking(dto)
 
         return ResponseEntity.status(201).body(
-            WrappedResponse(code = 201, data = bookingId, message = "Booking was created").validated()
+                WrappedResponse(code = 201, data = bookingId, message = "Booking was created").validated()
         )
     }
 
     @ApiOperation("Update a booking with a given booking id")
     @PutMapping(path = ["/{id}"], consumes = [BASE_JSON])
     @ApiResponses(
-        ApiResponse(code = 200, message = "Booking ticket was updated"),
-        ApiResponse(code = 400, message = "Ticket id was not processable"),
-        ApiResponse(code = 404, message = "Booking with specified id was not found"),
-        ApiResponse(code = 409, message = "Conflict"),
-        ApiResponse(code = 500, message = "Server is experiencing issues")
+            ApiResponse(code = 200, message = "Booking ticket was updated"),
+            ApiResponse(code = 400, message = "Ticket id was not processable"),
+            ApiResponse(code = 404, message = "Booking with specified id was not found"),
+            ApiResponse(code = 409, message = "Conflict"),
+            ApiResponse(code = 500, message = "Server is experiencing issues")
     )
     fun updateFullBooking(
-        @ApiParam(ID_PARAM)
-        @PathVariable("id")
-        pathId: String,
+            @ApiParam(ID_PARAM)
+            @PathVariable("id")
+            pathId: String,
 
-        @ApiParam("Booking information including ticket, event, user and id")
-        @RequestBody
-        dto: BookingDto
+            @ApiParam("Booking information including ticket, event, user and id")
+            @RequestBody
+            dto: BookingDto
     ) : ResponseEntity<WrappedResponse<Unit>> {
         val id: Long
 
@@ -214,19 +218,19 @@ class BookingApi {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
             return ResponseEntity.status(400).body(
-                WrappedResponse<Unit>(code = 400, message = "Unable to process id type").validated()
+                    WrappedResponse<Unit>(code = 400, message = "Unable to process id type").validated()
             )
         }
 
         if (dto.id == null) {
             return ResponseEntity.status(400).body(
-                WrappedResponse<Unit>(code = 400, message = "Unable to read booking id").validated()
+                    WrappedResponse<Unit>(code = 400, message = "Unable to read booking id").validated()
             )
         }
 
         if (dto.id != id) {
             return ResponseEntity.status(409).body(
-                WrappedResponse<Unit>(code = 409, message = "Can not override original id value").validated()
+                    WrappedResponse<Unit>(code = 409, message = "Can not override original id value").validated()
             )
         }
 
@@ -234,7 +238,7 @@ class BookingApi {
 
         if (bookingDto.id == null) {
             return ResponseEntity.status(404).body(
-                WrappedResponse<Unit>(code = 404, message = "Unable to located original value").validated()
+                    WrappedResponse<Unit>(code = 404, message = "Unable to located original value").validated()
             )
         }
 
@@ -246,11 +250,11 @@ class BookingApi {
 
         return if (isUpdated) {
             ResponseEntity.status(204).body(
-                WrappedResponse<Unit>(code = 204, message = "Booking was fully updated").validated()
+                    WrappedResponse<Unit>(code = 204, message = "Booking was fully updated").validated()
             )
         } else {
             ResponseEntity.status(500).body(
-                WrappedResponse<Unit>(code = 500, message = "Internal error").validated()
+                    WrappedResponse<Unit>(code = 500, message = "Internal error").validated()
             )
         }
     }
@@ -258,20 +262,20 @@ class BookingApi {
     @ApiOperation("Update a booking with the given id")
     @PatchMapping(path = ["/{id}"], consumes = [MERGE_PATCH])
     @ApiResponses(
-        ApiResponse(code = 204, message = "Booking was updated"),
-        ApiResponse(code = 400, message = "Booking patch was not processable"),
-        ApiResponse(code = 404, message = "Booking with specified id was not found"),
-        ApiResponse(code = 409, message = "Conflict"),
-        ApiResponse(code = 500, message = "Server is experiencing issues")
+            ApiResponse(code = 204, message = "Booking was updated"),
+            ApiResponse(code = 400, message = "Booking patch was not processable"),
+            ApiResponse(code = 404, message = "Booking with specified id was not found"),
+            ApiResponse(code = 409, message = "Conflict"),
+            ApiResponse(code = 500, message = "Server is experiencing issues")
     )
     fun mergePatchBooking(
-        @ApiParam(ID_PARAM)
-        @PathVariable("id")
-        pathId: String,
+            @ApiParam(ID_PARAM)
+            @PathVariable("id")
+            pathId: String,
 
-        @ApiParam("The partial patch")
-        @RequestBody
-        jsonPatch: String
+            @ApiParam("The partial patch")
+            @RequestBody
+            jsonPatch: String
     ) : ResponseEntity<WrappedResponse<Unit>> {
         val id: Long
 
@@ -279,7 +283,7 @@ class BookingApi {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
             return ResponseEntity.status(400).body(
-                WrappedResponse<Unit>(code = 400, message = "Booking ids were of incorrect type").validated()
+                    WrappedResponse<Unit>(code = 400, message = "Booking ids were of incorrect type").validated()
             )
         }
 
@@ -287,7 +291,7 @@ class BookingApi {
 
         if (dto.id == null) {
             return ResponseEntity.status(404).body(
-                WrappedResponse<Unit>(code = 404, message = "Unable to find booking with id $id").validated()
+                    WrappedResponse<Unit>(code = 404, message = "Unable to find booking with id $id").validated()
             )
         }
 
@@ -298,13 +302,13 @@ class BookingApi {
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
         } catch (e: Exception) {
             return ResponseEntity.status(400).body(
-                WrappedResponse<Unit>(code = 400, message = "Unable to read patch values").validated()
+                    WrappedResponse<Unit>(code = 400, message = "Unable to read patch values").validated()
             )
         }
 
         if (jsonNode.has("id")) {
             return ResponseEntity.status(409).body(
-                WrappedResponse<Unit>(code = 409, message = "Unable to overwrite body id").validated()
+                    WrappedResponse<Unit>(code = 409, message = "Unable to overwrite body id").validated()
             )
         }
 
@@ -318,7 +322,7 @@ class BookingApi {
                 newUser = node.toString().toLong()
             } catch (e: NumberFormatException) {
                 return ResponseEntity.status(400).body(
-                    WrappedResponse<Unit>(code = 400, message = "User value was of incorrect type").validated()
+                        WrappedResponse<Unit>(code = 400, message = "User value was of incorrect type").validated()
                 )
             }
         }
@@ -330,7 +334,7 @@ class BookingApi {
                 newEvent = node.toString().toLong()
             } catch (e: NumberFormatException) {
                 return ResponseEntity.status(400).body(
-                    WrappedResponse<Unit>(code = 400, message = "Event value was of incorrect type").validated()
+                        WrappedResponse<Unit>(code = 400, message = "Event value was of incorrect type").validated()
                 )
             }
         }
@@ -342,11 +346,11 @@ class BookingApi {
 
         return if (isUpdated) {
             ResponseEntity.status(204).body(
-                WrappedResponse<Unit>(code = 204, message = "Booking was updated").validated()
+                    WrappedResponse<Unit>(code = 204, message = "Booking was updated").validated()
             )
         } else {
             ResponseEntity.status(500).body(
-                WrappedResponse<Unit>(code = 500, message = "Internal error").validated()
+                    WrappedResponse<Unit>(code = 500, message = "Internal error").validated()
             )
         }
     }
@@ -354,23 +358,23 @@ class BookingApi {
     @ApiOperation("Update a booking with the given id")
     @PatchMapping(path = ["/{bookingId}/tickets/{ticketId}"], consumes = [MERGE_PATCH])
     @ApiResponses(
-        ApiResponse(code = 204, message = "Ticket was updated"),
-        ApiResponse(code = 400, message = "Ticket patch was not processable"),
-        ApiResponse(code = 404, message = "Items with specified ids were not found"),
-        ApiResponse(code = 409, message = "Conflict")
+            ApiResponse(code = 204, message = "Ticket was updated"),
+            ApiResponse(code = 400, message = "Ticket patch was not processable"),
+            ApiResponse(code = 404, message = "Items with specified ids were not found"),
+            ApiResponse(code = 409, message = "Conflict")
     )
     fun mergePatchTicket(
-        @ApiParam(ID_PARAM)
-        @PathVariable("bookingId")
-        pathBookingId: String,
+            @ApiParam(ID_PARAM)
+            @PathVariable("bookingId")
+            pathBookingId: String,
 
-        @ApiParam("The numeric id of the ticket")
-        @PathVariable("ticketId")
-        pathTicketId: String,
+            @ApiParam("The numeric id of the ticket")
+            @PathVariable("ticketId")
+            pathTicketId: String,
 
-        @ApiParam("The partial patch")
-        @RequestBody
-        jsonPatch: String
+            @ApiParam("The partial patch")
+            @RequestBody
+            jsonPatch: String
     ) : ResponseEntity<WrappedResponse<Unit>> {
         val bookingId : Long
         val ticketId : Long
@@ -380,7 +384,7 @@ class BookingApi {
             ticketId = pathTicketId.toLong()
         } catch (e: NumberFormatException) {
             return ResponseEntity.status(400).body(
-                WrappedResponse<Unit>(code = 400, message = "Booking ids were of incorrect type").validated()
+                    WrappedResponse<Unit>(code = 400, message = "Booking ids were of incorrect type").validated()
             )
         }
 
@@ -388,7 +392,7 @@ class BookingApi {
 
         if (bookingDto.id == null) {
             return ResponseEntity.status(404).body(
-                WrappedResponse<Unit>(code = 404, message = "Unable to find booking instance").validated()
+                    WrappedResponse<Unit>(code = 404, message = "Unable to find booking instance").validated()
             )
         }
 
@@ -396,7 +400,7 @@ class BookingApi {
 
         if (!isTicketPresent) {
             return ResponseEntity.status(404).body(
-                WrappedResponse<Unit>(code = 404, message = "Ticket was not present on booking").validated()
+                    WrappedResponse<Unit>(code = 404, message = "Ticket was not present on booking").validated()
             )
         }
 
@@ -404,7 +408,7 @@ class BookingApi {
 
         if (ticketDto.id == null) {
             return ResponseEntity.status(404).body(
-                WrappedResponse<Unit>(code = 404, message = "Ticket was not located in the database").validated()
+                    WrappedResponse<Unit>(code = 404, message = "Ticket was not located in the database").validated()
             )
         }
 
@@ -415,13 +419,13 @@ class BookingApi {
             jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
         } catch (e: Exception) {
             return ResponseEntity.status(400).body(
-                WrappedResponse<Unit>(code = 400, message = "Unable to process sent object").validated()
+                    WrappedResponse<Unit>(code = 400, message = "Unable to process sent object").validated()
             )
         }
 
         if (jsonNode.has("id")) {
             return ResponseEntity.status(409).body(
-                WrappedResponse<Unit>(code = 409, message = "Unable to overwrite body id").validated()
+                    WrappedResponse<Unit>(code = 409, message = "Unable to overwrite body id").validated()
             )
         }
 
@@ -435,7 +439,7 @@ class BookingApi {
                 node.isNull -> null
                 node.isDouble -> node.asDouble()
                 else -> return ResponseEntity.status(400).body(
-                    WrappedResponse<Unit>(code = 400, message = "Price value was of incorrect type").validated()
+                        WrappedResponse<Unit>(code = 400, message = "Price value was of incorrect type").validated()
                 )
             }
         }
@@ -447,7 +451,7 @@ class BookingApi {
                 node.isNull -> null
                 node.isTextual -> node.asText()
                 else -> return ResponseEntity.status(400).body(
-                    WrappedResponse<Unit>(code = 400, message = "Seat value was of incorrect type").validated()
+                        WrappedResponse<Unit>(code = 400, message = "Seat value was of incorrect type").validated()
                 )
             }
         }
@@ -459,11 +463,11 @@ class BookingApi {
 
         return if (isUpdated) {
             ResponseEntity.status(204).body(
-                WrappedResponse<Unit>(code = 204, message = "Ticket with is $ticketId was updated").validated()
+                    WrappedResponse<Unit>(code = 204, message = "Ticket with is $ticketId was updated").validated()
             )
         } else {
             ResponseEntity.status(500).body(
-                WrappedResponse<Unit>(code = 500, message = "Internal error").validated()
+                    WrappedResponse<Unit>(code = 500, message = "Internal error").validated()
             )
         }
     }
@@ -471,14 +475,14 @@ class BookingApi {
     @ApiOperation("Delete a booking with the given id")
     @DeleteMapping(path = ["/{id}"])
     @ApiResponses(
-        ApiResponse(code = 204, message = "Booking was deleted, and is not returning any content"),
-        ApiResponse(code = 400, message = "Booking id was not processable"),
-        ApiResponse(code = 404, message = "Booking with specified id was not found")
+            ApiResponse(code = 204, message = "Booking was deleted, and is not returning any content"),
+            ApiResponse(code = 400, message = "Booking id was not processable"),
+            ApiResponse(code = 404, message = "Booking with specified id was not found")
     )
     fun deleteBooking(
-        @ApiParam(ID_PARAM)
-        @PathVariable("id")
-        pathId: String
+            @ApiParam(ID_PARAM)
+            @PathVariable("id")
+            pathId: String
     ) : ResponseEntity<WrappedResponse<Unit>> {
         val id: Long
 
@@ -486,7 +490,7 @@ class BookingApi {
             id = pathId.toLong()
         } catch (e: NumberFormatException) {
             return ResponseEntity.status(400).body(
-                WrappedResponse<Unit>(code = 400, message = "Booking id was not of correct type").validated()
+                    WrappedResponse<Unit>(code = 400, message = "Booking id was not of correct type").validated()
             )
         }
 
@@ -494,12 +498,12 @@ class BookingApi {
 
         if (!bookingWasDeleted) {
             return ResponseEntity.status(404).body(
-                WrappedResponse<Unit>(code = 404, message = "Unable to delete booking with id $id").validated()
+                    WrappedResponse<Unit>(code = 404, message = "Unable to delete booking with id $id").validated()
             )
         }
 
         return ResponseEntity.status(204).body(
-            WrappedResponse<Unit>(code = 204, message = "Booking with id $id was deleted").validated()
+                WrappedResponse<Unit>(code = 204, message = "Booking with id $id was deleted").validated()
         )
     }
 }

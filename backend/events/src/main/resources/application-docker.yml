@@ -2,21 +2,34 @@ spring:
   application:
     name: events
   datasource:
-    url: "jdbc:postgresql://events-db:5432/postgres"
+    url: "jdbc:postgresql://events-postgres:5432/postgres"
     username: "postgres"
     password: ""
     driver-class-name: "org.postgresql.Driver"
-  jpa:
-    show-sql: false
-    database: "postgresql"
-    hibernate:
-      ddl-auto: create-drop
-      dialect: org.hibernate.dialect.PostgreSQL9Dialect
-      show_sql: true
-    properties.hibernate.temp.use_jdbc_metadata_defaults: false
+    jpa:
+      database: "postgresql"
+      hibernate:
+        ddl-auto: "update"
 
-server:
-  port: 9091
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+    corsEnabled: true
+graphiql:
+  mapping: /graphiql
+  endpoint:
+    graphql: /events-service/graphql
+  enabled: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
 
 fixerMoviesWebAddress: movies
-fixerVenuesWebAddress: venues
+fixerVenuesWebAddress: venues-server

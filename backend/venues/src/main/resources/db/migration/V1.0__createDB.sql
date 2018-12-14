@@ -7,3 +7,16 @@ create table if not exists venues_rooms (venues_id bigint not null, rooms_id big
 alter table venues_rooms add constraint UK_6nijxm1w5owfnviua0vp9186o unique (rooms_id);
 alter table venues_rooms add constraint FKakytlv8uduvp5117bji49ybya foreign key (rooms_id) references rooms;
 alter table venues_rooms add constraint FK4fd2gmxa0fwrvgpxwd7l3dslt foreign key (venues_id) references venues;
+
+ insert into venues (id, address, geo_location, name) values (DEFAULT , 'oslo', 1, 'kino1');
+ insert into venues (id, address, geo_location, name) values (DEFAULT , 'oslo', 2, 'kino2');
+ insert into venues (id, address, geo_location, name) values (DEFAULT , 'oslo', 3, 'kino3');
+ insert into venues (id, address, geo_location, name) values (DEFAULT , 'oslo', 4, 'kino4');
+
+insert into rooms (columns, name, rows, id) values (10, 'sal-1', 10, 1 );
+insert into rooms (columns, name, rows, id) values (10, 'sal-2', 10, 2 );
+insert into rooms (columns, name, rows, id) values (10, 'sal-3', 10, 3 );
+
+insert into venues_rooms (venues_id, rooms_id) values (1, 1);
+insert into venues_rooms (venues_id, rooms_id) values (1, 2);
+insert into venues_rooms (venues_id, rooms_id) values (2, 3);

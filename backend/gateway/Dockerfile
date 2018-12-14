@@ -1,5 +1,5 @@
 FROM openjdk:8-alpine
 
-ADD target/gateway.jar .
+ADD target/scg.jar .
 
-CMD java -jar gateway.jar
+CMD java -jar scg.jar

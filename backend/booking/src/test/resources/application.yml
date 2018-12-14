@@ -1,6 +1,6 @@
 spring:
   application:
-    name: booking
+    name: service
   datasource:
     url: "jdbc:h2:mem:"
     driver-class-name: org.h2.Driver
@@ -8,6 +8,7 @@ spring:
     database: h2
     hibernate:
       ddl-auto: create-drop
+    show-sql: true
 
 eureka:
   client:

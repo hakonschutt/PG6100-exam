@@ -1,4 +1,204 @@
 create sequence hibernate_sequence start with 1 increment by 1;
-create table movies (id bigint not null, cover_art varchar(255), overview varchar(255), popularity double, poster varchar(255), price double, release_date date, title varchar(255), trailer varchar(255), vote_average double, vote_count integer, primary key (id));
-create table movies_genres (movies_id bigint not null, genres varchar(255));
+
+create table if not exists movies (id bigint not null, cover_art varchar(255), overview varchar(255), popularity decimal, poster varchar(255), price decimal, release_date date, title varchar(255), trailer varchar(255), vote_average decimal, vote_count integer, primary key (id));
+create table if not exists movies_genres (movies_id bigint not null, genres varchar(255));
 alter table movies_genres add constraint FK1i7fpiqqicbfvd33fh0ullmdn foreign key (movies_id) references movies;
+
+ insert into movies (id, cover_art, overview,popularity,poster,price,release_date,title, trailer,vote_average,vote_count) values (1, '/VuukZLgaCrho2Ar8Scl9HtV3yD.jpg','When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego “Venom” to save his life.',283.853, '/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg',222,'2018-10-03','Venom', 6.6,1367, 11);
+ insert into movies (id, cover_art, overview,popularity,poster,price,release_date,title, trailer,vote_average,vote_count) values (2, '/VuukZLgaCrho2Ar8Scl9HtV3yD.jpg','When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego “Venom” to save his life.',283.853, '/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg',222,'2018-10-03','Venom', 6.6,1367, 11);
+ insert into movies (id, cover_art, overview,popularity,poster,price,release_date,title, trailer,vote_average,vote_count) values (3, '/VuukZLgaCrho2Ar8Scl9HtV3yD.jpg','When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego “Venom” to save his life.',283.853, '/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg',222,'2018-10-03','Venom', 6.6,1367, 11);
+ insert into movies (id, cover_art, overview,popularity,poster,price,release_date,title, trailer,vote_average,vote_count) values (4, '/VuukZLgaCrho2Ar8Scl9HtV3yD.jpg','When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego “Venom” to save his life.',283.853, '/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg',222,'2018-10-03','Venom', 6.6,1367, 11);
+ insert into movies (id, cover_art, overview,popularity,poster,price,release_date,title, trailer,vote_average,vote_count) values (5, '/VuukZLgaCrho2Ar8Scl9HtV3yD.jpg','When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego “Venom” to save his life.',283.853, '/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg',222,'2018-10-03','Venom', 6.6,1367, 11);
+ insert into movies (id, cover_art, overview,popularity,poster,price,release_date,title, trailer,vote_average,vote_count) values (6, '/VuukZLgaCrho2Ar8Scl9HtV3yD.jpg','When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego “Venom” to save his life.',283.853, '/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg',222,'2018-10-03','Venom', 6.6,1367, 11);
+ insert into movies_genres (movies_id, genres) values (1, 1);
+ insert into movies_genres (movies_id, genres) values (2, 1);
+ insert into movies_genres (movies_id, genres) values (3, 1);
+ insert into movies_genres (movies_id, genres) values (4, 1);
+ insert into movies_genres (movies_id, genres) values (5, 1);
+ insert into movies_genres (movies_id, genres) values (6, 1);
+
+
+-- {
+-- 		vote_count: 1367,
+-- 		id: 335983,
+-- 		trailer: false,
+-- 		vote_average: 6.6,
+-- 		title: 'Venom',
+-- 		popularity: 283.853,
+-- 		poster: '/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg',
+-- 		genres: [878, 28, 35, 80],
+-- 		coverArt: '/VuukZLgaCrho2Ar8Scl9HtV3yD.jpg',
+-- 		overview:
+-- 			'When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego “Venom” to save his life.',
+-- 		releaseDate: '2018-10-03',
+-- 	},
+-- 	{
+-- 		vote_count: 783,
+-- 		id: 332562,
+-- 		trailer: false,
+-- 		vote_average: 7.6,
+-- 		title: 'A Star Is Born',
+-- 		popularity: 235.607,
+-- 		poster: '/wrFpXMNBRj2PBiN4Z5kix51XaIZ.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'A Star Is Born',
+-- 		genres: [18, 10402, 10749],
+-- 		coverArt: '/840rbblaLc4SVxm8gF3DNdJ0YAE.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'Seasoned musician Jackson Maine discovers—and falls in love with—struggling artist Ally. She has just about given up on her dream to make it big as a singer—until Jack coaxes her into the spotlight. But even as Ally\'s career takes off, the personal side of their relationship is breaking down, as Jack fights an ongoing battle with his own internal demons.',
+-- 		releaseDate: '2018-10-03',
+-- 	},
+-- 	{
+-- 		vote_count: 605,
+-- 		id: 346910,
+-- 		trailer: false,
+-- 		vote_average: 5.4,
+-- 		title: 'The Predator',
+-- 		popularity: 196.703,
+-- 		poster: '/wMq9kQXTeQCHUZOG4fAe5cAxyUA.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'The Predator',
+-- 		genres: [27, 878, 28, 53],
+-- 		coverArt: '/f4E0ocYeToEuXvczZv6QArrMDJ.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'From the outer reaches of space to the small-town streets of suburbia, the hunt comes home. Now, the universe’s most lethal hunters are stronger, smarter and deadlier than ever before, having genetically upgraded themselves with DNA from other species. When a young boy accidentally triggers their return to Earth, only a ragtag crew of ex-soldiers and a disgruntled science teacher can prevent the end of the human race.',
+-- 		releaseDate: '2018-09-13',
+-- 	},
+-- 	{
+-- 		vote_count: 183,
+-- 		id: 369972,
+-- 		trailer: false,
+-- 		vote_average: 7,
+-- 		title: 'First Man',
+-- 		popularity: 164.747,
+-- 		poster: '/i91mfvFcPPlaegcbOyjGgiWfZzh.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'First Man',
+-- 		genres: [36, 18],
+-- 		coverArt: '/z1FkoHO7bz40S4JiptWHSYoPpxq.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'A look at the life of the astronaut, Neil Armstrong, and the legendary space mission that led him to become the first man to walk on the Moon on July 20, 1969.',
+-- 		releaseDate: '2018-10-11',
+-- 	},
+-- 	{
+-- 		vote_count: 1149,
+-- 		id: 439079,
+-- 		trailer: false,
+-- 		vote_average: 5.8,
+-- 		title: 'The Nun',
+-- 		popularity: 149.009,
+-- 		poster: '/sFC1ElvoKGdHJIWRpNB3xWJ9lJA.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'The Nun',
+-- 		genres: [27, 9648, 53],
+-- 		coverArt: '/fgsHxz21B27hOOqQBiw9L6yWcM7.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'When a young nun at a cloistered abbey in Romania takes her own life, a priest with a haunted past and a novitiate on the threshold of her final vows are sent by the Vatican to investigate. Together they uncover the order’s unholy secret. Risking not only their lives but their faith and their very souls, they confront a malevolent force in the form of the same demonic nun that first terrorized audiences in “The Conjuring 2,” as the abbey becomes a horrific battleground between the living and the damned.',
+-- 		releaseDate: '2018-09-05',
+-- 	},
+-- 	{
+-- 		vote_count: 177,
+-- 		id: 463272,
+-- 		trailer: false,
+-- 		vote_average: 6.4,
+-- 		title: 'Johnny English Strikes Again',
+-- 		popularity: 134.308,
+-- 		poster: '/tCBxnZwLiY1BOKw3tH6AxHZdqPh.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'Johnny English Strikes Again',
+-- 		genres: [12, 10751, 28, 35],
+-- 		coverArt: '/yCOLqh5MOGyYdo58Ap0aWvKop9h.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'Disaster strikes when a criminal mastermind reveals the identities of all active undercover agents in Britain. The secret service can now rely on only one man—Johnny English. Currently teaching at a minor prep school, Johnny springs back into action to find the mysterious hacker. For this mission to succeed, he’ll need all of his skills—what few he has—as the man with yesterday’s analogue methods faces off against tomorrow’s digital technology.',
+-- 		releaseDate: '2018-09-13',
+-- 	},
+-- 	{
+-- 		vote_count: 82,
+-- 		id: 424139,
+-- 		trailer: false,
+-- 		vote_average: 6.4,
+-- 		title: 'Halloween',
+-- 		popularity: 111.754,
+-- 		poster: '/lNkDYKmrVem1J0aAfCnQlJOCKnT.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'Halloween',
+-- 		genres: [27],
+-- 		coverArt: '/hO1oTBGNxO5fBKVEuWnSpICJH7c.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'Laurie Strode comes to her final confrontation with Michael Myers, the masked figure who has haunted her since she narrowly escaped his killing spree on Halloween night four decades ago.',
+-- 		releaseDate: '2018-10-18',
+-- 	},
+-- 	{
+-- 		vote_count: 21,
+-- 		id: 442062,
+-- 		trailer: false,
+-- 		vote_average: 6.1,
+-- 		title: 'Goosebumps 2: Haunted Halloween',
+-- 		popularity: 106.506,
+-- 		poster: '/8bcpki9GfXdXj9esFpPtlate8v0.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'Goosebumps 2: Haunted Halloween',
+-- 		genres: [12, 35, 14, 27, 10751],
+-- 		coverArt: '/9xYg9ScjGaO2HrLfOfYZirTrB3o.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'Two boys face an onslaught from witches, monsters, ghouls and a talking dummy after they discover a mysterious book by author R. L. Stine.',
+-- 		releaseDate: '2018-10-11',
+-- 	},
+-- 	{
+-- 		vote_count: 98,
+-- 		id: 446894,
+-- 		trailer: false,
+-- 		vote_average: 6.5,
+-- 		title: 'Smallfoot',
+-- 		popularity: 105.326,
+-- 		poster: '/4nKoB6wMVXfsYgRZK5lHZ5VMQ6J.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'Smallfoot',
+-- 		genres: [35, 16, 10751, 12, 14],
+-- 		coverArt: '/7t88SoT3Dd8DhGnQuVoSbMNUl3W.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'A bright young yeti finds something he thought didn\'t exist—a human. News of this “smallfoot” throws the simple yeti community into an uproar over what else might be out there in the big world beyond their snowy village.',
+-- 		releaseDate: '2018-09-20',
+-- 	},
+-- 	{
+-- 		vote_count: 127,
+-- 		id: 347375,
+-- 		trailer: false,
+-- 		vote_average: 5.4,
+-- 		title: 'Mile 22',
+-- 		popularity: 99.43,
+-- 		poster: '/dT1XzjxRDR56xOm4Ph0INV4EmWJ.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'Mile 22',
+-- 		genres: [28],
+-- 		coverArt: '/eTwftrInxzZTSLUkX5hoifOczKJ.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'A CIA field officer and an Indonesian police officer are forced to work together in confronting political corruption. An informant must be moved twenty-two miles to safety.',
+-- 		releaseDate: '2018-08-16',
+-- 	},
+-- 	{
+-- 		vote_count: 1040,
+-- 		id: 447200,
+-- 		trailer: false,
+-- 		vote_average: 6.1,
+-- 		title: 'Skyscraper',
+-- 		popularity: 94.371,
+-- 		poster: '/5LYSsOPzuP13201qSzMjNxi8FxN.jpg',
+-- 		original_language: 'en',
+-- 		original_title: 'Skyscraper',
+-- 		genres: [28, 53, 18],
+-- 		coverArt: '/oMKFQmoVgB69fyXfSMu0lGlHJP2.jpg',
+-- 		adult: false,
+-- 		overview:
+-- 			'Framed and on the run, a former FBI agent must save his family from a blazing fire in the world\'s tallest building.',
+-- 		releaseDate: '2018-07-11',
+-- 	},

@@ -4,16 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.bjh</groupId>
     <artifactId>gateway</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>gateway</name>
+    <packaging>jar</packaging>
+
     <parent>
         <artifactId>backend</artifactId>
         <groupId>org.bjh</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+
     <dependencies>
+
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -27,10 +29,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
@@ -43,9 +47,10 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>gateway</finalName>
+                    <finalName>scg</finalName>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>

@@ -1,106 +1,89 @@
 version: '3.3'
+
 services:
-  #### DATABASE ####
-  auth-db:
-    image: 'postgres:latest'
-  payment-db:
-    image: 'postgres:latest'
-  movies-db:
-    image: 'postgres:latest'
-  venues-db:
-    image: 'postgres:latest'
-  booking-db:
-    image: 'postgres:latest'
-  events-db:
-    image: 'postgres:latest'
+  scg:
+    build:
+      context: ./backend/gateway
+      dockerfile: Dockerfile
+    ports:
+    - "8080:8080"
+    depends_on:
+    - eureka
 
-  #### RABBITMQ ####
-  rabbitmq:
-    image: "rabbitmq:3"
+  eureka:
+    build:
+      context: ./backend/eureka
+      dockerfile: Dockerfile
+    ports:
+    - "8761:8761"
 
-  #### REDIS ####
-  redis:
-    image: 'redis:latest'
-
-  ### FRONTEND ####
   frontend:
-    restart: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
 
-  #### GATEWAY ####
-  gateway:
-    restart: always
+  bookings-postgres:
+    image: "postgres:10"
+
+  movies-postgres:
+    image: "postgres:10"
+
+  venues-postgres:
+    image: "postgres:10"
+
+  events-postgres:
+    image: "postgres:10"
+
+  payment-postgres:
+    image: "postgres:10"
+
+  bookings:
     build:
-      context: ./backend/gateway
+      context: ./backend/booking
       dockerfile: Dockerfile
     depends_on:
-    - eureka
+    - scg
+    - bookings-postgres
 
-  #### EUREKA ####
-  eureka:
-    restart: always
-    build:
-      context: ./backend/eureka
-      dockerfile: Dockerfile
-
-  #### MICROSERVICES ####
-  #auth:
-  #  build:
-  #    context: ./backend/user-details
-  #    dockerfile: Dockerfile
-  #  depends_on:
-  #  - gateway
-  #  - auth-db
-
-  #payment:
-  #  build:
-  #    context: ./backend/payment
-  #    dockerfile: Dockerfile
-  #  depends_on:
-  #  - gateway
-  #  - payment-db
-  #  - auth
-
-  booking:
+  payment:
     build:
       context: ./backend/payment
       dockerfile: Dockerfile
     depends_on:
-    - gateway
-    - booking-db
-  #  - payment
-  #  - auth
-
-  movies:
-    build:
-      context: ./backend/movies
-      dockerfile: Dockerfile
-    depends_on:
-    - gateway
-    - movies-db
+    - scg
+    - payment-postgres
 
   venues_0:
     build:
       context: ./backend/venues
       dockerfile: Dockerfile
     depends_on:
-    - gateway
-    - venues-db
+    - scg
+    - venues-postgres
 
   venues_1:
     build:
       context: ./backend/venues
       dockerfile: Dockerfile
     depends_on:
-    - gateway
-    - venues-db
+    - scg
+    - venues-postgres
+
+  movies:
+    build:
+      context: ./backend/movies
+      dockerfile: Dockerfile
+    depends_on:
+    - scg
+    - movies-postgres
 
   events:
     build:
       context: ./backend/events
       dockerfile: Dockerfile
     depends_on:
-    - gateway
-    - events-db
+    - scg
+    - events-postgres
+
+networks:
+  cinema-network:

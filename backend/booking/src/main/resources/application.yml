@@ -1,25 +1,28 @@
 spring:
+  application:
+    name: bookings
   session:
     store-type: none
   datasource:
-    url: "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
-    driver-class-name: "org.h2.Driver"
-  jpa:
-    database: "h2"
-    hibernate:
-      ddl-auto: "create-drop"
-    show-sql: true
+    url: "jdbc:postgresql://bookings-postgres:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+    jpa:
+      database: "postgresql"
+      hibernate:
+        ddl-auto: "update"
 
 logging:
   level:
-    org.springframework.security: debug
+    org: ERROR
 
 eureka:
+  instance:
+    preferIpAddress: true
   client:
     healthcheck:
       enabled: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka:8761/eureka/
 
-server:
-  port: 9091
