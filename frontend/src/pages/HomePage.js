@@ -23,7 +23,7 @@ class HomePage extends Component {
 						remaining essentially unchanged.
 					</p>
 					<p className="lead">
-						<Link to="/movies" className="btn btn-primary btn-lg">
+						<Link to="/movies" id="toMoviesButton" className="btn btn-primary btn-lg">
 							See all our movies
 						</Link>
 					</p>
