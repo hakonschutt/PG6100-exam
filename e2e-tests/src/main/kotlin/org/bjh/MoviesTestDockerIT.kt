@@ -12,12 +12,11 @@ import org.openqa.selenium.remote.DesiredCapabilities
 import org.testcontainers.containers.BrowserWebDriverContainer
 
 
-
 /**
  * From andrea's repository
  */
 @Ignore
-class MoviesTestDockerIT : SeleniumTestBase(){
+class MoviesTestDockerIT : SeleniumTestBase() {
 
     class KBrowserWebDriverContainer : BrowserWebDriverContainer<KBrowserWebDriverContainer>()
 
@@ -41,7 +40,7 @@ class MoviesTestDockerIT : SeleniumTestBase(){
 
     @Test
     fun testGoToHomePageAndClickToGoToMoviePage() {
-        val home = HomePO(getDriver(),"localhost",getServerPort())
+        val home = HomePO(getDriver(), "localhost", getServerPort())
         val movies = MoviesPO(getDriver(), getServerHost(), getServerPort())
 
         assertTrue(home.isOnPage)
@@ -52,6 +51,25 @@ class MoviesTestDockerIT : SeleniumTestBase(){
         val displayed = movies.waitForVisibility(3, By.id("toMoviesButton"))
         assertTrue(movies.isOnPage)
         assertTrue(displayed)
+
     }
 
+    @Test
+    fun testGoToHomePageAndClickToGoToMoviePageAndSeeIfMovies() {
+        val home = HomePO(getDriver(), "localhost", getServerPort())
+        val movies = MoviesPO(getDriver(), getServerHost(), getServerPort())
+
+        assertTrue(home.isOnPage)
+        val goToMoviesButton = getDriver().findElement(By.xpath("toMoviesButton"))
+        goToMoviesButton.click()
+
+
+        val displayed = movies.waitForVisibility(3, By.id("toMoviesButton"))
+        assertTrue(movies.isOnPage)
+        assertTrue(displayed)
+        val moviesCount = getDriver().findElements(By.xpath("//*[@id=“root”]/div/main/div/div/div[2]/div/div/div"))
+
+
+        assertTrue(moviesCount.size > 0)
+    }
 }
