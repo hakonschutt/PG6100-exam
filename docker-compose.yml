@@ -1,41 +1,34 @@
 version: '3.3'
 
 services:
-
-  ### GATEWAY ###
-  gateway:
+  scg:
     build:
       context: ./backend/gateway
       dockerfile: Dockerfile
     ports:
-      - "80:8080"
+    - "8080:8080"
     depends_on:
-        - booking
+    - eureka
 
-  ### EUREKA ####
   eureka:
     build:
       context: ./backend/eureka
       dockerfile: Dockerfile
     ports:
-      - "8761:8761"
+    - "8761:8761"
 
-  booking-db:
-    image: 'postgres:latest'
+#  frontend:
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
 
-  #### RABBITMQ ####
-  rabbitmq:
-    image: "rabbitmq:3"
+  postgres:
+    image: "postgres:10"
 
-
-  booking:
+  service:
     build:
       context: ./backend/booking
       dockerfile: Dockerfile
-    ports:
-      - "8080:8888"
     depends_on:
-    - eureka
-    - booking-db
-    - rabbitmq
-
+    - scg
+    - postgres

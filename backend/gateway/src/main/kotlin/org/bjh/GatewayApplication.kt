@@ -6,7 +6,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 
 @EnableDiscoveryClient
 @SpringBootApplication
-class GatewayApplication{
+class GatewayApplication {
 }
 
 fun main(args: Array<String>) {

@@ -1,30 +1,21 @@
-# Configuring here to use an actual database, whose IP address depends
-# on where Docker Compose starts it
-
-
-
 spring:
+  application:
+    name: service
   session:
-    # during testing for this service in isolation,
-    # do not use Redis. Disabling SpringSession will fall-back to
-    # default sessions in the servlet
     store-type: none
   datasource:
-    url: "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
-    driver-class-name: org.h2.Driver
-  jpa:
-    database: "h2"
-    hibernate:
-      ddl-auto: "create-drop"
-    show-sql: true
-  application:
-    name: booking
+    url: "jdbc:postgresql://postgres:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+    jpa:
+      database: "postgresql"
+      hibernate:
+        ddl-auto: "update"
 
 logging:
   level:
     org: ERROR
-server:
-  port: 8888
 
 eureka:
   instance:

@@ -9,7 +9,7 @@ import org.bjh.pagination.PageDto
 import org.bjh.service.BookingService
 import org.bjh.service.TicketService
 import org.bjh.wrappers.WrappedResponse
-import org.springframework.amqp.rabbit.annotation.RabbitListener
+//import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
